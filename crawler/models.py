@@ -22,4 +22,4 @@ class Ranked(Timestamped):
     market_appid = models.TextField(max_length=64)
     package_name = models.TextField(max_length=64)
     rank = models.IntegerField()
-    rank_type = models.CharField(choices=RANK_TYPE)
+    rank_type = models.CharField(max_length=10, choices=RANK_TYPE)
