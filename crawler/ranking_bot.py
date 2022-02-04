@@ -1,5 +1,5 @@
-import datetime
 import os
+from datetime import datetime
 
 import requests
 
@@ -37,6 +37,7 @@ def crawl_app_store_rank(store: int, deal: int, game: int):
     for i in obj["data"]:
         try:
             item = Ranked()
+            item._date = datetime.now().strftime("%Y%m%d")
             item.market = market_type[store]
             item.deal_type = deal_type[deal]
             item.rank_type = i.get('rank_type')

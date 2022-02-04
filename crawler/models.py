@@ -26,6 +26,7 @@ class Ranked(Timestamped):
         ("paid", "유료 순위"),
         ("gross", "매출 순위")
     )
+    _date = models.CharField(max_length=16)
     deal_type = models.CharField(max_length=16, choices=DEAL_TYPE)
     market = models.CharField(max_length=16, choices=MARKET)
     rank_type = models.CharField(max_length=16, choices=RANK_TYPE)
