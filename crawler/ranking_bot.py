@@ -1,3 +1,4 @@
+import datetime
 import os
 
 import requests
@@ -25,7 +26,7 @@ def crawl_app_store_rank(store: int, deal: int, game: int):
         "market": market_type[store],
         "appType": app_type[game],
         "dateType": "d",
-        "date": 20220202,
+        "date": datetime.now().strftime("%Y%m%d"),
         "startRank": 0,
         "endRank": 200,
     }
