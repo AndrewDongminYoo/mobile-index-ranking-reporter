@@ -8,4 +8,4 @@ from crawler.models import Ranked
 
 @admin.register(Ranked)
 class Ranked(admin.ModelAdmin):
-    list_display = ["market", "deal_type", "rank_type", "rank", "app_name"]
+    list_display = ["_date", "market", "deal_type", "rank_type", "rank", "app_name"]
