@@ -13,7 +13,7 @@ class Timestamped(models.Model):
 
 class Ranked(Timestamped):
     DEAL_TYPE = (
-        ("real_rank", "실시간"),
+        ("realtime_rank", "실시간"),
         ("market_rank", "일간")
     )
     MARKET = (
@@ -35,3 +35,6 @@ class Ranked(Timestamped):
     market_appid = models.TextField(max_length=64)
     package_name = models.TextField(max_length=64)
     rank = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.market} {self.deal_type} {self.rank_type} {self.rank}위 {self.app_name}"
