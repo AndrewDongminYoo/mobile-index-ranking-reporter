@@ -38,6 +38,6 @@ class Ranked(Timestamped):
 
 
 class Following(Timestamped):
-    app_name = models.TextField(max_length=64)
-    package_name = models.TextField(max_length=64)
-    market = models.TextField(max_length=32)
+    app_name = models.CharField(max_length=64)
+    package_name = models.CharField(max_length=64)
+    market = models.CharField(max_length=32)
