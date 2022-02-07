@@ -41,3 +41,7 @@ class Following(Timestamped):
     app_name = models.CharField(max_length=64)
     package_name = models.CharField(max_length=64)
     market = models.CharField(max_length=32)
+
+    @classmethod
+    def ranked_list(cls, package_name):
+        Ranked.objects.filter(package_name=package_name).order_by("-created_at").all()

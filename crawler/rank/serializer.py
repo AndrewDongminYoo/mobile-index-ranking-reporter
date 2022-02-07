@@ -26,6 +26,3 @@ class RankingFollowingSerializer(serializers.Serializer):
         instance.app_name = validated_data.get("app_name")
         instance.package_name = validated_data.get("package_name")
         return instance.save()
-
-    def is_valid(self, raise_exception=False):
-        return super().is_valid(raise_exception)
