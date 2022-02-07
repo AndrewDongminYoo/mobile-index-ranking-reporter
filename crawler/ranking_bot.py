@@ -7,7 +7,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 
 django.setup()
-from crawler.models import Ranked
+from crawler.models import Ranked, Following, TrackingApps
 from django.db.utils import IntegrityError
 
 
@@ -34,6 +34,7 @@ def crawl_app_store_rank(store: int, deal: int, game: int):
     req = requests.post(url, data=data, headers=headers)
     obj = req.json()
     print(obj.items())
+    following_applications = [f[0] for f in Following.objects.values_list("app_name")]
     for i in obj["data"]:
         try:
             item = Ranked()
@@ -42,12 +43,15 @@ def crawl_app_store_rank(store: int, deal: int, game: int):
             item.deal_type = deal_type[deal]
             item.rank_type = i.get('rank_type')
             item.rank = i.get('rank')
-            item.app_name = i.get('app_name')
             item.publisher_name = i.get('publisher_name')
             item.icon_url = i.get('icon_url')
             item.market_appid = i.get('market_appid')
             item.package_name = i.get('package_name')
+            app_name = i.get('app_name')
+            item.app_name = app_name
             item.save()
+            if app_name in following_applications:
+                TrackingApps().from_rank(item)
         except IntegrityError:
             continue
         except AttributeError:

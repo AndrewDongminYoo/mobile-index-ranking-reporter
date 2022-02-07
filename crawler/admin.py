@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from crawler.models import Following
 from crawler.models import Ranked
+from crawler.models import TrackingApps
 
 
 # Register your models here.
@@ -14,4 +15,9 @@ class Ranked(admin.ModelAdmin):
 
 @admin.register(Following)
 class Following(admin.ModelAdmin):
-    list_display = ["app_name", "package_name", "market"]
+    list_display = ["app_name"]
+
+
+@admin.register(TrackingApps)
+class TrackingApps(admin.ModelAdmin):
+    list_display = ["app_name", "package_name", "market", "rank"]

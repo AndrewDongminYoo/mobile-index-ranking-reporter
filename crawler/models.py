@@ -1,5 +1,3 @@
-import datetime
-
 from django.db import models
 
 
@@ -42,17 +40,17 @@ class Ranked(Timestamped):
 
 class Following(Timestamped):
     app_name = models.CharField(max_length=64)
+
+
+class TrackingApps(Timestamped):
+    app_name = models.CharField(max_length=64)
     package_name = models.CharField(max_length=64)
     market = models.CharField(max_length=32)
     rank = models.IntegerField(default=200)
 
-    def get_rank_today(self):
-        today = datetime.datetime.now().strftime("%Y%m%d")
-        ranking = Ranked.objects \
-            .filter(_date=today) \
-            .filter(market=self.market) \
-            .filter(package_name=self.package_name)
-        if not ranking:
-            return 101
-        else:
-            return ranking.first().rank
+    def from_rank(self, r: Ranked):
+        self.app_name = r.app_name
+        self.package_name = r.package_name
+        self.market = r.market
+        self.rank = r.rank
+        self.save()
