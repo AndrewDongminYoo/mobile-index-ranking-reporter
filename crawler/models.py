@@ -30,8 +30,14 @@ class Ranked(Timestamped):
     deal_type = models.CharField(max_length=16, choices=DEAL_TYPE)
     market = models.CharField(max_length=16, choices=MARKET)
     rank_type = models.CharField(max_length=16, choices=RANK_TYPE)
-    app_name = models.TextField(max_length=64)
+    app_name = models.CharField(max_length=64)
     icon_url = models.URLField(max_length=200)
-    market_appid = models.TextField(max_length=64)
-    package_name = models.TextField(max_length=64)
+    market_appid = models.CharField(max_length=64)
+    package_name = models.CharField(max_length=64)
     rank = models.IntegerField()
+
+
+class Following(Timestamped):
+    app_name = models.TextField(max_length=64)
+    package_name = models.TextField(max_length=64)
+    market = models.TextField(max_length=32)
