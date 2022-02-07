@@ -55,9 +55,9 @@ def crawl_app_store_rank(store: int, deal: int, game: int):
 
 
 def main():
-    for market in range(0, 3):
-        for rank in range(0, 2):
-            for app in range(0, 2):
+    for market in range(0, 3):  # "google", "apple", "one"
+        for rank in range(0, 2):  # "realtime_rank", "market_rank"
+            for app in range(0, 2):  # "game", "app"
                 crawl_app_store_rank(market, rank, app)
 
 

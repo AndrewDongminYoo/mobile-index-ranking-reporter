@@ -1,4 +1,7 @@
+import datetime
+
 from django.db import models
+
 
 # Create your models here.
 
@@ -17,9 +20,9 @@ class Ranked(Timestamped):
         ("market_rank", "일간")
     )
     MARKET = (
-        ("google", "구글플레이"),
-        ("apple", "앱스토어"),
-        ("one", "원스토어")
+        ("google", "구글 플레이"),
+        ("apple", "앱 스토어"),
+        ("one", "원 스토어")
     )
     RANK_TYPE = (
         ("free", "무료 순위"),
@@ -41,7 +44,15 @@ class Following(Timestamped):
     app_name = models.CharField(max_length=64)
     package_name = models.CharField(max_length=64)
     market = models.CharField(max_length=32)
+    rank = models.IntegerField(default=200)
 
-    @classmethod
-    def ranked_list(cls, package_name):
-        Ranked.objects.filter(package_name=package_name).order_by("-created_at").all()
+    def get_rank_today(self):
+        today = datetime.datetime.now().strftime("%Y%m%d")
+        ranking = Ranked.objects \
+            .filter(_date=today) \
+            .filter(market=self.market) \
+            .filter(package_name=self.package_name)
+        if not ranking:
+            return 101
+        else:
+            return ranking.first().rank
