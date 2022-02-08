@@ -12,4 +12,4 @@ def get_kst():
 
 def index(request):
     apps = TrackingApps.objects.filter(created_at__gte=get_kst() - timedelta(days=3))
-    return render(request, "base.html", {"apps": apps})
+    return render(request, "statistic.html", {"apps": apps})
