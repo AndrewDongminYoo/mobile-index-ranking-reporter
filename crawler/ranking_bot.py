@@ -1,15 +1,13 @@
 import os
-from datetime import datetime
-
-import requests
-from django.utils import timezone
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 
 django.setup()
-from crawler.models import Ranked, Following, TrackingApps
+from django.utils import timezone
 from django.db.utils import IntegrityError
+from crawler.models import Ranked, Following, TrackingApps
+import requests
 
 
 def crawl_app_store_rank(store: int, deal: int, game: int):
@@ -27,7 +25,7 @@ def crawl_app_store_rank(store: int, deal: int, game: int):
         "market": market_type[store],
         "appType": app_type[game],
         "dateType": "d",
-        "date": datetime.now().strftime("%Y%m%d"),
+        "date": timezone.now().strftime("%Y%m%d"),
         "startRank": 0,
         "endRank": 200,
     }
