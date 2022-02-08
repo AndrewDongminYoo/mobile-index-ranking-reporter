@@ -47,10 +47,14 @@ class TrackingApps(Timestamped):
     package_name = models.CharField(max_length=64)
     market = models.CharField(max_length=32)
     rank = models.IntegerField(default=200)
+    deal_type = models.CharField(max_length=16)
+    rank_type = models.CharField(max_length=16)
 
     def from_rank(self, r: Ranked):
         self.app_name = r.app_name
         self.package_name = r.package_name
         self.market = r.market
         self.rank = r.rank
+        self.deal_type = r.deal_type
+        self.rank_type = r.rank_type
         self.save()

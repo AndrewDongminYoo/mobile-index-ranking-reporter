@@ -19,10 +19,12 @@ from django.urls import path
 from ninja import NinjaAPI
 
 from crawler.rank.urls import router as rank_router
+from crawler.rank.views import index
 
 api = NinjaAPI(title="Ninja")
 
 urlpatterns = [
+    path("", index, name="index"),
     path('admin/', admin.site.urls),
     path("api/", api.urls),
     path("rank/", include(rank_router.urls))
