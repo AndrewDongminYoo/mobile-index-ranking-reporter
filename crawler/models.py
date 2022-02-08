@@ -1,7 +1,6 @@
 from django.db import models
-
-
 # Create your models here.
+from django.utils import timezone
 
 
 class Timestamped(models.Model):
@@ -43,12 +42,14 @@ class Following(Timestamped):
 
 
 class TrackingApps(Timestamped):
-    app_name = models.CharField(max_length=64)
-    package_name = models.CharField(max_length=64)
-    market = models.CharField(max_length=32)
-    rank = models.IntegerField(default=200)
     deal_type = models.CharField(max_length=16)
+    market = models.CharField(max_length=16)
     rank_type = models.CharField(max_length=16)
+    app_name = models.CharField(max_length=64)
+    icon_url = models.URLField(max_length=200)
+    package_name = models.CharField(max_length=64)
+    rank = models.IntegerField(default=200)
+    date_hour = models.CharField(max_length=16)
 
     def from_rank(self, r: Ranked):
         self.app_name = r.app_name
@@ -57,4 +58,6 @@ class TrackingApps(Timestamped):
         self.rank = r.rank
         self.deal_type = r.deal_type
         self.rank_type = r.rank_type
+        self.icon_url = r.icon_url
+        self.date_hour = timezone.now().strftime("%Y%m%d%H")
         self.save()

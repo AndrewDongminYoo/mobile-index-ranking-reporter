@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 
 import requests
+from django.utils import timezone
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
@@ -37,25 +38,25 @@ def crawl_app_store_rank(store: int, deal: int, game: int):
     following_applications = [f[0] for f in Following.objects.values_list("app_name")]
     for i in obj["data"]:
         try:
-            item = Ranked()
-            item.date = datetime.now().strftime("%Y%m%d")
-            item.market = market_type[store]
-            item.deal_type = deal_type[deal]
-            item.rank_type = i.get('rank_type')
-            item.rank = i.get('rank')
-            item.publisher_name = i.get('publisher_name')
-            item.icon_url = i.get('icon_url')
-            item.market_appid = i.get('market_appid')
-            item.package_name = i.get('package_name')
-            app_name = i.get('app_name')
-            item.app_name = app_name
+            item = Ranked(
+                date=timezone.now().strftime("%Y%m%d"),
+                market=market_type[store],
+                deal_type=deal_type[deal],
+                rank_type=i.get('rank_type'),
+                rank=i.get('rank'),
+                icon_url=i.get('icon_url'),
+                market_appid=i.get('market_appid'),
+                package_name=i.get('package_name'),
+                app_name=i.get("app_name")
+            )
             item.save()
+            app_name = item.app_name
             if app_name in following_applications:
                 TrackingApps().from_rank(item)
-        except IntegrityError:
-            continue
-        except AttributeError:
-            continue
+        except IntegrityError as e:
+            print("IntegrityError")
+        except AttributeError as e:
+            print("AttributeError")
 
 
 def main():
