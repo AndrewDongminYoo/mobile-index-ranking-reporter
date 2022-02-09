@@ -40,6 +40,7 @@ def crawl_app_store_rank(store: int, deal: int, game: int):
                 date=timezone.now().strftime("%Y%m%d"),
                 market=market_type[store],
                 deal_type=deal_type[deal],
+                app_type=app_type[game],
                 rank_type=i.get('rank_type'),
                 rank=i.get('rank'),
                 icon_url=i.get('icon_url'),
