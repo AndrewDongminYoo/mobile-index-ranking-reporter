@@ -17,10 +17,12 @@ from django.contrib import admin
 from django.urls import path
 
 from crawler.rank.apis import api
-from crawler.rank.views import index
+from crawler.rank.views import statistic, my_rank, ranking
 
 urlpatterns = [
-    path("", index, name="index"),
+    path("", ranking),
+    path("statistic", statistic),
+    path("my_rank", my_rank),
     path('admin/', admin.site.urls),
     path("api/", api.urls),
 ]
