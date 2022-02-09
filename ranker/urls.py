@@ -21,7 +21,7 @@ from crawler.rank.views import statistic, my_rank, ranking
 
 urlpatterns = [
     path("", ranking),
-    path("statistic", statistic),
+    path("statistic/<str:market>/<str:deal>/<str:app>", statistic),
     path("my_rank", my_rank),
     path('admin/', admin.site.urls),
     path("api/", api.urls),
