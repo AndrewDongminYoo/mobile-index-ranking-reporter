@@ -1,5 +1,9 @@
-from ninja.orm import create_schema
+from ninja import ModelSchema
 
 from crawler.models import Ranked
 
-RankedSchema = create_schema(Ranked)
+
+class RankedSchema(ModelSchema):
+    class Config:
+        model = Ranked
+        model_fields = "__all__"

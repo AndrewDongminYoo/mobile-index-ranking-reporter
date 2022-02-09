@@ -3,25 +3,6 @@
 {% block title %}RANKING{% endblock %}
 {% block content %}
     <section class="mi-chart top100">
-        <span class="flake-ui input dark small  round reverse   ">
-            <span class="wrapper">
-                <span class="icon">
-                    <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
-                        </path>
-                    </svg>
-                </span>
-                <span class="input-area">
-                    <input type="text" autocomplete="new-password" placeholder="앱 이름 or 패키지 명 or 퍼블리셔 명" value="">
-                </span>
-                <span class="search-button ">
-                    <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z">
-                        </path>
-                    </svg>
-                </span>
-            </span>
-        </span>
         <div class="option"><label>마켓 종류</label>
             <select class="form-select" aria-label="Default select example">
                 <option value="1" selected>One</option>
@@ -35,94 +16,6 @@
                 <option value="1" selected>일간</option>
                 <option value="1">실시간</option>
             </select>
-        </div>
-        <div class="dropdown"><label>기간</label>
-            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                Dropdown button
-            </button>
-            <div class="dropdown-menu p-2 rounded-3" style="width: 340px" id="dropdownCalendar">
-                <div class="d-grid gap-1">
-                    <div class="cal">
-                        <div class="cal-month">
-                            <button class="btn cal-btn" type="button">
-                                <svg class="bi" width="16" height="16">
-                                    <use xlink:href="#arrow-left-short"></use>
-                                </svg>
-                            </button>
-                            <strong class="cal-month-name">February</strong>
-                            <select class="form-select cal-month-name">
-                                <option value="January">January</option>
-                                <option selected value="February">February</option>
-                                <option value="March">March</option>
-                                <option value="April">April</option>
-                                <option value="May">May</option>
-                                <option value="June">June</option>
-                                <option value="July">July</option>
-                                <option value="August">August</option>
-                                <option value="September">September</option>
-                                <option value="October">October</option>
-                                <option value="November">November</option>
-                                <option value="December">December</option>
-                            </select>
-                            <button class="btn cal-btn" type="button">
-                                <svg class="bi" width="16" height="16">
-                                    <use xlink:href="#arrow-right-short"></use>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="cal-weekdays text-muted">
-                            <div class="cal-weekday">Sun</div>
-                            <div class="cal-weekday">Mon</div>
-                            <div class="cal-weekday">Tue</div>
-                            <div class="cal-weekday">Wed</div>
-                            <div class="cal-weekday">Thu</div>
-                            <div class="cal-weekday">Fri</div>
-                            <div class="cal-weekday">Sat</div>
-                        </div>
-                        <div class="cal-days">
-                            <button class="btn cal-btn" disabled type="button">30</button>
-                            <button class="btn cal-btn" disabled type="button">31</button>
-
-                            <button class="btn cal-btn" type="button">1</button>
-                            <button class="btn cal-btn" type="button">2</button>
-                            <button class="btn cal-btn" type="button">3</button>
-                            <button class="btn cal-btn" type="button">4</button>
-                            <button class="btn cal-btn" type="button">5</button>
-                            <button class="btn cal-btn" type="button">6</button>
-                            <button class="btn cal-btn" type="button">7</button>
-
-                            <button class="btn cal-btn" type="button">8</button>
-                            <button class="btn cal-btn" type="button">9</button>
-                            <button class="btn cal-btn" type="button">10</button>
-                            <button class="btn cal-btn" type="button">11</button>
-                            <button class="btn cal-btn" type="button">12</button>
-                            <button class="btn cal-btn" type="button">13</button>
-                            <button class="btn cal-btn" type="button">14</button>
-
-                            <button class="btn cal-btn" type="button">15</button>
-                            <button class="btn cal-btn" type="button">16</button>
-                            <button class="btn cal-btn" type="button">17</button>
-                            <button class="btn cal-btn" type="button">18</button>
-                            <button class="btn cal-btn" type="button">19</button>
-                            <button class="btn cal-btn" type="button">20</button>
-                            <button class="btn cal-btn" type="button">21</button>
-
-                            <button class="btn cal-btn" type="button">22</button>
-                            <button class="btn cal-btn" type="button">23</button>
-                            <button class="btn cal-btn" type="button">24</button>
-                            <button class="btn cal-btn" type="button">25</button>
-                            <button class="btn cal-btn" type="button">26</button>
-                            <button class="btn cal-btn" type="button">27</button>
-                            <button class="btn cal-btn" type="button">28</button>
-
-                            <button class="btn cal-btn" type="button">29</button>
-                            <button class="btn cal-btn" type="button">30</button>
-                            <button class="btn cal-btn" type="button">31</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
     <table class="flake-ui table second small rect use-selection bordered " style="border-radius: 0.25rem;">
