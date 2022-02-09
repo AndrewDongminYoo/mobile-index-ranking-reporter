@@ -1,49 +1,134 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}RANKING{% endblock %}
+{% block title %}MY_APP_RANKING{% endblock %}
 {% block content %}
-    <section class="mi-chart top100">
-        <div class="option"><label>마켓 종류</label>
-            <select class="form-select" aria-label="Default select example">
-                <option value="1" selected>One</option>
-                <option value="2">Apple</option>
-                <option value="3">Google</option>
-            </select>
-
+    <div class="filter-wrapper">
+    <span class="flake-ui multiple-switch primary small circle">
+    <span class="border" style="width: 364px;"></span>
+    <span class="guide start animation" style="width: 128px; left: 0px;"></span>
+    <label class="select">
+        <span class="switch-value">
+            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" fill="none" viewBox="0 0 38 38"
+                 version="1.1">
+                <g id="g1506" transform="matrix(2,0,0,1.8181818,-19,-15.545454)">
+                    <path id="path943"
+                          d="m 9.5,9.993 v 18.014 c 0,0.663 0.3,1.144 0.902,1.443 L 20.93,19 10.402,8.55 C 9.801,8.815 9.5,9.296 9.5,9.993 Z"
+                          fill="currentColor"></path>
+                    <path id="path945"
+                          d="m 28.5,19 c 0,-0.498 -0.218,-0.912 -0.652,-1.244 L 25.442,16.363 22.733,19 25.44,21.637 27.897,20.244 C 28.298,19.912 28.499,19.497 28.499,19 Z"
+                          fill="currentColor"></path>
+                    <path id="path947" d="m 12.759,28.903 11.53,-6.569 -2.456,-2.438 z"
+                          fill="currentColor"></path>
+                    <path id="path949" d="m 24.29,15.666 -11.532,-6.569 9.074,9.007 2.456,-2.438 z"
+                          fill="currentColor"></path>
+                </g>
+            </svg>
+            Google Play
+        </span>
+    </label>
+    <label class="">
+        <span class="switch-value">
+            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" fill="none" viewBox="0 0 38 38">
+            <path fill-rule="evenodd"
+                  d="M 3.4381362,0 C 1.538566,0 0,1.538566 0,3.4381362 V 34.561864 C 0,36.461434 1.538566,38 3.4381362,38 H 34.561864 C 36.459716,38 38,36.461434 38,34.561864 V 3.4381362 C 38,1.538566 36.459716,0 34.561864,0 Z m 14.9352648,7.9111514 0.766703,1.3099298 0.751234,-1.3099298 c 0.481338,-0.8182764 1.524813,-1.0950464 2.351683,-0.6274599 0.825154,0.4761819 1.105362,1.51278 0.632618,2.3310563 l -1.753449,3.0152462 5.616195,9.638814 h 4.383623 c 0.952366,0 1.719069,0.759828 1.719069,1.701878 0,0.945487 -0.766703,1.705315 -1.719069,1.705315 H 15.480209 c -0.749514,-1.394164 0.22004,-3.407193 1.949422,-3.407193 h 5.335988 L 15.387378,9.6147478 C 14.916355,8.7964715 15.194843,7.7512781 16.019995,7.2836915 16.846868,6.816105 17.900657,7.092875 18.373401,7.9111514 Z m 9.05605,22.3581996 -1.653744,-2.8399 c 0.893916,-1.067542 2.025063,-1.394165 3.407193,-0.967836 l 1.230853,2.10414 c 0.472744,0.818276 0.194255,1.863469 -0.632618,2.331056 -0.825152,0.467587 -1.880659,0.192536 -2.351684,-0.62746 z M 7.0567745,22.275685 h 4.4764535 l 0.453834,-0.780458 c 2.025062,-3.477675 3.561909,-6.116444 4.613979,-7.904274 1.019408,0.833747 2.049129,3.307487 0.606831,5.770911 l -2.465144,4.228907 -3.89197,6.67858 C 10.369419,31.089347 9.3242254,31.364398 8.4973535,30.896811 7.6722009,30.420629 7.3937119,29.384031 7.8647366,28.565755 L 9.5425471,25.684596 H 7.0567745 c -0.9523637,0 -1.719068,-0.759827 -1.719068,-1.703596 0,-0.945488 0.7667043,-1.703597 1.719068,-1.703597 z"
+                  clip-rule="evenodd" fill="currentColor" stroke-width="1.71906805">
+            </path>
+            </svg>App Store
+        </span>
+    </label>
+    <label class="">
+        <span class="switch-value">
+            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" fill="currentColor"
+                 viewBox="0 0 38 38">
+            <path d="M 3.438136,0 C 1.5385659,0 0,1.5385659 0,3.4381362 V 34.561864 C 0,36.461434 1.5385659,38 3.438136,38 H 34.561864 C 36.459715,38 38,36.461434 38,34.561864 V 3.4381362 C 38,1.5385659 36.459715,0 34.561864,0 Z m 14.283737,14.216693 -3.41235,1.968333 c -1.330559,0.770142 -3.034155,0.31287 -3.802579,-1.019407 -0.770142,-1.330559 -0.31287,-3.034156 1.019408,-3.802579 l 7.369644,-4.2564125 c 0.455553,-0.3231848 1.010812,-0.5122823 1.610767,-0.5122823 0.416015,0 0.8114,0.091111 1.167247,0.2561411 0.510564,0.2303551 0.955802,0.6188645 1.258358,1.1414612 0.302556,0.5260349 0.416015,1.1087989 0.359285,1.6692151 V 28.619045 c 0,1.538566 -1.248043,2.784891 -2.78489,2.784891 -1.538566,0 -2.78489,-1.246325 -2.78489,-2.784891 V 15.177652 l 2.705813,-2.845058 -2.705813,1.887537 z"
+                  id="path863">
+            </path>
+            </svg>
+            One Store
+        </span>
+    </label>
+    </span>
+        <div class="chart-filters">
+            <div class="option"><label>기간</label>
+                <p>
+                    <button class="flake-ui switch primary small round checked" style="width: 106px;"><span
+                            class="border" style="width: 106px;"></span><span class="guide" style="width: 53px;"></span><span
+                            class="value left ">실시간</span><span class="value right checked">일간</span></button>
+                </p>
+            </div>
+            <div class="option">
+                <label>기간 (일)</label>
+                <span class="flake-ui date-picker gray undefined round small bottom-right">
+                <span tabindex="0" class="flake-ui button gray small round">
+                    <span>
+                        <span class="icon">
+                            <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"></path>
+                            </svg>
+                        </span>2022-02-07
+                        <span class="arrow "></span>
+                    </span>
+                </span>
+            </span>
+            </div>
+            <div class="option"><label>분류</label>
+                <div>
+                    <p>
+                        <button class="flake-ui switch primary small round" style="width: 102px;">
+                            <span class="border" style="width: 102px;"></span>
+                            <span class="guide" style="width: 51px;"></span>
+                            <span class="value left checked">App</span>
+                            <span class="value right ">Game</span>
+                        </button>
+                    </p>
+                </div>
+            </div>
         </div>
-        <div class="option"><label>기간</label>
-            <select class="form-select" aria-label="Default select example">
-                <option value="1" selected>일간</option>
-                <option value="1">실시간</option>
-            </select>
-        </div>
-    </section>
-    <table class="flake-ui table second small rect use-selection bordered " style="border-radius: 0.25rem;">
-        <colgroup>
-            <col style="width: 5rem;">
-            <col>
-            <col style="width: 50%;">
-        </colgroup>
+    </div>
+    <table class="flake-ui table second small rect use-selection bordered "
+           style="border-radius: 0.25rem;">
         <thead>
         <tr>
             <th scope="col">
-                <div>순위
-                    <div class="column-sort"></div>
+                <div>#
+                    <div class="column-sort">
+                    </div>
                 </div>
             </th>
             <th scope="col">
-                <div>앱명
-                    <div class="column-sort"></div>
+                <div>앱 아이콘
+                    <div class="column-sort">
+                    </div>
+                </div>
+            </th>
+            <th scope="col">
+                <div>앱 이름
+                    <div class="column-sort">
+                    </div>
                 </div>
             </th>
             <th scope="col">
                 <div>날짜
-                    <div class="column-sort"></div>
+                    <div class="column-sort">
+                    </div>
+                </div>
+            </th>
+            <th scope="col">
+                <div>스토어
+                    <div class="column-sort">
+                    </div>
+                </div>
+            </th>
+            <th scope="col">
+                <div>순위 타입
+                    <div class="column-sort">
+                    </div>
                 </div>
             </th>
             <th scope="col">
                 <div>최고 순위
-                    <div class="column-sort"></div>
+                    <div class="column-sort">
+                    </div>
                 </div>
             </th>
         </tr>
@@ -51,62 +136,69 @@
         <tbody>
         {% for app in apps %}
             <tr>
-                <td class="center">#</td>
-                <td class="left">
-                    <span class="app-name">
-                    <img alt="app-icon" class="app-icon" width="38" height="38" src="{{ app.icon_url }}">
-                        <span>{{ app.app_name }}</span>
-                    </span>
+                <td class="center">{{ forloop.counter|safe }}</td>
+                <td class="center">
+                    <img alt="app-icon" class="app-icon" width="38" height="38"
+                         src="{{ app.icon_url }}">
                 </td>
-                <td><span>{{ app.created_at__date }}</span></td>
                 <td class="left">
+                    <span class="app-name">{{ app.app_name }}</span>
+                </td>
+                <td>
+                    <span>{{ app.created_at__date }}</span>
+                </td>
+                <td class="center">
                     <div class="markets">
                         {% if app.market == "google" %}
                             <p class="google">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" fill="none"
+                                <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38"
+                                     fill="none"
                                      viewBox="0 0 38 38" version="1.1">
-                                    <g id="g1506" transform="matrix(2,0,0,1.8181818,-19,-15.545454)">
+                                    <g id="g1506"
+                                       transform="matrix(2,0,0,1.8181818,-19,-15.545454)">
                                         <path id="path943"
                                               d="m 9.5,9.993 v 18.014 c 0,0.663 0.3,1.144 0.902,1.443 L 20.93,19 10.402,8.55 C 9.801,8.815 9.5,9.296 9.5,9.993 Z"
                                               fill="#46cdfd"></path>
                                         <path id="path945"
                                               d="m 28.5,19 c 0,-0.498 -0.218,-0.912 -0.652,-1.244 L 25.442,16.363 22.733,19 25.44,21.637 27.897,20.244 C 28.298,19.912 28.499,19.497 28.499,19 Z"
                                               fill="#fed330"></path>
-                                        <path id="path947" d="m 12.759,28.903 11.53,-6.569 -2.456,-2.438 z"
+                                        <path id="path947"
+                                              d="m 12.759,28.903 11.53,-6.569 -2.456,-2.438 z"
                                               fill="#fc363b"></path>
-                                        <path id="path949" d="m 24.29,15.666 -11.532,-6.569 9.074,9.007 2.456,-2.438 z"
+                                        <path id="path949"
+                                              d="m 24.29,15.666 -11.532,-6.569 9.074,9.007 2.456,-2.438 z"
                                               fill="#53fd55"></path>
                                     </g>
                                 </svg>
-                                <span>{{ app.rank }}<span>위 ({{ app.market }}, {{ app.rank_type }}, {{ app.deal_type }})</span></span>
-                            </p>
-                        {% elif app.market == "apple" %}
+                                {% elif app.market == "apple" %}
                             <p class="apple">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" fill="none"
+                                <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38"
+                                     fill="none"
                                      viewBox="0 0 38 38">
                                     <path fill-rule="evenodd"
                                           d="M 3.4381362,0 C 1.538566,0 0,1.538566 0,3.4381362 V 34.561864 C 0,36.461434 1.538566,38 3.4381362,38 H 34.561864 C 36.459716,38 38,36.461434 38,34.561864 V 3.4381362 C 38,1.538566 36.459716,0 34.561864,0 Z m 14.9352648,7.9111514 0.766703,1.3099298 0.751234,-1.3099298 c 0.481338,-0.8182764 1.524813,-1.0950464 2.351683,-0.6274599 0.825154,0.4761819 1.105362,1.51278 0.632618,2.3310563 l -1.753449,3.0152462 5.616195,9.638814 h 4.383623 c 0.952366,0 1.719069,0.759828 1.719069,1.701878 0,0.945487 -0.766703,1.705315 -1.719069,1.705315 H 15.480209 c -0.749514,-1.394164 0.22004,-3.407193 1.949422,-3.407193 h 5.335988 L 15.387378,9.6147478 C 14.916355,8.7964715 15.194843,7.7512781 16.019995,7.2836915 16.846868,6.816105 17.900657,7.092875 18.373401,7.9111514 Z m 9.05605,22.3581996 -1.653744,-2.8399 c 0.893916,-1.067542 2.025063,-1.394165 3.407193,-0.967836 l 1.230853,2.10414 c 0.472744,0.818276 0.194255,1.863469 -0.632618,2.331056 -0.825152,0.467587 -1.880659,0.192536 -2.351684,-0.62746 z M 7.0567745,22.275685 h 4.4764535 l 0.453834,-0.780458 c 2.025062,-3.477675 3.561909,-6.116444 4.613979,-7.904274 1.019408,0.833747 2.049129,3.307487 0.606831,5.770911 l -2.465144,4.228907 -3.89197,6.67858 C 10.369419,31.089347 9.3242254,31.364398 8.4973535,30.896811 7.6722009,30.420629 7.3937119,29.384031 7.8647366,28.565755 L 9.5425471,25.684596 H 7.0567745 c -0.9523637,0 -1.719068,-0.759827 -1.719068,-1.703596 0,-0.945488 0.7667043,-1.703597 1.719068,-1.703597 z"
-                                          clip-rule="evenodd" fill="#1bb1f8" stroke-width="1.71906805"></path>
+                                          clip-rule="evenodd" fill="#1bb1f8"
+                                          stroke-width="1.71906805">
+                                    </path>
                                 </svg>
-                                <span>{{ app.rank }}<span>위 ({{ app.market }}, {{ app.rank_type }}, {{ app.deal_type }})</span></span>
-                            </p>
-                        {% elif app.market == "one" %}
+                                {% elif app.market == "one" %}
                             <p class="one">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" fill="#FF3968"
-                                     viewBox="0 0 38 38">
-                                    <path d="M 3.438136,0 C 1.5385659,0 0,1.5385659 0,3.4381362 V 34.561864 C 0,36.461434 1.5385659,38 3.438136,38 H 34.561864 C 36.459715,38 38,36.461434 38,34.561864 V 3.4381362 C 38,1.5385659 36.459715,0 34.561864,0 Z m 14.283737,14.216693 -3.41235,1.968333 c -1.330559,0.770142 -3.034155,0.31287 -3.802579,-1.019407 -0.770142,-1.330559 -0.31287,-3.034156 1.019408,-3.802579 l 7.369644,-4.2564125 c 0.455553,-0.3231848 1.010812,-0.5122823 1.610767,-0.5122823 0.416015,0 0.8114,0.091111 1.167247,0.2561411 0.510564,0.2303551 0.955802,0.6188645 1.258358,1.1414612 0.302556,0.5260349 0.416015,1.1087989 0.359285,1.6692151 V 28.619045 c 0,1.538566 -1.248043,2.784891 -2.78489,2.784891 -1.538566,0 -2.78489,-1.246325 -2.78489,-2.784891 V 15.177652 l 2.705813,-2.845058 -2.705813,1.887537 z"
-                                          id="path863"></path>
-                                </svg>
-                                <span>{{ app.rank }}
-                                <span>위 ({{ app.market }}, {{ app.rank_type }})</span>
-                            </span>
-                            </p>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38"
+                                 fill="#FF3968"
+                                 viewBox="0 0 38 38">
+                                <path d="M 3.438136,0 C 1.5385659,0 0,1.5385659 0,3.4381362 V 34.561864 C 0,36.461434 1.5385659,38 3.438136,38 H 34.561864 C 36.459715,38 38,36.461434 38,34.561864 V 3.4381362 C 38,1.5385659 36.459715,0 34.561864,0 Z m 14.283737,14.216693 -3.41235,1.968333 c -1.330559,0.770142 -3.034155,0.31287 -3.802579,-1.019407 -0.770142,-1.330559 -0.31287,-3.034156 1.019408,-3.802579 l 7.369644,-4.2564125 c 0.455553,-0.3231848 1.010812,-0.5122823 1.610767,-0.5122823 0.416015,0 0.8114,0.091111 1.167247,0.2561411 0.510564,0.2303551 0.955802,0.6188645 1.258358,1.1414612 0.302556,0.5260349 0.416015,1.1087989 0.359285,1.6692151 V 28.619045 c 0,1.538566 -1.248043,2.784891 -2.78489,2.784891 -1.538566,0 -2.78489,-1.246325 -2.78489,-2.784891 V 15.177652 l 2.705813,-2.845058 -2.705813,1.887537 z"
+                                      id="path863">
+                                </path>
+                            </svg>
                         {% endif %}
+                        <span>{{ app.market }}</span>
+                        </p>
                     </div>
                 </td>
+                <td class="center">{{ app.rank_type }}</td>
+                <td class="center">{{ app.rank }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    </section>
 {% endblock %}

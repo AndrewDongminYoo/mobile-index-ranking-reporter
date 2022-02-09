@@ -15,9 +15,20 @@
     <link rel="stylesheet" href="{% static "font.css" %}" type="text/css">
 </head>
 <body>
-
-{% block content %}
-{% endblock %}
+<div class="root">
+    <article class="app">
+        <div class="main">
+            <div class="page" id="page-scroll-obj">
+                <section class="mi-chart market-rank">
+                    <div class="main">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
+                </section>
+            </div>
+        </div>
+    </article>
+</div>
 <!-- Optional JavaScript; choose one of the two! -->
 
 <!-- Option 1: Bootstrap Bundle with Popper -->
