@@ -4,7 +4,7 @@ from django.db.models import Min
 from django.shortcuts import render
 from django.utils import timezone
 
-from crawler.models import TrackingApps, Ranked
+from crawler.models import TrackingApps, Ranked, OneStoreDL
 
 
 def statistic(request, market=None, deal=None, app=None):
@@ -12,7 +12,6 @@ def statistic(request, market=None, deal=None, app=None):
     apps = Ranked.objects.filter(created_at__gte=timezone.now() - timedelta(hours=1))
     market_app = apps.filter(market=market, deal_type=deal, app_type=app).order_by("created_at")
     # market_app = market_app.values("app_name", "icon_url", "package_name", "rank", "rank_type")
-    dates = [m for m in market_app.values("rank")]
     return render(request, "statistic.html", {"apps": market_app})
 
 
@@ -27,4 +26,13 @@ def my_rank(request):
 
 def ranking(request):
     # 랭킹 변동 테이블 (및 분류)
-    return render(request, "ranking.html")
+    apps = OneStoreDL.objects.filter(created_at__gte=timezone.now() - timedelta(days=1)).order_by("-downloads")
+    # market_apps = apps.annotate(
+    #     icon_url=Subquery(
+    #         Ranked.objects.filter(market_appid=OuterRef("market_appid")).values("icon_url")[:1]
+    #     ),
+    #     app_name=Subquery(
+    #         Ranked.objects.filter(market_appid=OuterRef("market_appid")).values("app_name")[:1]
+    #     )
+    # ).values("market_appid", "genre", "downloads", "volume", "released", "icon_url", "app_name")
+    return render(request, "ranking.html", {"apps": apps})
