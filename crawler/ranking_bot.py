@@ -57,33 +57,31 @@ def crawl_app_store_rank(store: int, deal: int, game: int):
 
     req = requests.post(url, data=data, headers=headers)
     obj = req.json()
-    print(obj.items())
     following_applications = [f[0] for f in Following.objects.values_list("app_name")]
-    for i in obj["data"]:
-        try:
-            market_appid = i.get('market_appid')
-            if market_type[store] == "one":
-                get_one_store_app_download_count(market_appid)
-            item = Ranked(
-                date=timezone.now().strftime("%Y%m%d"),
-                market=market_type[store],
-                deal_type=deal_type[deal],
-                app_type=app_type[game],
-                rank_type=i.get('rank_type'),
-                rank=i.get('rank'),
-                icon_url=i.get('icon_url'),
-                market_appid=market_appid,
-                package_name=i.get('package_name'),
-                app_name=i.get("app_name")
-            )
-            item.save()
-            app_name = item.app_name
-            if app_name in following_applications:
-                TrackingApps().from_rank(item)
-        except IntegrityError as e:
-            pass
-        except AttributeError as e:
-            pass
+    if obj["status"]:
+        print(obj.items())
+        for i in obj["data"]:
+            try:
+                item = Ranked(
+                    date=timezone.now().strftime("%Y%m%d"),
+                    market=market_type[store],
+                    deal_type=deal_type[deal],
+                    app_type=app_type[game],
+                    rank_type=i.get('rank_type'),
+                    rank=i.get('rank'),
+                    icon_url=i.get('icon_url'),
+                    market_appid=i.get('market_appid'),
+                    package_name=i.get('package_name'),
+                    app_name=i.get("app_name")
+                )
+                item.save()
+                app_name = item.app_name
+                if app_name in following_applications:
+                    TrackingApps().from_rank(item)
+            except IntegrityError as e:
+                pass
+            except AttributeError as e:
+                pass
 
 
 def main():
@@ -91,6 +89,13 @@ def main():
         for rank in range(0, 2):  # "realtime_rank", "market_rank"
             for app in range(0, 2):  # "game", "app"
                 crawl_app_store_rank(market, rank, app)
+
+
+def sub():
+    qs = Ranked.objects.filter(market="one").values_list("market_appid")
+    for i in qs:
+        get_one_store_app_download_count(i[0])
+        print(i[0])
 
 
 if __name__ == '__main__':
