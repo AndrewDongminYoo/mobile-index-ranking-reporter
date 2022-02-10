@@ -19,10 +19,7 @@ headers = {'origin': 'https://www.mobileindex.com',
 
 
 def get_soup(appid, back=True):
-    if back:
-        one_url = "https://m.onestore.co.kr/mobilepoc/web/apps/appsDetail/spec.omp?prodId=" + appid
-    else:
-        one_url = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" + appid
+    one_url = "https://m.onestore.co.kr/mobilepoc/web/apps/appsDetail/spec.omp?prodId=" + appid if back else "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" + appid
     from bs4 import BeautifulSoup
     response = requests.get(one_url).text
     return BeautifulSoup(response, "html.parser")
@@ -89,7 +86,7 @@ def crawl_app_store_rank(store: str, deal: str, game: str):
                     app_name=i.get("app_name")
                 )
                 item.save()
-                if item.market == "one":
+                if store == "one":
                     get_one_store_app_download_count(item.market_appid)
                 app_name = item.app_name
                 if app_name in following_applications:
@@ -115,5 +112,5 @@ def daily():
 
 
 if __name__ == '__main__':
-    # hourly()
-    daily()
+    hourly()
+    # daily()
