@@ -19,7 +19,8 @@ headers = {'origin': 'https://www.mobileindex.com',
 
 
 def get_soup(appid, back=True):
-    one_url = "https://m.onestore.co.kr/mobilepoc/web/apps/appsDetail/spec.omp?prodId=" + appid if back else "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" + appid
+    one_url = "https://m.onestore.co.kr/mobilepoc/web/apps/appsDetail/spec.omp?prodId=" + appid \
+        if back else "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" + appid
     from bs4 import BeautifulSoup
     response = requests.get(one_url).text
     return BeautifulSoup(response, "html.parser")
@@ -91,9 +92,9 @@ def crawl_app_store_rank(store: str, deal: str, game: str):
                 app_name = item.app_name
                 if app_name in following_applications:
                     TrackingApps().from_rank(item)
-            except IntegrityError as e:
+            except IntegrityError:
                 pass
-            except AttributeError as e:
+            except AttributeError:
                 pass
 
 
