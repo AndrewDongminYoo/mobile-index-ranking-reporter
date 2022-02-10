@@ -93,7 +93,7 @@ def main():
 
 def sub():
     qs = Ranked.objects.filter(market="one").values_list("market_appid")
-    for i in qs:
+    for i in set(qs):
         get_one_store_app_download_count(i[0])
         print(i[0])
 
