@@ -10,9 +10,6 @@ from django.db.utils import IntegrityError
 from crawler.models import Ranked, Following, TrackingApps, OneStoreDL
 import requests
 
-market_type = ["google", "apple", "one"]
-deal_type = ["realtime_rank", "market_rank"]
-app_type = ["game", "app"]
 user_agent = " ".join(
     ["Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
      "AppleWebKit/537.36 (KHTML, like Gecko)",
@@ -44,11 +41,11 @@ def get_one_store_app_download_count(appid: str):
     ones_app.save()
 
 
-def crawl_app_store_rank(store: int, deal: int, game: int):
-    url = f'https://proxy-insight.mobileindex.com/chart/{deal_type[deal]}'
+def crawl_app_store_rank(store: str, deal: str, game: str):
+    url = f'https://proxy-insight.mobileindex.com/chart/{deal}'
     data = {
-        "market": market_type[store],
-        "appType": app_type[game],
+        "market": store,  # "google", "apple", "one"
+        "appType": game,  # "game", "app"
         "dateType": "d",
         "date": timezone.now().strftime("%Y%m%d"),
         "startRank": 0,
@@ -64,9 +61,9 @@ def crawl_app_store_rank(store: int, deal: int, game: int):
             try:
                 item = Ranked(
                     date=timezone.now().strftime("%Y%m%d"),
-                    market=market_type[store],
-                    deal_type=deal_type[deal],
-                    app_type=app_type[game],
+                    market=store,  # "google", "apple", "one"
+                    deal_type=deal,  # "realtime_rank", "market_rank"
+                    app_type=game,  # "game", "app"
                     rank_type=i.get('rank_type'),
                     rank=i.get('rank'),
                     icon_url=i.get('icon_url'),
@@ -84,14 +81,18 @@ def crawl_app_store_rank(store: int, deal: int, game: int):
                 pass
 
 
-def main():
-    for market in range(0, 3):  # "google", "apple", "one"
-        for rank in range(0, 2):  # "realtime_rank", "market_rank"
-            for app in range(0, 2):  # "game", "app"
+def hourly():
+    for market in ["google", "apple"]:
+        for rank in ["realtime_rank"]:
+            for app in ["game", "app"]:
                 crawl_app_store_rank(market, rank, app)
 
 
-def sub():
+def daily():
+    for market in ["google", "apple", "one"]:
+        for rank in ["market_rank"]:
+            for app in ["game", "app"]:
+                crawl_app_store_rank(market, rank, app)
     qs = Ranked.objects.filter(market="one").values_list("market_appid")
     for i in set(qs):
         get_one_store_app_download_count(i[0])
@@ -99,4 +100,4 @@ def sub():
 
 
 if __name__ == '__main__':
-    main()
+    hourly()

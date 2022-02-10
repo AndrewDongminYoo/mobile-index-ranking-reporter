@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from crawler.models import Following
+from crawler.models import OneStoreDL
 from crawler.models import Ranked
 from crawler.models import TrackingApps
 
@@ -21,3 +22,8 @@ class Following(admin.ModelAdmin):
 @admin.register(TrackingApps)
 class TrackingApps(admin.ModelAdmin):
     list_display = ["app_name", "package_name", "market", "rank"]
+
+
+@admin.register(OneStoreDL)
+class OneStoreDL(admin.ModelAdmin):
+    list_display = ["market_appid", "genre", "downloads", "volume", "released"]

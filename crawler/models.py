@@ -4,14 +4,18 @@ from django.utils import timezone
 
 
 class Timestamped(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="생성일")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="수정일")
 
     class Meta:
         abstract = True
 
 
 class Ranked(Timestamped):
+    class Meta:
+        verbose_name_plural = "애플리케이션"
+        verbose_name = "애플리케이션"
+
     DEAL_TYPE = (
         ("realtime_rank", "실시간"),
         ("market_rank", "일간")
@@ -26,31 +30,39 @@ class Ranked(Timestamped):
         ("paid", "유료 순위"),
         ("gross", "매출 순위")
     )
-    date = models.CharField(max_length=16)
-    deal_type = models.CharField(max_length=16, choices=DEAL_TYPE)
-    market = models.CharField(max_length=16, choices=MARKET)
-    rank_type = models.CharField(max_length=16, choices=RANK_TYPE)
-    app_type = models.CharField(max_length=16, choices=[("game", "게임"), ("app", "애플리케이션")])
-    app_name = models.CharField(max_length=64)
-    icon_url = models.URLField(max_length=200)
-    market_appid = models.CharField(max_length=64)
-    package_name = models.CharField(max_length=64)
-    rank = models.IntegerField()
+    date = models.CharField(max_length=16, verbose_name="날짜")
+    deal_type = models.CharField(max_length=16, choices=DEAL_TYPE, verbose_name="기간")
+    market = models.CharField(max_length=16, choices=MARKET, verbose_name="마켓명")
+    rank_type = models.CharField(max_length=16, choices=RANK_TYPE, verbose_name="순위 타입")
+    app_type = models.CharField(max_length=16, choices=[("game", "게임"), ("app", "애플리케이션")], verbose_name="앱 타입")
+    app_name = models.CharField(max_length=64, verbose_name="앱 이름")
+    icon_url = models.URLField(max_length=200, verbose_name="아이콘 이미지")
+    market_appid = models.CharField(max_length=64, verbose_name="스토어 아이디")
+    package_name = models.CharField(max_length=64, verbose_name="앱 아이디")
+    rank = models.IntegerField(verbose_name="순위")
 
 
 class Following(Timestamped):
-    app_name = models.CharField(max_length=64)
+    class Meta:
+        verbose_name_plural = "순위 추적"
+        verbose_name = "순위 추적"
+
+    app_name = models.CharField(max_length=64, verbose_name="앱 이름")
 
 
 class TrackingApps(Timestamped):
-    deal_type = models.CharField(max_length=16)
-    market = models.CharField(max_length=16)
-    rank_type = models.CharField(max_length=16)
-    app_name = models.CharField(max_length=64)
-    icon_url = models.URLField(max_length=200)
-    package_name = models.CharField(max_length=64)
-    rank = models.IntegerField(default=200)
-    date_hour = models.CharField(max_length=16)
+    class Meta:
+        verbose_name_plural = "추적 결과"
+        verbose_name = "추적 결과"
+
+    deal_type = models.CharField(max_length=16, verbose_name="기간")
+    market = models.CharField(max_length=16, verbose_name="마켓명")
+    rank_type = models.CharField(max_length=16, verbose_name="순위 타입")
+    app_name = models.CharField(max_length=64, verbose_name="앱 이름")
+    icon_url = models.URLField(max_length=200, verbose_name="아이콘 이미지")
+    package_name = models.CharField(max_length=64, verbose_name="앱 아이디")
+    rank = models.IntegerField(default=200, verbose_name="순위")
+    date_hour = models.CharField(max_length=16, verbose_name="일시")
 
     def from_rank(self, r: Ranked):
         self.app_name = r.app_name
@@ -65,6 +77,10 @@ class TrackingApps(Timestamped):
 
 
 class OneStoreDL(Timestamped):
+    class Meta:
+        verbose_name_plural = "원스토어 순위"
+        verbose_name = "원스토어 순위"
+
     market_appid = models.CharField(max_length=32, verbose_name="원스토어 ID")
     genre = models.CharField(max_length=128, verbose_name="장르")
     downloads = models.IntegerField(verbose_name="다운로드수", null=True)
