@@ -11,19 +11,19 @@ from crawler.models import TrackingApps
 
 @admin.register(Ranked)
 class Ranked(admin.ModelAdmin):
-    list_display = ["date", "market", "deal_type", "rank_type", "rank", "app_name"]
+    list_display = ["app_name", "rank", "market", "deal_type", "rank_type", "created_at"]
 
 
 @admin.register(Following)
 class Following(admin.ModelAdmin):
-    list_display = ["app_name"]
+    list_display = ["app_name", "created_at"]
 
 
 @admin.register(TrackingApps)
 class TrackingApps(admin.ModelAdmin):
-    list_display = ["app_name", "package_name", "market", "rank"]
+    list_display = ["app_name", "package_name", "market", "rank", "market", "deal_type", "rank_type", "created_at"]
 
 
 @admin.register(OneStoreDL)
 class OneStoreDL(admin.ModelAdmin):
-    list_display = ["market_appid", "genre", "downloads", "volume", "released"]
+    list_display = ["app_name", "market_appid", "genre", "downloads", "volume", "released", "created_at"]

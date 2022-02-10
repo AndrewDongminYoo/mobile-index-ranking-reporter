@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @keyframes flake-anim-fade-in {
     0% {
         opacity: 0
@@ -56,35 +57,27 @@
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
         transform: translateX(0);
-        timing-function: ease-in;
         opacity: 1
     }
 }
@@ -305,35 +298,27 @@
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -482,35 +467,27 @@
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -770,35 +747,27 @@
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -934,35 +903,27 @@
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -1184,35 +1145,27 @@ section.processing-screen > div > p:last-of-type {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -2066,35 +2019,27 @@ section.login-form > footer > button:nth-of-type(2) {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -2225,7 +2170,6 @@ section.login-form > footer > button:nth-of-type(2) {
 
 .flake-ui.checkbox.primary:not(.solid) > label.checked:before {
     background-color: #9b66f2;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2243,7 +2187,6 @@ section.login-form > footer > button:nth-of-type(2) {
     height: 1rem;
     vertical-align: middle;
     margin-right: .35rem;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2264,7 +2207,6 @@ section.login-form > footer > button:nth-of-type(2) {
 
 .flake-ui.checkbox.second:not(.solid) > label.checked:before {
     background-color: #4d4e5a;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2282,7 +2224,6 @@ section.login-form > footer > button:nth-of-type(2) {
     height: 1rem;
     vertical-align: middle;
     margin-right: .35rem;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2303,7 +2244,6 @@ section.login-form > footer > button:nth-of-type(2) {
 
 .flake-ui.checkbox.dark:not(.solid) > label.checked:before {
     background-color: #232326;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2321,7 +2261,6 @@ section.login-form > footer > button:nth-of-type(2) {
     height: 1rem;
     vertical-align: middle;
     margin-right: .35rem;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2342,7 +2281,6 @@ section.login-form > footer > button:nth-of-type(2) {
 
 .flake-ui.checkbox.info:not(.solid) > label.checked:before {
     background-color: #5ec6fd;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2360,7 +2298,6 @@ section.login-form > footer > button:nth-of-type(2) {
     height: 1rem;
     vertical-align: middle;
     margin-right: .35rem;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2381,7 +2318,6 @@ section.login-form > footer > button:nth-of-type(2) {
 
 .flake-ui.checkbox.danger:not(.solid) > label.checked:before {
     background-color: #e3172f;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2399,7 +2335,6 @@ section.login-form > footer > button:nth-of-type(2) {
     height: 1rem;
     vertical-align: middle;
     margin-right: .35rem;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2420,7 +2355,6 @@ section.login-form > footer > button:nth-of-type(2) {
 
 .flake-ui.checkbox.success:not(.solid) > label.checked:before {
     background-color: #3bc690;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2438,7 +2372,6 @@ section.login-form > footer > button:nth-of-type(2) {
     height: 1rem;
     vertical-align: middle;
     margin-right: .35rem;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2459,7 +2392,6 @@ section.login-form > footer > button:nth-of-type(2) {
 
 .flake-ui.checkbox.warn:not(.solid) > label.checked:before {
     background-color: #ffd76e;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2477,7 +2409,6 @@ section.login-form > footer > button:nth-of-type(2) {
     height: 1rem;
     vertical-align: middle;
     margin-right: .35rem;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2498,7 +2429,6 @@ section.login-form > footer > button:nth-of-type(2) {
 
 .flake-ui.checkbox.gray:not(.solid) > label.checked:before {
     background-color: #68697b;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2516,7 +2446,6 @@ section.login-form > footer > button:nth-of-type(2) {
     height: 1rem;
     vertical-align: middle;
     margin-right: .35rem;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2537,7 +2466,6 @@ section.login-form > footer > button:nth-of-type(2) {
 
 .flake-ui.checkbox.disabled:not(.solid) > label.checked:before {
     background-color: #878896;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2555,7 +2483,6 @@ section.login-form > footer > button:nth-of-type(2) {
     height: 1rem;
     vertical-align: middle;
     margin-right: .35rem;
-    background-image: url(/icon_checked.19a73c9b.svg);
     background-size: 100% 100%;
     background-repeat: no-repeat
 }
@@ -2820,35 +2747,27 @@ section.join-form > .notification > ul {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -3038,35 +2957,27 @@ article.flake-ui.modal > section.large > header {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -3307,35 +3218,27 @@ section.mi-chart.top100 > .more {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -3756,35 +3659,27 @@ section.mi-chart.top100 > .more {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -3906,35 +3801,27 @@ section.mi-chart.top100 > .more {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -4926,35 +4813,27 @@ section.mi-chart.top100 > .more {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -5571,35 +5450,27 @@ section.mi-chart.top100 > .more {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -5745,35 +5616,27 @@ div.chart-filters > .option:last-child {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -6101,35 +5964,27 @@ div.chart-filters > .option:last-child {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -6480,35 +6335,27 @@ div.chart-filters > .option:last-child {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -6646,35 +6493,27 @@ div.chart-filters > .option:last-child {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -7059,35 +6898,27 @@ div.chart-filters > .option:last-child {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -8142,7 +7973,6 @@ section.flake-ui.chart .heat-map .percent-data {
 section.flake-ui.chart .app-icon {
     border-radius: .25rem;
     width: 100%;
-    min: 5rem
 }
 
 section.flake-ui.chart .rect-app-icon {
@@ -8333,35 +8163,27 @@ section.flake-ui.chart .chart-tooltip > .total {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -8501,35 +8323,27 @@ section.flake-ui.chart .chart-tooltip > .total {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -8566,7 +8380,6 @@ section.chart-header span.sub-title {
     color: #878896
 }
 
-@charset "UTF-8";
 @keyframes flake-anim-fade-in {
     0% {
         opacity: 0
@@ -8625,35 +8438,27 @@ section.chart-header span.sub-title {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -8901,12 +8706,10 @@ section.chart-header span.sub-title {
 }
 
 .market .result-section .summary-group .summary-part > .title {
-    font-weight: 400;
     letter-spacing: -.01rem;
     color: #878896;
     margin: .5rem;
     font-size: .9rem;
-    font-weight: 700
 }
 
 .market .result-section .summary-group .summary-part > .chart {
@@ -9387,35 +9190,27 @@ section.chart-header span.sub-title {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -10046,35 +9841,27 @@ section.faq .panel:hover .arrow > .default {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -10156,35 +9943,27 @@ section.faq .panel:hover .arrow > .default {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -10387,35 +10166,27 @@ section.faq .panel:hover .arrow > .default {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -10511,35 +10282,27 @@ section.faq .panel:hover .arrow > .default {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -11261,7 +11024,6 @@ section.project > .main > .contents > .project-list > label {
     background-color: rgba(10, 15, 118, .05)
 }
 
-@charset "UTF-8";
 section.competition-modal {
     width: 100%
 }
@@ -11497,35 +11259,27 @@ section.competition-modal > footer {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -11939,35 +11693,27 @@ section.project-remove-modal > .comment > b {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -12020,7 +11766,6 @@ section.project-remove-modal > .comment > b {
     color: #68697b
 }
 
-@charset "UTF-8";
 section.my-app-added-modal {
     min-width: 50vw
 }
@@ -12329,35 +12074,27 @@ section.my-app-added-modal > footer {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -12962,35 +12699,27 @@ section.notice-detail > footer {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -13856,35 +13585,27 @@ section.service-change-modal > p:hover {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -14299,35 +14020,27 @@ section.usage-index.trend-analysis .chart-area .main-chart .dual-axes-chart {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -14518,35 +14231,27 @@ section.usage-index.trend-analysis .chart-area .main-chart .dual-axes-chart {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -14863,35 +14568,27 @@ section.usage-index.customer-use-app-analysis > .wrapper > .more {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -15208,35 +14905,27 @@ section.usage-index.customer-use-app-analysis > .wrapper > .more {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -16025,7 +15714,6 @@ section.market-rank-history > .detail > .column > div > .rate > .total > b, sect
     overflow-x: auto;
     cursor: move;
     -ms-overflow-style: none;
-    scrollbar-width: none
 }
 
 .flake-ui.container > div > * {
@@ -16412,35 +16100,27 @@ section.publisher div.main .table-area .table {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -16904,35 +16584,27 @@ section.market-rank-history > .data > .chart {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -17867,35 +17539,27 @@ section.fruitage-analytics > .data > .rate > div:last-of-type > .chart {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -19195,35 +18859,27 @@ section.usage-info-rank-history > .data > .chart, section.usage-info-rank-histor
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -19648,35 +19304,27 @@ section.cross > .wrapper .switch-value > svg {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -19776,7 +19424,6 @@ section.insight-report > .contents > .subscribe {
     margin-bottom: 1.5rem;
     background-color: #fff;
     height: 6.25rem;
-    background-image: url(/bg_report_banner.e200fb50.png);
     background-repeat: no-repeat;
     background-size: 100% 100%;
     border-radius: .25rem
@@ -20030,35 +19677,27 @@ section.insight-report > .contents > .card-container > .card:nth-child(4n) {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -20920,35 +20559,27 @@ section.usage-index.customer-interest-analysis .chart-area article.word-bubble .
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -21114,35 +20745,27 @@ section.usage-index.customer-interest-analysis .chart-area article.word-bubble .
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -22431,35 +22054,27 @@ table.summary td .rank-os-icon > span:first-of-type {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -22563,35 +22178,27 @@ section.flake-ui.market.competitor > .wrapper > .filter-wrapper > .chart-filters
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -22611,7 +22218,6 @@ section.home > :not(.modal) {
 section.home > header {
     text-align: center;
     margin: 0 5vw;
-    background-image: url(/main_top_bg.5befd59a.svg);
     background-repeat: no-repeat;
     background-position: top;
     background-size: 100% auto
@@ -22932,7 +22538,6 @@ section.home > section.insight-report > div > div.body div.contents > p > span {
 }
 
 section.home > section.insight-report > div > div.body div.report-banner {
-    background-image: url(/bg_report_banner.07319867.svg);
     background-size: cover;
     height: 6rem;
     padding: .8rem 3rem;
@@ -23508,35 +23113,27 @@ section.app-search > .list > p:hover svg {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -24274,35 +23871,27 @@ section.password-change > div.content > article > footer {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -24471,35 +24060,27 @@ footer.basic > div > a:not(:first-of-type):before {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -24815,7 +24396,6 @@ section.product-info > .main > .usage-index-info > .wrapper > .card > .bottom > 
 }
 
 section.product-info > .main > .usage-index-info > .wrapper > .card:first-of-type .bottom {
-    background-image: url(/img_basic_bot.8ff59eb5.png);
     background-size: 23rem 20.625rem
 }
 
@@ -25426,35 +25006,27 @@ div.title-bar > .breadcrumb {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -25585,35 +25157,27 @@ div.title-bar > .breadcrumb {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -26326,35 +25890,27 @@ article.app > nav > .gnb-menu > span.monitoring > a:hover {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -26578,35 +26134,27 @@ section.lnb > .container > div > button.visible-child > img {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -26916,35 +26464,27 @@ section.mobile-gnb > .main > .wrapper > .menu .row > .item img, section.mobile-g
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -27395,35 +26935,27 @@ section.mail > .align-wrapper > .mail-auth > footer > .button:last-of-type {
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
@@ -28183,35 +27715,27 @@ section.payment.mobile > .main > .wrapper > .info-wrapper > .bottom > div.client
     0% {
         opacity: 0;
         transform: translateX(0);
-        timing-function: ease-in
     }
     37% {
         transform: translateX(5px);
-        timing-function: ease-out
     }
     55% {
         transform: translateX(-5px);
-        timing-function: ease-in
     }
     73% {
         transform: translateX(4px);
-        timing-function: ease-out
     }
     82% {
         transform: translateX(-4px);
-        timing-function: ease-in
     }
     91% {
         transform: translateX(2px);
-        timing-function: ease-out
     }
     96% {
         transform: translateX(-2px);
-        timing-function: ease-in
     }
     to {
-        transform: translateX(0);
-        timing-function: ease-in;
+        transform: translateX(0);;
         opacity: 1
     }
 }
