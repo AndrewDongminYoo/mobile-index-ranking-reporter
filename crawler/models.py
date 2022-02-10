@@ -62,3 +62,11 @@ class TrackingApps(Timestamped):
         self.icon_url = r.icon_url
         self.date_hour = timezone.now().strftime("%Y%m%d%H")
         self.save()
+
+
+class OneStoreDL(Timestamped):
+    market_appid = models.CharField(max_length=32, verbose_name="원스토어 ID")
+    genre = models.CharField(max_length=128, verbose_name="장르")
+    downloads = models.IntegerField(verbose_name="다운로드수", null=True)
+    volume = models.CharField(max_length=128, verbose_name="용량")
+    released = models.DateField(verbose_name="출시일", null=True)
