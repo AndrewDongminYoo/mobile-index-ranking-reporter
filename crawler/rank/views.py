@@ -26,13 +26,5 @@ def my_rank(request):
 
 def ranking(request):
     # 랭킹 변동 테이블 (및 분류)
-    apps = OneStoreDL.objects.filter(created_at__gte=timezone.now() - timedelta(days=1)).order_by("-downloads")
-    # market_apps = apps.annotate(
-    #     icon_url=Subquery(
-    #         Ranked.objects.filter(market_appid=OuterRef("market_appid")).values("icon_url")[:1]
-    #     ),
-    #     app_name=Subquery(
-    #         Ranked.objects.filter(market_appid=OuterRef("market_appid")).values("app_name")[:1]
-    #     )
-    # ).values("market_appid", "genre", "downloads", "volume", "released", "icon_url", "app_name")
+    apps = OneStoreDL.objects.filter(created_at__gte=timezone.now() - timedelta(days=1))
     return render(request, "ranking.html", {"apps": apps})

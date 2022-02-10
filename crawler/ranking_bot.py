@@ -18,15 +18,29 @@ headers = {'origin': 'https://www.mobileindex.com',
            'user-agent': user_agent}
 
 
-def get_one_store_app_download_count(appid: str):
-    one_url = "https://m.onestore.co.kr/mobilepoc/web/apps/appsDetail/spec.omp?prodId=" + appid
+def get_soup(appid, back=True):
+    if back:
+        one_url = "https://m.onestore.co.kr/mobilepoc/web/apps/appsDetail/spec.omp?prodId=" + appid
+    else:
+        one_url = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" + appid
     from bs4 import BeautifulSoup
     response = requests.get(one_url).text
-    soup = BeautifulSoup(response, "html.parser")
+    return BeautifulSoup(response, "html.parser")
+
+
+def get_one_store_app_download_count(appid: str):
+    soup = get_soup(appid, True)
     download = soup.select_one("li:-soup-contains('다운로드수') > span").text
     d_string = soup.select_one("li:-soup-contains('출시일') > span").text
     genre = soup.select_one("li:-soup-contains('장르') > span").text
     volume = soup.select_one("li:-soup-contains('용량') > span").text
+    style = soup.select_one("#header > div > div > div.header-co-right > span").get('style')
+    icon_url = style.removeprefix("background-image:url(").removesuffix(")")
+
+    soup2 = get_soup(appid, False)
+    app_name = soup2.title.get_text().removesuffix(" - 원스토어")
+    print(app_name)
+
     import datetime
     array = [i for i in map(int, d_string.split("."))]
     released = datetime.date(year=array[0], month=array[1], day=array[2])
@@ -36,8 +50,11 @@ def get_one_store_app_download_count(appid: str):
         downloads=d_counts,
         genre=genre,
         volume=volume,
-        released=released
+        released=released,
+        icon_url=icon_url,
+        app_name=app_name,
     )
+
     ones_app.save()
 
 
@@ -72,6 +89,8 @@ def crawl_app_store_rank(store: str, deal: str, game: str):
                     app_name=i.get("app_name")
                 )
                 item.save()
+                if item.market == "one":
+                    get_one_store_app_download_count(item.market_appid)
                 app_name = item.app_name
                 if app_name in following_applications:
                     TrackingApps().from_rank(item)
@@ -93,10 +112,8 @@ def daily():
         for rank in ["market_rank"]:
             for app in ["game", "app"]:
                 crawl_app_store_rank(market, rank, app)
-    qs = Ranked.objects.filter(market="one").values_list("market_appid")
-    for i in set(qs):
-        get_one_store_app_download_count(i[0])
 
 
 if __name__ == '__main__':
-    hourly()
+    # hourly()
+    daily()

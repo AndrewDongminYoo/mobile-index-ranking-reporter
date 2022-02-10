@@ -86,3 +86,5 @@ class OneStoreDL(Timestamped):
     downloads = models.IntegerField(verbose_name="다운로드수", null=True)
     volume = models.CharField(max_length=128, verbose_name="용량")
     released = models.DateField(verbose_name="출시일", null=True)
+    icon_url = models.URLField(default=None, verbose_name="앱 아이콘")
+    app_name = models.CharField(max_length=128, default=None, verbose_name="앱 이름")

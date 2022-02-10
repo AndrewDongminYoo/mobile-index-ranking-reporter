@@ -6874,10 +6874,6 @@ div.chart-filters > .option:last-child {
     height: 4.125rem
 }
 
-.mi-chart.market-rank > div.main > .table > tbody > tr > td:first-child {
-    font-size: 1.125rem
-}
-
 .mi-chart.market-rank > div.main > .table .app {
     position: relative;
     display: flex;
