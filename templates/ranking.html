@@ -2,15 +2,17 @@
 {% load static %}
 {% block title %}RANKING{% endblock %}
 {% block content %}
-    <table class="flake-ui table second small rect  use-selection bordered " style="border-radius: 0.25rem;">
-        <thead>
-        <tr>
-            <th scope="col">
-                <div>앱 ID
-                    <div class="column-sort"></div>
-                </div>
-            </th>
-            <th scope="col">
+    <main id="root">
+
+        <table class="flake-ui table second small rect  use-selection bordered " style="border-radius: 0.25rem;">
+            <thead>
+            <tr>
+                <th scope="col">
+                    <div>앱 ID
+                        <div class="column-sort"></div>
+                    </div>
+                </th>
+                <th scope="col">
                 <div>앱이름
                     <div class="column-sort"></div>
                 </div>
@@ -57,5 +59,24 @@
             </tr>
         {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </main>
+    <script>
+        let vm = Vue({
+            delimiters: ["[[", "]]"],
+            el: "main#root",
+            data: {
+                apps: "{{ apps }}"
+            },
+            mounted() {
+                this.getList();
+            },
+            methods: {
+                getList: function () {
+
+                }
+            },
+            filters: {}
+        })
+    </script>
 {% endblock %}

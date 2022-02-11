@@ -3,58 +3,78 @@
 {% block title %}STATISTIC{% endblock %}
 {% block content %}
     {% include "includes/nav_filter.html" %}
-    <table class="flake-ui table second small rect bordered" style="border-radius: 0.25rem;">
-        <colgroup>
-            <col style="width: 5rem;">
-            <col>
-            <col>
-            <col>
-        </colgroup>
-        <thead>
-        <tr>
-            <th scope="col">
-                <div>순위
-                    <div class="column-sort">
+    <main id="root">
+        <table class="flake-ui table second small rect bordered" style="border-radius: 0.25rem;">
+            <colgroup>
+                <col style="width: 5rem;">
+                <col>
+                <col>
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th scope="col">
+                    <div>순위
+                        <div class="column-sort">
+                        </div>
                     </div>
-                </div>
-            </th>
-            <th scope="col">
-                <div>무료 순위
-                    <div class="column-sort">
+                </th>
+                <th scope="col">
+                    <div>무료 순위
+                        <div class="column-sort">
+                        </div>
                     </div>
-                </div>
-            </th>
-            <th scope="col">
-                <div>유료 순위
-                    <div class="column-sort">
+                </th>
+                <th scope="col">
+                    <div>유료 순위
+                        <div class="column-sort">
+                        </div>
                     </div>
-                </div>
-            </th>
-            <th scope="col">
-                <div>매출 순위
-                    <div class="column-sort">
+                </th>
+                <th scope="col">
+                    <div>매출 순위
+                        <div class="column-sort">
+                        </div>
                     </div>
-                </div>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            {% regroup apps by rank as ranked_apps %}
-            {% for ranked_app in ranked_apps %}
-                {% if ranked_app.list|length == 3 %}
-                    <td class="center">{{ ranked_app.grouper }}</td>
-                    {% for app in ranked_app.list %}
-                        <td class="left"><span class="app">
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                {% regroup apps by rank as ranked_apps %}
+                {% for ranked_app in ranked_apps %}
+                    {% if ranked_app.list|length == 3 %}
+                        <td class="center">{{ ranked_app.grouper }}</td>
+                        {% for app in ranked_app.list %}
+                            <td class="left"><span class="app">
                     <img alt="app-icon" height="38" width="38" class="app-icon false"
                          src="{{ app.icon_url }}">
                     <span class="text">
                     <span>{{ app.app_name }}</span>
                     </span></span></td>
-                    {% endfor %}
-                {% endif %}
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                        {% endfor %}
+                    {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+    <script>
+        let vm = Vue({
+            delimiters: ["[[", "]]"],
+            el: "main#root",
+            data: {
+                apps: "{{ apps }}"
+            },
+            mounted() {
+                this.getList();
+            },
+            methods: {
+                getList: function () {
+
+                }
+            },
+            filters: {}
+        })
+    </script>
 {% endblock %}
