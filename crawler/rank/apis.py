@@ -79,3 +79,10 @@ def get_download_counts_from_apps(request: WSGIRequest):
 @paginate(LimitOffsetPagination)
 def find_download_counts_of_app_with_name(request: WSGIRequest, query):
     return OneStoreDL.objects.filter(app_name__contains=query).order_by("-downloads")
+
+
+# one "GET"
+@api.get("/one/{market_appid}", response=List[OneStoreSchema], tags=["one-store"])
+@paginate(LimitOffsetPagination)
+def get_download_counts_from_one_app(request: WSGIRequest, market_appid: str):
+    return OneStoreDL.objects.filter(market_appid=market_appid).order_by("-created_at")
