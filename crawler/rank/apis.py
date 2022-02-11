@@ -74,7 +74,7 @@ def get_download_counts_from_apps(request: WSGIRequest):
     return OneStoreDL.objects.filter(created_at__gte=timezone.now() - timedelta(days=1))
 
 
-# one "GET"
+# one "POST"
 @api.post("/one", response=List[OneStoreSchema], tags=["one-store"])
 @paginate(LimitOffsetPagination)
 def find_download_counts_of_app_with_name(request: WSGIRequest, query):

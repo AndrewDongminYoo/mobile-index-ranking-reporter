@@ -39,7 +39,7 @@
                 </th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="statistic-table-body">
             <tr>
                 {% regroup apps by rank as ranked_apps %}
                 {% for ranked_app in ranked_apps %}
@@ -60,21 +60,14 @@
         </table>
     </main>
     <script>
-        let vm = Vue({
-            delimiters: ["[[", "]]"],
-            el: "main#root",
-            data: {
-                apps: [],
-            },
-            mounted() {
-                this.getList();
-            },
-            methods: {
-                getList: function () {
-
-                }
-            },
-            filters: {}
-        })
+        const templater = ({rank, icon_url, app_name}) => `<tr>
+                        <td class="center">${rank}</td>
+                            <td class="left"><span class="app">
+                    <img alt="app-icon" height="38" width="38" class="app-icon false"
+                         src="${icon_url}">
+                    <span class="text">
+                    <span>${app_name}</span>
+                    </span></span></td>
+                </tr>`
     </script>
 {% endblock %}

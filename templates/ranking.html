@@ -31,15 +31,15 @@
                     <div class="column-sort"></div>
                 </div>
             </th>
-            <th scope="col">
-                <div>발매일
-                    <div class="column-sort"></div>
-                </div>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for app in apps %}
+                <th scope="col">
+                    <div>발매일
+                        <div class="column-sort"></div>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody id="ranking-table-body">
+            {% for app in apps %}
             <tr>
                 <td class="center">{{ app.market_appid }}</td>
                 <td class="left">
@@ -57,25 +57,28 @@
                 <td class="center">{{ app.released }}</td>
             </tr>
         {% endfor %}
-        </tbody>
+            </tbody>
         </table>
     </main>
     <script>
-        let vm = Vue({
-            delimiters: ["[[", "]]"],
-            el: "main#root",
-            data: {
-                apps: [],
-            },
-            mounted() {
-                this.getList();
-            },
-            methods: {
-                getList: function () {
-
-                }
-            },
-            filters: {}
-        })
+        const ranking = (response) => {
+            const {market_appid, icon_url, app_name, downloads, volume, genre, released} = response
+            const template = `<tr>
+                <td class="center">${market_appid}</td>
+                <td class="left">
+                <span class="app-name">
+                    <img alt="app-icon" width="38" height="38" class="app-icon false"
+                         src="${icon_url}">
+                    <span>
+                    <span>${app_name}</span>
+                    </span>
+                </span>
+                </td>
+                <td class="center">${downloads}</td>
+                <td class="center">${genre}</td>
+                <td class="center">${volume}</td>
+                <td class="center">${released}</td>
+            </tr>`
+        }
     </script>
 {% endblock %}
