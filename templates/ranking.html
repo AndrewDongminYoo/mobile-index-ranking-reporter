@@ -3,8 +3,7 @@
 {% block title %}RANKING{% endblock %}
 {% block content %}
     <main id="root">
-
-        <table class="flake-ui table second small rect  use-selection bordered " style="border-radius: 0.25rem;">
+        <table class="flake-ui table second small rect use-selection bordered" style="border-radius: 0.25rem;">
             <thead>
             <tr>
                 <th scope="col">
@@ -13,8 +12,8 @@
                     </div>
                 </th>
                 <th scope="col">
-                <div>앱이름
-                    <div class="column-sort"></div>
+                    <div>앱이름
+                        <div class="column-sort"></div>
                 </div>
             </th>
             <th scope="col">
@@ -66,7 +65,7 @@
             delimiters: ["[[", "]]"],
             el: "main#root",
             data: {
-                apps: "{{ apps }}"
+                apps: [],
             },
             mounted() {
                 this.getList();
