@@ -67,7 +67,7 @@ def add_following_app_and_search(request: WSGIRequest, app_name):
 # follow "GET"
 @api.get("/follow", response=List[FollowingSchema], tags=["ranking"])
 @paginate(LimitOffsetPagination)
-def create_following(request: WSGIRequest, sort="created_at", reverse=True):
+def view_following(request: WSGIRequest, sort="created_at", reverse=True):
     print(request.GET)
     if reverse:
         return Following.objects.order_by(sort).reverse().all()
