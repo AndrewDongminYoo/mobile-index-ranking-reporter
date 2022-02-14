@@ -127,6 +127,26 @@
         </table>
     </main>
     <script>
+        const getMyRanks = () => {
+            axios.get(`/api/following?sort=created_at&reverse=true&limit=100&offset=0`)
+                .then(res => res.data.items)
+                .then((items) => {
+                    let item_array = _.groupBy(items, ({
+                                                           app_name,
+                                                           deal_type,
+                                                           market,
+                                                           rank_type
+                                                       }) => _.join([app_name, deal_type, market, rank_type], " "))
+                    _.forEach(item_array, (item, name) => {
+                        console.log(name)
+                        console.log(item)
+                        let names = _.map(item, "app_name")
+                        let ranks = _.map(item, "rank")
+                        console.log(names.shift(), ranks)
+                    })
+                })
+        }
+        getMyRanks()
         const some = (index, response) => {
             let {market, icon_url, app_name, date, rank_type, deal_type, rank} = response
             let template = `<tr>
