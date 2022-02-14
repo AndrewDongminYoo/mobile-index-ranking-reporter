@@ -52,7 +52,6 @@ def get_one_store_app_download_count(appid: str):
         icon_url=icon_url,
         app_name=app_name,
     )
-
     ones_app.save()
 
 
@@ -113,5 +112,5 @@ def daily():
 
 
 if __name__ == '__main__':
-    hourly()
-    # daily()
+    # hourly()
+    daily()
