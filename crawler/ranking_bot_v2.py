@@ -1,5 +1,4 @@
 import os
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 
