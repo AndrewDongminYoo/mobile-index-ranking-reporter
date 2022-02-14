@@ -7,8 +7,9 @@ if 'setup' in dir(django):
     django.setup()
 from django.utils import timezone
 from django.db.utils import IntegrityError
-from crawler.models import Ranked, Following, TrackingApps, OneStoreDL
 import requests
+from crawler.models import Ranked, Following, TrackingApps
+from crawler.ranking_bot import get_one_store_app_download_count
 
 user_agent = " ".join(
     ["Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
@@ -16,43 +17,6 @@ user_agent = " ".join(
      "Chrome/98.0.4758.80 Safari/537.36"])
 headers = {'origin': 'https://www.mobileindex.com',
            'user-agent': user_agent}
-
-
-def get_soup(appid, back=True):
-    one_url = "https://m.onestore.co.kr/mobilepoc/web/apps/appsDetail/spec.omp?prodId=" + appid \
-        if back else "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" + appid
-    from bs4 import BeautifulSoup
-    response = requests.get(one_url).text
-    return BeautifulSoup(response, "html.parser")
-
-
-def get_one_store_app_download_count(appid: str):
-    soup = get_soup(appid, True)
-    download = soup.select_one("li:-soup-contains('다운로드수') > span").text
-    d_string = soup.select_one("li:-soup-contains('출시일') > span").text
-    genre = soup.select_one("li:-soup-contains('장르') > span").text
-    volume = soup.select_one("li:-soup-contains('용량') > span").text
-    style = soup.select_one("#header > div > div > div.header-co-right > span").get('style')
-    icon_url = style.removeprefix("background-image:url(").removesuffix(")")
-
-    soup2 = get_soup(appid, False)
-    app_name = soup2.title.get_text().removesuffix(" - 원스토어")
-    print(app_name)
-
-    import datetime
-    array = [i for i in map(int, d_string.split("."))]
-    released = datetime.date(year=array[0], month=array[1], day=array[2])
-    d_counts = int(download.replace(",", ""))
-    ones_app = OneStoreDL(
-        market_appid=appid,
-        downloads=d_counts,
-        genre=genre,
-        volume=volume,
-        released=released,
-        icon_url=icon_url,
-        app_name=app_name,
-    )
-    ones_app.save()
 
 
 def crawl_app_store_rank(deal: str, market: str, price: str, game: str):

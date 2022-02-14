@@ -60,35 +60,28 @@
         </table>
     </main>
     <script>
-        function getData(ranking) {
-            return axios.get(`/api/ranking?store=google&rtype=${ranking}&deal=market&game=app&sort=created_at&reverse=true`)
+        function getData(market, ranking) {
+            return axios.get(`/api/ranking?store=${market}&rtype=${ranking}&deal=market&game=app&sort=created_at&reverse=true`)
                 .then((res) => res.data)
                 .then((data) => data.items)
         }
 
         const getResults = async () => {
-            let free = await getData("free")
-            let paid = await getData("paid")
-            let gross = await getData("gross")
-            const item_array = _.groupBy([...free, ...paid, ...gross], (app) => app["rank"])
+            let free = await getData("google", "free")
+            let paid = await getData("google", "paid")
+            let gross = await getData("google", "gross")
+            const item_array = _.groupBy([...free, ...paid, ...gross], 'rank')
             _.forEach(item_array, (items, rank) => {
                 let template = `<tr><td class="center">${rank}</td>`
                 _.forEach(items, (item) => {
                     let {app_name, icon_url} = item
-                    template += `<td class="left">
-                        <span class="app">
-                            <img alt="app-icon" height="38" width="38"
-                                class="app-icon false" src="${icon_url}">
-                            <span class="text">
-                                <span>${app_name}</span>
-                            </span>
-                        </span>
-                    </td>`
+                    template += `<td class="left"><span class="app">
+            <img alt="app-icon" height="38" width="38" class="app-icon false" src="${icon_url}">
+            <span class="text"><span>${app_name}</span></span></span></td>`
                 })
                 template += `</tr>`
                 $("tbody#statistic-table-body").append(template)
             })
         }
-
     </script>
 {% endblock %}

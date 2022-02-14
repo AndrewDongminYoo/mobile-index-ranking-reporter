@@ -23,11 +23,10 @@ OneStoreSchema = create_schema(OneStoreDL)
 @paginate(LimitOffsetPagination)
 def list_tracking(request: WSGIRequest, sort="created_at", reverse=True):
     """
-
+    ## parameters:
     - request: WSGIRequest
     - sort: "id", "created_at", "deal_type", "app_name", "icon_url", "market_appid", "package_name", "rank"
     - reverse: reversed or not
-    - return: PagedTrackingApps
     """
     print(request.GET)
     if reverse:
@@ -82,7 +81,8 @@ def get_ranked_list(request: WSGIRequest,
 
 # follow "POST"
 @api.post("/follow", response=FollowingSchema, tags=["ranking"])
-def add_following_app_and_search(request: WSGIRequest, app_name):
+def add_following_app_and_search(request: WSGIRequest,
+                                 app_name):
     print(request.POST)
     ranked_app = Ranked.objects.filter(app_name=app_name).order_by("-created_at").first()
     try:
@@ -99,13 +99,14 @@ def add_following_app_and_search(request: WSGIRequest, app_name):
 # follow "GET"
 @api.get("/follow", response=List[FollowingSchema], tags=["ranking"])
 @paginate(LimitOffsetPagination)
-def view_following(request: WSGIRequest, sort="created_at", reverse=True):
+def view_following(request: WSGIRequest,
+                   sort="created_at",
+                   reverse=True):
     """
-
+    ## parameters:
     - request: WSGIRequest
     - sort: "id", "created_at", "deal_type", "app_name", "icon_url", "market_appid", "package_name", "rank"
     - reverse: reversed or not
-    :return:
     """
     print(request.GET)
     if reverse:
@@ -115,7 +116,8 @@ def view_following(request: WSGIRequest, sort="created_at", reverse=True):
 
 # follow "DELETE"
 @api.delete("/follow/{following_id}", tags=["ranking"])
-def delete_following(request: WSGIRequest, following_id: int):
+def delete_following(request: WSGIRequest,
+                     following_id: int):
     print(request.META)
     following = get_object_or_404(Following, id=following_id)
     following.delete()
@@ -125,45 +127,58 @@ def delete_following(request: WSGIRequest, following_id: int):
 # one "GET"
 @api.get("/one", response=List[OneStoreSchema], tags=["one-store"])
 @paginate(LimitOffsetPagination)
-def get_download_counts_from_apps(request: WSGIRequest):
+def get_download_counts_from_apps(request: WSGIRequest,
+                                  sort="created_at",
+                                  reverse=True):
     """
-
+    ## parameters:
     - request: WSGIRequest
     - sort: "id", "created_at", "deal_type", "app_name", "icon_url", "market_appid", "package_name", "rank"
     - reverse: reversed or not
-    :return:
     """
     print(request.GET)
-    return OneStoreDL.objects.filter(created_at__gte=timezone.now() - timedelta(days=1))
+    query_set = OneStoreDL.objects.filter(created_at__gte=timezone.now() - timedelta(days=1)).order_by(sort)
+    if reverse:
+        return query_set.reverse()
+    return query_set.all()
 
 
 # one "POST"
 @api.post("/one", response=List[OneStoreSchema], tags=["one-store"])
 @paginate(LimitOffsetPagination)
-def find_download_counts_of_app_with_name(request: WSGIRequest, query):
+def find_download_counts_of_app_with_name(request: WSGIRequest,
+                                          query,
+                                          sort="downloads",
+                                          reverse=True):
     """
-
+    ## parameters:
     - request: WSGIRequest
     - sort: "id", "created_at", "deal_type", "app_name", "icon_url", "market_appid", "package_name", "rank"
     - reverse: reversed or not
-    :param query:
-    :return:
     """
     print(request.POST)
-    return OneStoreDL.objects.filter(app_name__contains=query).order_by("-downloads")
+    query_set = OneStoreDL.objects.filter(app_name__contains=query).order_by(sort)
+    if reverse:
+        return query_set.reverse()
+    return query_set.all()
 
 
 # one "GET"
 @api.get("/one/{market_appid}", response=List[OneStoreSchema], tags=["one-store"])
 @paginate(LimitOffsetPagination)
-def get_download_counts_from_one_app(request: WSGIRequest, market_appid: str):
+def get_download_counts_from_one_app(request: WSGIRequest,
+                                     market_appid: str,
+                                     sort="created_at",
+                                     reverse=True):
     """
-
+    ## parameters:
     - request: WSGIRequest
     - sort: "id", "created_at", "deal_type", "app_name", "icon_url", "market_appid", "package_name", "rank"
     - reverse: reversed or not
-    :param market_appid:
-    :return:
+    - market_appid:
     """
     print(request.GET)
-    return OneStoreDL.objects.filter(market_appid=market_appid).order_by("-created_at")
+    query_set = OneStoreDL.objects.filter(market_appid=market_appid).order_by(sort)
+    if reverse:
+        return query_set.reverse()
+    return query_set.all()

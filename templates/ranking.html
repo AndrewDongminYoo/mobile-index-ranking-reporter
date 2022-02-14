@@ -7,42 +7,42 @@
             <thead>
             <tr>
                 <th scope="col">
-                    <div>앱 ID
+                    <a href="javascript:getOneStoreItems('market_appid')">앱 ID
                         <div class="column-sort"></div>
-                    </div>
+                    </a>
                 </th>
                 <th scope="col">
-                    <div>앱이름
+                    <a href="javascript:getOneStoreItems('app_name')">앱이름
                         <div class="column-sort"></div>
-                </div>
-            </th>
-            <th scope="col">
-                <div>다운수
-                    <div class="column-sort"></div>
-                </div>
-            </th>
-            <th scope="col">
-                <div>앱분류
-                    <div class="column-sort"></div>
-                </div>
-            </th>
-            <th scope="col">
-                <div>앱용량
-                    <div class="column-sort"></div>
-                </div>
-            </th>
+                    </a>
+                </th>
                 <th scope="col">
-                    <div>발매일
+                    <a href="javascript:getOneStoreItems('downloads')">다운수
                         <div class="column-sort"></div>
-                    </div>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a href="javascript:getOneStoreItems('genre')">앱분류
+                        <div class="column-sort"></div>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a href="javascript:getOneStoreItems('volume')">앱용량
+                        <div class="column-sort"></div>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a href="javascript:getOneStoreItems('released')">발매일
+                        <div class="column-sort"></div>
+                    </a>
                 </th>
             </tr>
             </thead>
             <tbody id="ranking-table-body">
             {% for app in apps %}
-            <tr>
-                <td class="center">{{ app.market_appid }}</td>
-                <td class="left">
+                <tr>
+                    <td class="center">{{ app.market_appid }}</td>
+                    <td class="left">
                 <span class="app-name">
                     <img alt="app-icon" width="38" height="38" class="app-icon false"
                          src="{{ app.icon_url }}">
@@ -50,35 +50,64 @@
                     <span>{{ app.app_name }}</span>
                     </span>
                 </span>
-                </td>
-                <td class="center">{{ app.downloads }}</td>
-                <td class="center">{{ app.genre }}</td>
-                <td class="center">{{ app.volume }}</td>
-                <td class="center">{{ app.released }}</td>
-            </tr>
-        {% endfor %}
+                    </td>
+                    <td class="center">{{ app.downloads }}</td>
+                    <td class="center">{{ app.genre }}</td>
+                    <td class="center">{{ app.volume }}</td>
+                    <td class="center">{{ app.released }}</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     </main>
     <script>
-        const ranking = (response) => {
-            const {market_appid, icon_url, app_name, downloads, volume, genre, released} = response
-            const template = `<tr>
-                <td class="center">${market_appid}</td>
-                <td class="left">
-                <span class="app-name">
-                    <img alt="app-icon" width="38" height="38" class="app-icon false"
-                         src="${icon_url}">
-                    <span>
+        const tableBody = $("tbody#ranking-table-body")
+        let sortingKey = "created_at"
+        let lastOffset = 0
+
+        async function getOneStoreItems(sort, limit = 100, offset = 0) {
+            sortingKey = sort
+            const response = await axios.get(`/api/one?sort=${sortingKey}&reverse=true&limit=${limit}&offset=${offset}`)
+            tableBody.empty()
+            const ranks = _.sortedUniqBy(response.data.items, ({market_appid}) => market_appid)
+            _.forEach(ranks, ranking => {
+                const {market_appid, icon_url, app_name, downloads, volume, genre, released} = ranking
+                const template = `<tr><td class="center">${market_appid}</td>
+                <td class="left"><span class="app-name">
+                    <img alt="app-icon" width="38" height="38" class="app-icon false" src="${icon_url}"><span>
                     <span>${app_name}</span>
-                    </span>
-                </span>
-                </td>
+                    </span></span></td>
                 <td class="center">${downloads}</td>
                 <td class="center">${genre}</td>
                 <td class="center">${volume}</td>
                 <td class="center">${released}</td>
             </tr>`
+                tableBody.append(template)
+            })
+            lastOffset = limit + offset
         }
+
+        $(document).ready(function () {
+            // Check every 200ms the scroll position
+            $(document).on('scroll', _.throttle(function () {
+                check_if_needs_more_content();
+            }, 300));
+
+            function check_if_needs_more_content() {
+                let pixelsFromWindowBottomToBottom = 0 + $(document).height() - $(window).scrollTop() - $(window).height();
+
+                console.log($(document).height());
+                console.log($(window).scrollTop());
+                console.log($(window).height());
+                console.log(pixelsFromWindowBottomToBottom);
+
+                if (pixelsFromWindowBottomToBottom < 200) {
+                    // Here it would go an ajax request
+                    getOneStoreItems(sortingKey, 100, lastOffset)
+                }
+            }
+
+            check_if_needs_more_content()
+        })
     </script>
 {% endblock %}
