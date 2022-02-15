@@ -47,7 +47,7 @@ class Ranked(Timestamped):
         ("gross", "매출 순위")
     )
     app = models.ForeignKey(App, on_delete=models.CASCADE, verbose_name="애플리케이션")
-    date = models.CharField(max_length=16, verbose_name="날짜")
+    date = models.CharField(max_length=16, verbose_name="날짜", default=timezone.now().strftime("%Y%m%d%H"))
     deal_type = models.CharField(max_length=16, choices=DEAL_TYPE, verbose_name="기간")
     market = models.CharField(max_length=16, choices=MARKET, verbose_name="마켓명")
     rank_type = models.CharField(max_length=16, choices=RANK_TYPE, verbose_name="순위 타입")

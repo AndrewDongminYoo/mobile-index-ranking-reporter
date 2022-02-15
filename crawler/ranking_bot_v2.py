@@ -5,6 +5,7 @@ import django
 if 'setup' in dir(django):
     django.setup()
 from django.utils import timezone
+from datetime import timedelta
 from django.db.utils import IntegrityError
 import requests
 from crawler.models import Ranked, Following, TrackingApps, App
@@ -39,7 +40,6 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
 
     req = requests.post(url, data=data, headers=headers)
     obj = req.json()
-    following_applications = [f[0] for f in Following.objects.values_list("app_name")]
     if obj["status"]:
         print(obj.items())
         for i in obj["data"]:
@@ -73,16 +73,25 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
                 item.save()
                 if i.get("market_name") == "one":
                     get_one_store_app_download_count(item.market_appid)
-                app_name = item.app_name
-                if app_name in following_applications:
-                    TrackingApps().from_rank(item)
             except IntegrityError:
                 pass
             except AttributeError:
                 pass
 
 
+def tracking_rank_flushing():
+    following_applications = [f[0] for f in Following.objects.values_list("app_name")]
+    weekdays = timezone.now()-timedelta(days=7)
+    for item in Ranked.objects.filter(created_at__gte=weekdays):
+        app_name = item.app_name
+        if app_name in following_applications:
+            TrackingApps().from_rank(item)
+    for old in TrackingApps.objects.filter(created_at__lt=weekdays):
+        old.delete()
+
+
 def hourly():
+    tracking_rank_flushing()
     for deal in ["realtime_rank_v2"]:
         for market in ["all"]:
             for price in ["gross", "paid", "free"]:
