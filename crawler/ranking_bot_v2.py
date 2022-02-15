@@ -7,7 +7,7 @@ if 'setup' in dir(django):
 from django.utils import timezone
 from django.db.utils import IntegrityError
 import requests
-from crawler.models import Ranked, Following, TrackingApps
+from crawler.models import Ranked, Following, TrackingApps, App
 from crawler.ranking_bot import get_one_store_app_download_count
 
 user_agent = " ".join(
@@ -44,7 +44,21 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
         print(obj.items())
         for i in obj["data"]:
             try:
+                app = App.objects.filter(app_name=i.get("app_name"))
+                if app.exists():
+                    app.app_name = i.get("app_name")
+                    app.package_name = i.get('package_name')
+                    app.icon_url = i.get('icon_url')
+                else:
+                    app = App(
+                        app_name=i.get("app_name"),
+                        package_name=i.get('package_name'),
+                        icon_url=i.get('icon_url'),
+                    )
+                app.save()
+
                 item = Ranked(
+                    app_id=app.id,
                     app_name=i.get("app_name"),
                     icon_url=i.get('icon_url'),
                     market_appid=i.get('market_appid'),

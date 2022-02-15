@@ -7,7 +7,7 @@ if 'setup' in dir(django):
     django.setup()
 from django.utils import timezone
 from django.db.utils import IntegrityError
-from crawler.models import Ranked, Following, TrackingApps, OneStoreDL
+from crawler.models import Ranked, Following, TrackingApps, OneStoreDL, App
 import requests
 
 user_agent = " ".join(
@@ -43,7 +43,11 @@ def get_one_store_app_download_count(appid: str):
     array = [i for i in map(int, d_string.split("."))]
     released = datetime.date(year=array[0], month=array[1], day=array[2])
     d_counts = int(download.replace(",", ""))
+
+    app = App.objects.filter(app_name=app_name).first()
+
     ones_app = OneStoreDL(
+        app_id=app.id,
         market_appid=appid,
         downloads=d_counts,
         genre=genre,
