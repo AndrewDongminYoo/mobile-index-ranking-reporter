@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db import models
 
 from crawler.forms import AppChoiceField
 from crawler.models import Following, App
@@ -13,6 +14,11 @@ from crawler.models import TrackingApps
 @admin.register(Ranked)
 class Ranked(admin.ModelAdmin):
     list_display = ["app_name", "rank", "market", "deal_type", "rank_type", "created_at"]
+    actions = []
+
+    def get_action_choices(self, request, default_choices=models.BLANK_CHOICE_DASH):
+        print(default_choices)
+        return super().get_action_choices(request, default_choices)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "app":

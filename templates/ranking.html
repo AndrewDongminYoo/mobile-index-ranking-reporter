@@ -71,7 +71,8 @@
             const ranks = _.sortedUniqBy(response.data.items, ({market_appid}) => market_appid)
             _.forEach(ranks, ranking => {
                 const {market_appid, icon_url, app_name, downloads, volume, genre, released} = ranking
-                const template = `<tr><td class="center">${market_appid}</td>
+                const template = `<tr>
+                <td class="center one-${market_appid}">${market_appid}</td>
                 <td class="left"><span class="app-name">
                     <img alt="app-icon" width="38" height="38" class="app-icon false" src="${icon_url}"><span>
                     <span>${app_name}</span>
@@ -82,6 +83,17 @@
                 <td class="center">${released}</td>
             </tr>`
                 tableBody.append(template)
+                $(document).on("click", `.one-${market_appid}`, ()=>showHistory(market_appid))
+            })
+        }
+
+        const showHistory = (appId) => {
+            axios.get(`/api/one/${appId}?sort=${sortingKey}&reverse=${reversed}&limit=100&offset=0`)
+            .then(res=>res.data.items)
+            .then(items=>{
+                let downs = _.map(items, "downloads")
+                let dates = _.map(items, "created_at")
+                console.log(dates, downs)
             })
         }
 
