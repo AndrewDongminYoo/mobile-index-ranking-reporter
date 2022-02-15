@@ -14,24 +14,25 @@ from crawler.models import TrackingApps
 class Ranked(admin.ModelAdmin):
     list_display = ["app_name", "rank", "market", "deal_type", "rank_type", "created_at"]
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "app":
+            return AppChoiceField(queryset=App.objects.order_by("app_name").all())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_search_results(self, request, queryset, search_term):
+        print("search")
+        return super().get_search_results(request, queryset, search_term)
+
 
 @admin.register(Following)
 class Following(admin.ModelAdmin):
     list_display = ["app_name", "created_at"]
-
-
-@admin.register(App)
-class App(admin.ModelAdmin):
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "app_id":
-            return AppChoiceField(queryset=App.objects.order_by("app_name").all())
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
+    list_select_related = ["app"]
 
 
 @admin.register(TrackingApps)
 class TrackingApps(admin.ModelAdmin):
-    list_display = ["app_name", "package_name", "market", "rank", "market", "deal_type", "rank_type", "created_at"]
+    list_display = ["app_name", "package_name", "market", "rank", "deal_type", "rank_type", "created_at"]
 
 
 @admin.register(OneStoreDL)
