@@ -12,6 +12,9 @@ class Timestamped(models.Model):
 
 
 class App(models.Model):
+    def __str__(self):
+        return self.app_name
+
     class Meta:
         verbose_name_plural = "애플리케이션"
         verbose_name = "애플리케이션"
@@ -61,6 +64,7 @@ class Following(Timestamped):
         verbose_name_plural = "순위 추적"
         verbose_name = "순위 추적"
 
+    app = models.ForeignKey(App, on_delete=models.CASCADE, verbose_name="애플리케이션")
     app_name = models.CharField(max_length=64, verbose_name="앱 이름")
 
 

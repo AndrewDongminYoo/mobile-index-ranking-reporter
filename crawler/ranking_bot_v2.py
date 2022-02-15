@@ -59,11 +59,11 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
 
                 item = Ranked(
                     app_id=app.id,
-                    app_name=i.get("app_name"),
-                    icon_url=i.get('icon_url'),
+                    app_name=app.app_name,
+                    icon_url=app.icon_url,
+                    package_name=app.package_name,
                     market_appid=i.get('market_appid'),
                     market=i.get("market_name"),  # "google", "apple", "one"
-                    package_name=i.get('package_name'),
                     date=timezone.now().strftime("%Y%m%d"),
                     deal_type=deal.removesuffix("_v2").replace("global", "market"),  # "realtime_rank", "market_rank"
                     app_type=game,  # "game", "app"

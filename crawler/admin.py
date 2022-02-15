@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from crawler.models import Following
+from crawler.forms import AppChoiceField
+from crawler.models import Following, App
 from crawler.models import OneStoreDL
 from crawler.models import Ranked
 from crawler.models import TrackingApps
@@ -17,6 +18,15 @@ class Ranked(admin.ModelAdmin):
 @admin.register(Following)
 class Following(admin.ModelAdmin):
     list_display = ["app_name", "created_at"]
+
+
+@admin.register(App)
+class App(admin.ModelAdmin):
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "app_id":
+            return AppChoiceField(queryset=App.objects.order_by("app_name").all())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 
 @admin.register(TrackingApps)
