@@ -13,8 +13,8 @@ from crawler.models import TrackingApps
 
 @admin.register(Ranked)
 class Ranked(admin.ModelAdmin):
-    list_display = ["app_name", "rank", "market", "deal_type", "rank_type", "created_at"]
-    actions = []
+    list_display = ["app_name", "package_name", "rank", "market", "deal_type", "rank_type", "created_at"]
+    search_fields = ["app_name", "market_appid", "package_name"]
 
     def get_action_choices(self, request, default_choices=models.BLANK_CHOICE_DASH):
         print(default_choices)
@@ -35,12 +35,29 @@ class Following(admin.ModelAdmin):
     list_display = ["app_name", "created_at"]
     list_select_related = ["app"]
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "app":
+            return AppChoiceField(queryset=App.objects.order_by("app_name").all())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 @admin.register(TrackingApps)
 class TrackingApps(admin.ModelAdmin):
     list_display = ["app_name", "package_name", "market", "rank", "deal_type", "rank_type", "created_at"]
+    search_fields = ["app_name", "package_name", ]
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "app":
+            return AppChoiceField(queryset=App.objects.order_by("app_name").all())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(OneStoreDL)
 class OneStoreDL(admin.ModelAdmin):
     list_display = ["app_name", "market_appid", "genre", "downloads", "volume", "released", "created_at"]
+    search_fields = ["app_name", "market_appid", ]
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "app":
+            return AppChoiceField(queryset=App.objects.order_by("app_name").all())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
