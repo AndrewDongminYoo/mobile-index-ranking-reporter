@@ -83,28 +83,34 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
 
 
 def tracking_rank_flushing():
-    following_applications = [f[0] for f in Following.objects.values_list("app__package_name")]
-    weekdays = timezone.now() - timedelta(days=7)
-    for item in Ranked.objects.filter(created_at__gte=weekdays):
-        package_name = item.package_name
-        if package_name in following_applications:
-            TrackingApps(
+    following_applications = [f[0] for f in Following.objects.values_list("app_name")]
+    yesterday = timezone.now() - timedelta(days=2)
+    for item in Ranked.objects.filter(created_at__gte=yesterday):
+        app_name = item.app_name
+        date_id = item.date_id
+        if TrackingApps.objects.filter(app_name=app_name,
+                                       date_id=date_id).exists():
+            pass
+        elif app_name in following_applications:
+            print(app_name)
+            tracking = TrackingApps(
                 app=item.app,
                 deal_type=item.deal_type,
                 market=item.market,
                 rank_type=item.rank_type,
-                app_name=item.app.app_name,
+                app_name=app_name,
                 icon_url=item.app.icon_url,
                 package_name=item.app.package_name,
                 rank=item.rank,
-                date_id=item.date.id,
+                date_id=date_id,
             )
+            tracking.save()
+    weekdays = timezone.now() - timedelta(days=7)
     for old in TrackingApps.objects.filter(created_at__lt=weekdays):
         old.delete()
 
 
 def hourly():
-    tracking_rank_flushing()
     for deal in ["realtime_rank_v2"]:
         for market in ["all"]:
             for price in ["gross", "paid", "free"]:
@@ -121,5 +127,6 @@ def daily():
 
 
 if __name__ == '__main__':
+    tracking_rank_flushing()
     # hourly()
-    daily()
+    # daily()
