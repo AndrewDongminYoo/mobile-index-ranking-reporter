@@ -2,6 +2,8 @@ import os
 
 from django.db import IntegrityError
 
+from ranker.utils.slack import post_to_slack
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 
@@ -121,7 +123,7 @@ def hourly():
 
 
 def daily():
-    # slack_notify("일간 크롤링 시작", "#crawler-alert", username="크롤링 알림봇")
+    post_to_slack("일간 크롤링 시작")
     tracking_rank_flushing()
     for deal in ["global_rank_v2"]:
         for market in ["all"]:
@@ -133,4 +135,3 @@ def daily():
 if __name__ == '__main__':
     hourly()
     daily()
-    # slack_notify("일간 크롤링 시작", "#crawler-alert", username="crawler")
