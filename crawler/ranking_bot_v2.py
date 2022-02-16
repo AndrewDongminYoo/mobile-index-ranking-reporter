@@ -115,6 +115,7 @@ def tracking_rank_flushing():
 
 
 def hourly():
+    post_to_slack("시간 크롤링 시작")
     for deal in ["realtime_rank_v2"]:
         for market in ["all"]:
             for price in ["gross", "paid", "free"]:
@@ -133,5 +134,5 @@ def daily():
 
 
 if __name__ == '__main__':
-    hourly()
     daily()
+    # hourly()

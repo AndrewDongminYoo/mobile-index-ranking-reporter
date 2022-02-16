@@ -9,7 +9,8 @@ def slack_notify(text=None, channel='#test', username='알림봇', attachments=N
 
 def post_to_slack(text=None):
     import requests
+    import json
     url = 'https://hooks.slack.com/services/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'
     headers = {'Content-type': 'application/json'}
-    body = f'{"text": "{text}"}'
+    body = json.dumps({"text": text})
     req = requests.post(url, headers=headers, data=body)
