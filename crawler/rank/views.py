@@ -15,7 +15,7 @@ def index(request: WSGIRequest):
 def statistic(request: WSGIRequest, market=None, deal=None, app=None):
     # 전체 차트 (등록 하지 않은 애플리케이션) 무료/유료/매출 순위
     market_app = Ranked.objects.filter(market=market, deal_type=deal, app_type=app).order_by("-created_at")
-    timestamps = min([ts.id for ts in TimeIndex.objects.filter(date=market_app.last().date)])
+    timestamps = min([ts.id for ts in TimeIndex.objects.filter(date=Ranked.objects.last().date)])
     apps = market_app.filter(date_id__gte=timestamps)
     return render(request, "statistic.html", {"apps": apps})
 
