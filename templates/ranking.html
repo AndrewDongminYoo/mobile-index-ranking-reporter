@@ -93,7 +93,7 @@
             .then(items=>{
                 let downs = _.map(items, "downloads")
                 let dates = _.map(items, "created_at")
-                $(".modal-body").html(`${moment(dates)} 다운로드 수: ${downs}`)
+                $(".modal-body").html(`${downs}`)
             })
         }
 

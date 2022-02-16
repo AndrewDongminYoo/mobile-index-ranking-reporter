@@ -1,5 +1,7 @@
 import os
 
+from django.db import IntegrityError
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 
@@ -45,66 +47,72 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
         date = TimeIndex()
         date.save()
         for i in obj["data"]:
-            # try:
-            app = App.objects.filter(package_name=i.get("package_name"))
-            if app.exists():
-                app = app.first()
-                app.app_name = i.get("app_name")
-                app.package_name = i.get('package_name')
-                app.icon_url = i.get('icon_url')
-            else:
-                app = App(
-                    app_name=i.get("app_name"),
-                    package_name=i.get('package_name') or "com.example.app",
-                    icon_url=i.get('icon_url'),
-                )
-                app.save()
+            try:
+                app = App.objects.filter(package_name=i.get("package_name"))
+                if app.exists():
+                    app = app.first()
+                    app.app_name = i.get("app_name")
+                    app.package_name = i.get('package_name')
+                    app.icon_url = i.get('icon_url')
+                else:
+                    app = App(
+                        app_name=i.get("app_name"),
+                        package_name=i.get('package_name') or "com.example.app",
+                        icon_url=i.get('icon_url'),
+                    )
+                    app.save()
 
-            item = Ranked(
-                app_id=app.id,
-                app_name=app.app_name,
-                icon_url=app.icon_url,
-                date_id=date.id,
-                package_name=app.package_name,
-                market_appid=i.get('market_appid'),
-                market=i.get("market_name"),  # "google", "apple", "one"
-                deal_type=deal.removesuffix("_v2").replace("global", "market"),  # "realtime_rank", "market_rank"
-                app_type=game,  # "game", "app"
-                rank=i.get('rank'),
-                rank_type=i.get('rank_type'),
-            )
-            item.save()
-            if i.get("market_name") == "one":
-                get_one_store_app_download_count(date, item.market_appid, app)
-            # except IntegrityError:
-            #     pass
-            # except AttributeError:
-            #     pass
+                item = Ranked(
+                    app_id=app.id,
+                    app_name=app.app_name,
+                    icon_url=app.icon_url,
+                    date_id=date.id,
+                    package_name=app.package_name,
+                    market_appid=i.get('market_appid'),
+                    market=i.get("market_name"),  # "google", "apple", "one"
+                    deal_type=deal.removesuffix("_v2").replace("global", "market"),  # "realtime_rank", "market_rank"
+                    app_type=game,  # "game", "app"
+                    rank=i.get('rank'),
+                    rank_type=i.get('rank_type'),
+                )
+                item.save()
+                if i.get("market_name") == "one":
+                    get_one_store_app_download_count(date, item.market_appid, app)
+            except IntegrityError:
+                pass
+            except AttributeError:
+                pass
 
 
 def tracking_rank_flushing():
-    following_applications = [f[0] for f in Following.objects.values_list("app__package_name")]
-    weekdays = timezone.now() - timedelta(days=7)
-    for item in Ranked.objects.filter(created_at__gte=weekdays):
-        package_name = item.package_name
-        if package_name in following_applications:
-            TrackingApps(
+    following_applications = [f[0] for f in Following.objects.values_list("app_name")]
+    yesterday = timezone.now() - timedelta(days=2)
+    for item in Ranked.objects.filter(created_at__gte=yesterday):
+        app_name = item.app_name
+        date_id = item.date_id
+        if TrackingApps.objects.filter(app_name=app_name,
+                                       date_id=date_id).exists():
+            pass
+        elif app_name in following_applications:
+            print(app_name)
+            tracking = TrackingApps(
                 app=item.app,
                 deal_type=item.deal_type,
                 market=item.market,
                 rank_type=item.rank_type,
-                app_name=item.app.app_name,
+                app_name=app_name,
                 icon_url=item.app.icon_url,
                 package_name=item.app.package_name,
                 rank=item.rank,
-                date_id=item.date.id,
+                date_id=date_id,
             )
+            tracking.save()
+    weekdays = timezone.now() - timedelta(days=7)
     for old in TrackingApps.objects.filter(created_at__lt=weekdays):
         old.delete()
 
 
 def hourly():
-    tracking_rank_flushing()
     for deal in ["realtime_rank_v2"]:
         for market in ["all"]:
             for price in ["gross", "paid", "free"]:
@@ -121,5 +129,6 @@ def daily():
 
 
 if __name__ == '__main__':
+    tracking_rank_flushing()
     # hourly()
-    daily()
+    # daily()
