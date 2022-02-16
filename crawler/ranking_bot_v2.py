@@ -7,7 +7,6 @@ if 'setup' in dir(django):
     django.setup()
 from django.utils import timezone
 from datetime import timedelta
-from django.db.utils import IntegrityError
 import requests
 from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex
 from crawler.ranking_bot import get_one_store_app_download_count
@@ -46,41 +45,41 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
         date = TimeIndex()
         date.save()
         for i in obj["data"]:
-            try:
-                app = App.objects.filter(package_name=i.get("package_name"))
-                if app.exists():
-                    app = app.first()
-                    app.app_name = i.get("app_name")
-                    app.package_name = i.get('package_name')
-                    app.icon_url = i.get('icon_url')
-                else:
-                    app = App(
-                        app_name=i.get("app_name"),
-                        package_name=i.get('package_name'),
-                        icon_url=i.get('icon_url'),
-                    )
-                    app.save()
-
-                item = Ranked(
-                    app_id=app.id,
-                    app_name=app.app_name,
-                    icon_url=app.icon_url,
-                    date_id=date.id,
-                    package_name=app.package_name,
-                    market_appid=i.get('market_appid'),
-                    market=i.get("market_name"),  # "google", "apple", "one"
-                    deal_type=deal.removesuffix("_v2").replace("global", "market"),  # "realtime_rank", "market_rank"
-                    app_type=game,  # "game", "app"
-                    rank=i.get('rank'),
-                    rank_type=i.get('rank_type'),
+            # try:
+            app = App.objects.filter(package_name=i.get("package_name"))
+            if app.exists():
+                app = app.first()
+                app.app_name = i.get("app_name")
+                app.package_name = i.get('package_name')
+                app.icon_url = i.get('icon_url')
+            else:
+                app = App(
+                    app_name=i.get("app_name"),
+                    package_name=i.get('package_name') or "com.example.app",
+                    icon_url=i.get('icon_url'),
                 )
-                item.save()
-                if i.get("market_name") == "one":
-                    get_one_store_app_download_count(date, item.market_appid)
-            except IntegrityError:
-                pass
-            except AttributeError:
-                pass
+                app.save()
+
+            item = Ranked(
+                app_id=app.id,
+                app_name=app.app_name,
+                icon_url=app.icon_url,
+                date_id=date.id,
+                package_name=app.package_name,
+                market_appid=i.get('market_appid'),
+                market=i.get("market_name"),  # "google", "apple", "one"
+                deal_type=deal.removesuffix("_v2").replace("global", "market"),  # "realtime_rank", "market_rank"
+                app_type=game,  # "game", "app"
+                rank=i.get('rank'),
+                rank_type=i.get('rank_type'),
+            )
+            item.save()
+            if i.get("market_name") == "one":
+                get_one_store_app_download_count(date, item.market_appid, app)
+            # except IntegrityError:
+            #     pass
+            # except AttributeError:
+            #     pass
 
 
 def tracking_rank_flushing():
@@ -122,5 +121,5 @@ def daily():
 
 
 if __name__ == '__main__':
-    hourly()
-    # daily()
+    # hourly()
+    daily()

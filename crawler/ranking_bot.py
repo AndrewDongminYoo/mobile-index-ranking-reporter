@@ -26,7 +26,7 @@ def get_soup(appid, back=True):
     return BeautifulSoup(response, "html.parser")
 
 
-def get_one_store_app_download_count(date: TimeIndex, appid: str):
+def get_one_store_app_download_count(date: TimeIndex, appid: str, app: App):
     soup = get_soup(appid, True)
     download = soup.select_one("li:-soup-contains('다운로드수') > span").text
     d_string = soup.select_one("li:-soup-contains('출시일') > span").text
@@ -43,8 +43,6 @@ def get_one_store_app_download_count(date: TimeIndex, appid: str):
     array = [i for i in map(int, d_string.split("."))]
     released = datetime.date(year=array[0], month=array[1], day=array[2])
     d_counts = int(download.replace(",", ""))
-
-    app = App.objects.filter(app_name=app_name).first()
 
     ones_app = OneStoreDL(
         date_id=date.id,
