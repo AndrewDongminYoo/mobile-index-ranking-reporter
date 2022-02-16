@@ -21,13 +21,19 @@ class App(models.Model):
 
     app_name = models.CharField(max_length=64, verbose_name="앱 이름")
     icon_url = models.URLField(max_length=200, verbose_name="아이콘 이미지")
-    package_name = models.CharField(max_length=64, default="com.example.app", verbose_name="앱 아이디", db_index=True)
+    package_name = models.CharField(max_length=64, default="", verbose_name="앱 아이디", db_index=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert, force_update, using, update_fields)
 
 
 class TimeIndex(models.Model):
+    class Meta:
+        verbose_name = "스크랩 시간"
+        verbose_name_plural = "스크랩한 시간"
+
+    def __str__(self):
+        return self.date
     date = models.CharField(max_length=16, verbose_name="날짜", db_index=True,
                             default=timezone.now().strftime("%Y%m%d%H%M"))
 
