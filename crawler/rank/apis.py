@@ -8,7 +8,7 @@ from ninja import NinjaAPI
 from ninja.orm import create_schema
 from ninja.pagination import paginate, LimitOffsetPagination
 
-from crawler.models import Ranked, Following, TrackingApps, OneStoreDL
+from crawler.models import Ranked, Following, TrackingApps, OneStoreDL, TimeIndex
 
 api = NinjaAPI(title="Ninja")
 
@@ -70,10 +70,8 @@ def get_ranked_list(request: WSGIRequest,
         .filter(market__startswith=store) \
         .filter(deal_type__startswith=deal) \
         .filter(app_type=game)
-    if deal.startswith("market"):
-        query_set = query_set.filter(created_at__gte=timezone.now() - timedelta(days=1))
-    if deal.startswith("realtime"):
-        query_set = query_set.filter(created_at__gte=timezone.now() - timedelta(hours=1))
+    timestamps = min([ts.id for ts in TimeIndex.objects.filter(date=query_set.last().date)])
+    query_set = query_set.filter(date_id__gte=timestamps)
     if reverse:
         return query_set.order_by(sort).reverse().all()
     return query_set.order_by(sort).all()

@@ -60,16 +60,27 @@
         </table>
     </main>
     <script>
+        let market = "google";
+        let deal = "market_rank";
+        let game = "app";
+
+        function onLoad () {
+            let arr = window.location.pathname.split("/")
+            game = arr.pop()
+            deal = arr.pop()
+            market = arr.pop()
+        }
+
         function getData(market, ranking) {
-            return axios.get(`/api/ranking?store=${market}&rtype=${ranking}&deal=market&game=app&sort=created_at&reverse=true`)
+            return axios.get(`/api/ranking?store=${market}&rtype=${ranking}&deal=${deal}&game=${game}&sort=created_at&reverse=true`)
                 .then((res) => res.data)
                 .then((data) => data.items)
         }
 
         const getResults = async () => {
-            let free = await getData("google", "free")
-            let paid = await getData("google", "paid")
-            let gross = await getData("google", "gross")
+            let free = await getData(market, "free")
+            let paid = await getData(market, "paid")
+            let gross = await getData(market, "gross")
             const item_array = _.groupBy([...free, ...paid, ...gross], 'rank')
             _.forEach(item_array, (items, rank) => {
                 let template = `<tr><td class="center">${rank}</td>`
@@ -84,6 +95,7 @@
             })
         }
 
+        onLoad()
         getResults()
     </script>
 {% endblock %}

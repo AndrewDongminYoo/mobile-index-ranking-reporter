@@ -121,6 +121,8 @@ def hourly():
 
 
 def daily():
+    # slack_notify("일간 크롤링 시작", "#crawler-alert", username="크롤링 알림봇")
+    tracking_rank_flushing()
     for deal in ["global_rank_v2"]:
         for market in ["all"]:
             for price in ["gross", "paid", "free"]:
@@ -129,6 +131,6 @@ def daily():
 
 
 if __name__ == '__main__':
-    tracking_rank_flushing()
-    # hourly()
-    # daily()
+    hourly()
+    daily()
+    # slack_notify("일간 크롤링 시작", "#crawler-alert", username="crawler")
