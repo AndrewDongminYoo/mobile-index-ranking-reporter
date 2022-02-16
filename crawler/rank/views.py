@@ -5,7 +5,7 @@ from django.db.models import Min
 from django.shortcuts import render
 from django.utils import timezone
 
-from crawler.models import TrackingApps, Ranked, OneStoreDL
+from crawler.models import TrackingApps, Ranked, OneStoreDL, TimeIndex
 
 
 def index(request: WSGIRequest):
@@ -15,10 +15,8 @@ def index(request: WSGIRequest):
 def statistic(request: WSGIRequest, market=None, deal=None, app=None):
     # 전체 차트 (등록 하지 않은 애플리케이션) 무료/유료/매출 순위
     market_app = Ranked.objects.filter(market=market, deal_type=deal, app_type=app).order_by("created_at")
-    if deal == "market_rank":
-        apps = market_app.filter(created_at__gte=timezone.now() - timedelta(days=1))
-    elif deal == "realtime_rank":
-        apps = market_app.filter(created_at__gte=timezone.now() - timedelta(hours=1))
+    timestamps = min([ts.id for ts in TimeIndex.objects.filter(date=market_app.last().date)])
+    apps = market_app.filter(date_id__gte=timestamps)
     return render(request, "statistic.html", {"apps": apps})
 
 
