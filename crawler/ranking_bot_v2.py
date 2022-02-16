@@ -1,4 +1,5 @@
 import os
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 
@@ -8,7 +9,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db.utils import IntegrityError
 import requests
-from crawler.models import Ranked, Following, TrackingApps, App
+from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex
 from crawler.ranking_bot import get_one_store_app_download_count
 
 user_agent = " ".join(
@@ -42,10 +43,12 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
     obj = req.json()
     if obj["status"]:
         print(obj.items())
+        date = TimeIndex()
         for i in obj["data"]:
             try:
-                app = App.objects.filter(app_name=i.get("app_name"))
+                app = App.objects.filter(package_name=i.get("package_name"))
                 if app.exists():
+                    app = app.first()
                     app.app_name = i.get("app_name")
                     app.package_name = i.get('package_name')
                     app.icon_url = i.get('icon_url')
@@ -55,16 +58,16 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
                         package_name=i.get('package_name'),
                         icon_url=i.get('icon_url'),
                     )
-                app.save()
+                    app.save()
 
                 item = Ranked(
                     app_id=app.id,
                     app_name=app.app_name,
                     icon_url=app.icon_url,
+                    date_id=date.id,
                     package_name=app.package_name,
                     market_appid=i.get('market_appid'),
                     market=i.get("market_name"),  # "google", "apple", "one"
-                    date=timezone.now().strftime("%Y%m%d"),
                     deal_type=deal.removesuffix("_v2").replace("global", "market"),  # "realtime_rank", "market_rank"
                     app_type=game,  # "game", "app"
                     rank=i.get('rank'),
@@ -80,12 +83,22 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
 
 
 def tracking_rank_flushing():
-    following_applications = [f[0] for f in Following.objects.values_list("app_name")]
-    weekdays = timezone.now()-timedelta(days=7)
+    following_applications = [f[0] for f in Following.objects.values_list("app__package_name")]
+    weekdays = timezone.now() - timedelta(days=7)
     for item in Ranked.objects.filter(created_at__gte=weekdays):
-        app_name = item.app_name
-        if app_name in following_applications:
-            TrackingApps().from_rank(item)
+        package_name = item.package_name
+        if package_name in following_applications:
+            TrackingApps(
+                app=item.app,
+                deal_type=item.deal_type,
+                market=item.market,
+                rank_type=item.rank_type,
+                app_name=item.app.app_name,
+                icon_url=item.app.icon_url,
+                package_name=item.app.package_name,
+                rank=item.rank,
+                date_id=item.date.id,
+            )
     for old in TrackingApps.objects.filter(created_at__lt=weekdays):
         old.delete()
 
