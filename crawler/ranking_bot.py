@@ -7,7 +7,7 @@ if 'setup' in dir(django):
     django.setup()
 from django.utils import timezone
 from django.db.utils import IntegrityError
-from crawler.models import Ranked, Following, TrackingApps, OneStoreDL, App
+from crawler.models import Ranked, Following, TrackingApps, OneStoreDL, App, TimeIndex
 import requests
 
 user_agent = " ".join(
@@ -26,7 +26,7 @@ def get_soup(appid, back=True):
     return BeautifulSoup(response, "html.parser")
 
 
-def get_one_store_app_download_count(appid: str):
+def get_one_store_app_download_count(date: TimeIndex, appid: str):
     soup = get_soup(appid, True)
     download = soup.select_one("li:-soup-contains('다운로드수') > span").text
     d_string = soup.select_one("li:-soup-contains('출시일') > span").text
@@ -47,6 +47,7 @@ def get_one_store_app_download_count(appid: str):
     app = App.objects.filter(app_name=app_name).first()
 
     ones_app = OneStoreDL(
+        date_id=date.id,
         app_id=app.id,
         market_appid=appid,
         downloads=d_counts,

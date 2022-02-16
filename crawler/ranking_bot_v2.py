@@ -76,7 +76,7 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
                 )
                 item.save()
                 if i.get("market_name") == "one":
-                    get_one_store_app_download_count(item.market_appid)
+                    get_one_store_app_download_count(date, item.market_appid)
             except IntegrityError:
                 pass
             except AttributeError:
@@ -123,4 +123,4 @@ def daily():
 
 if __name__ == '__main__':
     hourly()
-    daily()
+    # daily()

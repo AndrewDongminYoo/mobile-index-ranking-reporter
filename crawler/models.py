@@ -29,7 +29,7 @@ class App(models.Model):
 
 class TimeIndex(models.Model):
     date = models.CharField(max_length=16, verbose_name="날짜", db_index=True,
-                            default=timezone.now().strftime("%Y%m%d%H"))
+                            default=timezone.now().strftime("%Y%m%d%H%M"))
 
 
 class Ranked(Timestamped):
