@@ -44,6 +44,7 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
     if obj["status"]:
         print(obj.items())
         date = TimeIndex()
+        date.save()
         for i in obj["data"]:
             try:
                 app = App.objects.filter(package_name=i.get("package_name"))
