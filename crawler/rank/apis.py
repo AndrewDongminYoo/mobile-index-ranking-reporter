@@ -85,7 +85,18 @@ def add_following_app_and_search(request: WSGIRequest,
     print(request.POST)
     ranked_app = Ranked.objects.filter(app_name=app_name).order_by("-created_at").first()
     try:
-        TrackingApps().from_rank(ranked_app)
+        tracking = TrackingApps(
+            app=ranked_app.app,
+            deal_type=ranked_app.deal_type,
+            market=ranked_app.market,
+            rank_type=ranked_app.rank_type,
+            app_name=app_name,
+            icon_url=ranked_app.app.icon_url,
+            package_name=ranked_app.app.package_name,
+            rank=ranked_app.rank,
+            date_id=ranked_app.date_id,
+        )
+        tracking.save()
     except AttributeError:
         pass
     exists_app = Following.objects.filter(app_name=app_name)
@@ -183,7 +194,7 @@ def get_download_counts_from_one_app(request: WSGIRequest,
     return query_set.all()
 
 
-# follow "POST"
+# crawler "POST"
 @api.post("/crawl", tags=["crawling"])
 def forced_crawling(request: WSGIRequest):
     daily()
