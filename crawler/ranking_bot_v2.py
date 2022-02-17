@@ -50,12 +50,9 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
         date.save()
         for i in obj["data"]:
             try:
-                app = App.objects.filter(app_name__icontains=i.get("app_name"))
-                if app.exists():
-                    app = app.first()
-                    app.app_name = i.get("app_name")
-                    app.package_name = i.get('package_name')
-                    app.icon_url = i.get('icon_url')
+                query = App.objects.filter(app_name__icontains=i.get("app_name"))
+                if query.exists():
+                    app = query.first()
                 else:
                     app = App(
                         app_name=i.get("app_name"),
