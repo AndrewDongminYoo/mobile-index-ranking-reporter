@@ -48,16 +48,20 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
         print(obj.items())
         date = TimeIndex()
         date.save()
-        for i in obj["data"]:
+        for app_data in obj["data"]:
             try:
-                query = App.objects.filter(app_name__icontains=i.get("app_name"))
+                query = App.objects.filter(app_name__icontains=app_data.get("app_name"))
+                package_name = app_data.get("package_name")
                 if query.exists():
                     app = query.first()
+                    if package_name:
+                        app.package_name = package_name
+                        app.save()
                 else:
                     app = App(
-                        app_name=i.get("app_name"),
-                        package_name=i.get('package_name') or "com.example.app",
-                        icon_url=i.get('icon_url'),
+                        app_name=app_data.get("app_name"),
+                        package_name=package_name or "com.example.app",
+                        icon_url=app_data.get('icon_url'),
                     )
                     app.save()
 
@@ -67,15 +71,15 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
                     icon_url=app.icon_url,
                     date_id=date.id,
                     package_name=app.package_name,
-                    market_appid=i.get('market_appid'),
-                    market=i.get("market_name"),  # "google", "apple", "one"
+                    market_appid=app_data.get('market_appid'),
+                    market=app_data.get("market_name"),  # "google", "apple", "one"
                     deal_type=deal.removesuffix("_v2").replace("global", "market"),  # "realtime_rank", "market_rank"
                     app_type=game,  # "game", "app"
-                    rank=i.get('rank'),
-                    rank_type=i.get('rank_type'),
+                    rank=app_data.get('rank'),
+                    rank_type=app_data.get('rank_type'),
                 )
                 item.save()
-                if i.get("market_name") == "one":
+                if app_data.get("market_name") == "one":
                     get_one_store_app_download_count(date, item.market_appid, app)
             except IntegrityError:
                 pass
