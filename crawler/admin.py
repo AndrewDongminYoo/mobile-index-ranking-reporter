@@ -31,7 +31,6 @@ def follow_application(self, request: WSGIRequest, queryset: QuerySet):
                 app=app,
             )
             following.save()
-    return
 
 
 @admin.action(description="선택된 앱 을/를 중복 정리합니다!")
@@ -41,12 +40,11 @@ def dedupe_application(self, request: WSGIRequest, queryset: QuerySet):
     for obj in queryset:
         app_name = obj.app_name
         app_id = obj.package_name
-        if (app_name, app_id) in app_list or app_name in app_names:
+        if (app_name, app_id,) in app_list or app_name in app_names:
             obj.delete()
         else:
             app_names.append(app_name)
             app_list.append((app_name, app_id,))
-    return
 
 
 class AppAdmin(admin.ModelAdmin):
@@ -67,7 +65,7 @@ class RankedAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class FollowingAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["app_name", "created_at"]
+    list_display = ["app", "created_at"]
     list_select_related = ["app"]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -77,7 +75,7 @@ class FollowingAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class TrackingAppsAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["app_name", "package_name", "market", "rank", "deal_type", "rank_type", "created_at"]
+    list_display = ["app", "package_name", "market", "rank", "deal_type", "rank_type", "created_at"]
     search_fields = ["app_name", "package_name", ]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -87,7 +85,7 @@ class TrackingAppsAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class OneStoreDLAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["app_name", "market_appid", "genre", "downloads", "volume", "released", "created_at"]
+    list_display = ["app", "market_appid", "genre", "downloads", "volume", "released", "created_at"]
     search_fields = ["app_name", "market_appid", ]
     actions = [follow_application, ]
 

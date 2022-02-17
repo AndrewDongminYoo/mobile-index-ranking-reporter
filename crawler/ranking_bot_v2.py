@@ -1,4 +1,5 @@
 import os
+
 from django.db import IntegrityError
 
 from ranker.utils.slack import post_to_slack
@@ -45,12 +46,19 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
     obj = req.json()
     if obj["status"]:
         print(obj.items())
-        date = TimeIndex()
-        date.save()
+
+        exist = timezone.now().strftime("%Y%m%d%H%M")
+        d_day = TimeIndex.objects.filter(date=exist)
+        if d_day.exists():
+            date = d_day.first()
+        else:
+            date = TimeIndex(date=exist)
+            date.save()
+
         for app_data in obj["data"]:
             try:
                 query = App.objects.filter(app_name__icontains=app_data.get("app_name"))
-                package_name = app_data.get("package_name")
+                package_name = app_data.get("market_appid")
                 if query.exists():
                     app = query.first()
                     if package_name:
@@ -78,8 +86,7 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
                     rank_type=app_data.get('rank_type'),
                 )
                 item.save()
-                if app_data.get("market_name") == "one":
-                    get_one_store_app_download_count(date, item.market_appid, app)
+
             except IntegrityError:
                 pass
             except AttributeError:
@@ -92,8 +99,7 @@ def tracking_rank_flushing():
     for item in Ranked.objects.filter(created_at__gte=yesterday):
         app_name = item.app_name
         date_id = item.date_id
-        if TrackingApps.objects.filter(app_name=app_name,
-                                       date_id=date_id).exists():
+        if TrackingApps.objects.filter(app_name=app_name, date_id=date_id).exists():
             pass
         elif app_name in following_applications:
             print(app_name)
@@ -114,8 +120,17 @@ def tracking_rank_flushing():
         old.delete()
 
 
+def following_crawl():
+    date = TimeIndex.objects.filter(date=timezone.now().strftime("%Y%m%d%H%M")).last()
+    for obj in Following.objects.all():
+        appid = obj.app_id
+        app = App.objects.filter(pk=appid).first()
+        get_one_store_app_download_count(date, app.package_name, app)
+
+
 def hourly():
     post_to_slack("시간 크롤링 시작")
+    following_crawl()
     for deal in ["realtime_rank_v2"]:
         for market in ["all"]:
             for price in ["gross", "paid", "free"]:
@@ -136,3 +151,4 @@ def daily():
 if __name__ == '__main__':
     # daily()
     hourly()
+

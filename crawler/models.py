@@ -1,6 +1,5 @@
 from django.db import models
 # Create your models here.
-from django.utils import timezone
 
 
 class Timestamped(models.Model):
@@ -34,8 +33,7 @@ class TimeIndex(models.Model):
 
     def __str__(self):
         return self.date
-    date = models.CharField(max_length=16, verbose_name="날짜", db_index=True,
-                            default=timezone.now().strftime("%Y%m%d%H%M"))
+    date = models.CharField(max_length=16, verbose_name="날짜", db_index=True, default="")
 
 
 class Ranked(Timestamped):
@@ -43,26 +41,17 @@ class Ranked(Timestamped):
         verbose_name_plural = "랭킹"
         verbose_name = "랭킹"
 
-    DEAL_TYPE = (
-        ("realtime_rank", "실시간"),
-        ("market_rank", "일간")
-    )
-    MARKET = (
-        ("google", "구글 플레이"),
-        ("apple", "앱 스토어"),
-        ("one", "원 스토어")
-    )
-    RANK_TYPE = (
-        ("free", "무료 순위"),
-        ("paid", "유료 순위"),
-        ("gross", "매출 순위")
-    )
+    DEAL_TYPE = (("realtime_rank", "실시간"), ("market_rank", "일간"))
+    MARKET = (("google", "구글 플레이"), ("apple", "앱 스토어"), ("one", "원 스토어"))
+    RANK_TYPE = (("free", "무료 순위"), ("paid", "유료 순위"), ("gross", "매출 순위"))
+    APP_TYPE = (("game", "게임"), ("app", "애플리케이션"))
+
+    deal_type = models.CharField(max_length=16, choices=DEAL_TYPE, verbose_name="기간")
+    rank_type = models.CharField(max_length=16, choices=RANK_TYPE, verbose_name="순위 타입")
+    app_type = models.CharField(max_length=16, choices=APP_TYPE, verbose_name="앱 타입")
     date = models.ForeignKey(TimeIndex, on_delete=models.DO_NOTHING)
     app = models.ForeignKey(App, on_delete=models.CASCADE, verbose_name="애플리케이션")
-    deal_type = models.CharField(max_length=16, choices=DEAL_TYPE, verbose_name="기간")
     market = models.CharField(max_length=16, choices=MARKET, verbose_name="마켓명")
-    rank_type = models.CharField(max_length=16, choices=RANK_TYPE, verbose_name="순위 타입")
-    app_type = models.CharField(max_length=16, choices=[("game", "게임"), ("app", "애플리케이션")], verbose_name="앱 타입")
     market_appid = models.CharField(max_length=64, verbose_name="스토어 아이디")
     rank = models.IntegerField(verbose_name="순위")
     app_name = models.CharField(max_length=64, verbose_name="앱 이름")
@@ -77,6 +66,7 @@ class Following(Timestamped):
 
     app = models.ForeignKey(App, on_delete=models.CASCADE, verbose_name="애플리케이션")
     app_name = models.CharField(max_length=64, verbose_name="앱 이름")
+    is_active = models.BinaryField(default=True, verbose_name="추적 중 여부")
 
 
 class TrackingApps(Timestamped):
