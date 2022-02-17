@@ -122,7 +122,7 @@ def tracking_rank_flushing():
 
 def following_crawl():
     date = TimeIndex.objects.filter(date=timezone.now().strftime("%Y%m%d%H%M")).last()
-    for obj in Following.objects.all():
+    for obj in Following.objects.filter(is_active=True).all():
         appid = obj.app_id
         app = App.objects.filter(pk=appid).first()
         get_one_store_app_download_count(date, app.package_name, app)

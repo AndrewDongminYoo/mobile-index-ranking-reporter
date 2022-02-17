@@ -72,7 +72,9 @@
             const ranks = _.sortedUniqBy(response.data.items, ({market_appid}) => market_appid)
             _.forEach(ranks, ranking => {
                 const {market_appid, icon_url, app_name, downloads, volume, genre, released} = ranking
-                const template = `<tr data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="showHistory('${market_appid}')">
+                const template = `<tr data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop"
+                onclick="showHistory('${market_appid}')">
                 <td class="center one-${market_appid}">
                 ${market_appid}</td>
                 <td class="left"><span class="app-name">

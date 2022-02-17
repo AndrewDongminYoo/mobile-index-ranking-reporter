@@ -66,7 +66,7 @@ class Following(Timestamped):
 
     app = models.ForeignKey(App, on_delete=models.CASCADE, verbose_name="애플리케이션")
     app_name = models.CharField(max_length=64, verbose_name="앱 이름")
-    is_active = models.BinaryField(default=True, verbose_name="추적 중 여부")
+    is_active = models.BooleanField(default=True, verbose_name="추적 중 여부")
 
 
 class TrackingApps(Timestamped):
