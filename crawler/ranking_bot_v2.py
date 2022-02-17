@@ -1,5 +1,4 @@
 import os
-
 from django.db import IntegrityError
 
 from ranker.utils.slack import post_to_slack
@@ -135,5 +134,5 @@ def daily():
 
 
 if __name__ == '__main__':
-    daily()
-    # hourly()
+    # daily()
+    hourly()
