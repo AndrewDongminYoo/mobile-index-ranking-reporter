@@ -90,7 +90,7 @@ def find_app_with_query(request: WSGIRequest, query):
 
 
 # follow "POST"
-@api.post("/follow", response=FollowingSchema, tags=["ranking"])
+@api.post("/follow", response=FollowingSchema, tags=["follow"])
 def add_following_app_and_search(request: WSGIRequest,
                                  app_name):
     print(request.POST)
@@ -123,7 +123,7 @@ def add_following_app_and_search(request: WSGIRequest,
 
 
 # follow "GET"
-@api.get("/follow", response=List[FollowingSchema], tags=["ranking"])
+@api.get("/follow", response=List[FollowingSchema], tags=["follow"])
 @paginate(LimitOffsetPagination)
 def view_following(request: WSGIRequest,
                    sort="created_at",
@@ -141,7 +141,7 @@ def view_following(request: WSGIRequest,
 
 
 # follow "DELETE"
-@api.delete("/follow/{following_id}", tags=["ranking"])
+@api.delete("/follow/{following_id}", tags=["follow"])
 def delete_following(request: WSGIRequest,
                      following_id: int):
     print(request.META)
