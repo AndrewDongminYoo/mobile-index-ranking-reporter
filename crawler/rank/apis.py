@@ -113,8 +113,13 @@ def add_following_app_and_search(request: WSGIRequest,
     exists_app = Following.objects.filter(app_name=app_name)
     if exists_app.exists():
         return exists_app.first()
-    instance = Following(app_name=app_name)
-    return instance.save()
+    app = App.objects.filter(app_name=app_name).first()
+    instance = Following(
+        app_name=app_name,
+        app_id=app.id,
+    )
+    instance.save()
+    return instance
 
 
 # follow "GET"
