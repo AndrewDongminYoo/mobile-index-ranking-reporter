@@ -33,3 +33,7 @@ def ranking(request: WSGIRequest):
     # 원 스토어 랭킹 변동 테이블 (및 분류)
     apps = OneStoreDL.objects.filter(created_at__gte=timezone.now() - timedelta(days=1))
     return render(request, "ranking.html", {"apps": apps})
+
+
+def app_register(request: WSGIRequest):
+    return render(request, "register.html")

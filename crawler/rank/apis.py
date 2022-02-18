@@ -2,21 +2,23 @@ from datetime import timedelta
 from typing import List
 
 from django.core.handlers.wsgi import WSGIRequest
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from ninja import NinjaAPI
 from ninja.orm import create_schema
 from ninja.pagination import paginate, LimitOffsetPagination
 
-from crawler.models import Ranked, Following, TrackingApps, OneStoreDL, TimeIndex
+from crawler.models import Ranked, Following, TrackingApps, OneStoreDL, TimeIndex, App
 from crawler.ranking_bot_v2 import daily
 
 api = NinjaAPI(title="Ninja")
 
 RankedSchema = create_schema(Ranked)
+ApplicationSchema = create_schema(App)
 FollowingSchema = create_schema(Following)
-TrackingSchema = create_schema(TrackingApps)
 OneStoreSchema = create_schema(OneStoreDL)
+TrackingSchema = create_schema(TrackingApps)
 
 
 # following "GET"
@@ -76,6 +78,15 @@ def get_ranked_list(request: WSGIRequest,
     if reverse:
         return query_set.order_by(sort).reverse().all()
     return query_set.order_by(sort).all()
+
+
+# one "POST"
+@api.post("/ranking", response=List[ApplicationSchema], tags=["ranking"])
+@paginate(LimitOffsetPagination)
+def find_app_with_query(request: WSGIRequest, query):
+    print(request.POST)
+    query_set = App.objects.filter(Q(app_name__icontains=query) | Q(package_name__icontains=query))
+    return query_set.order_by("app_name").all()
 
 
 # follow "POST"
@@ -147,7 +158,7 @@ def get_download_counts_from_apps(request: WSGIRequest,
     - reverse: reversed or not
     """
     print(request.GET)
-    query_set = OneStoreDL.objects.filter(created_at__gte=timezone.now() - timedelta(days=1)).order_by(sort)
+    query_set = OneStoreDL.objects.filter(created_at__gte=timezone.now() - timedelta(days=2)).order_by(sort)
     if reverse:
         return query_set.reverse()
     return query_set.all()

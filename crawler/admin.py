@@ -65,7 +65,7 @@ class RankedAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class FollowingAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["app", "created_at"]
+    list_display = ["app", "created_at", "is_active"]
     list_select_related = ["app"]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

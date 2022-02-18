@@ -13,17 +13,20 @@ Including another URLconf
     1. Import include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
 from crawler.rank.apis import api
-from crawler.rank.views import statistic, my_rank, ranking, index
+from crawler.rank.views import statistic, my_rank, ranking, index, app_register
+from ranker import settings
 
 urlpatterns = [
     path("", index),
     path("ranking", ranking),
+    path("register", app_register),
     path("statistic/<str:market>/<str:deal>/<str:app>", statistic),
-    path("my_rank", my_rank),
+    path("my_rank", my_rank, name="my_rank"),
     path('admin/', admin.site.urls),
     path("api/", api.urls),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

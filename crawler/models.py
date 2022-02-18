@@ -66,6 +66,8 @@ class Following(Timestamped):
 
     app = models.ForeignKey(App, on_delete=models.CASCADE, verbose_name="애플리케이션")
     app_name = models.CharField(max_length=64, verbose_name="앱 이름")
+    package_name = models.CharField(max_length=64, verbose_name="앱 아이디")
+    market_appid = models.CharField(max_length=64, verbose_name="스토어 아이디")
     is_active = models.BooleanField(default=True, verbose_name="추적 중 여부")
 
 
