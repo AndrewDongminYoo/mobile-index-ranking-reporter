@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}SEARCH{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body bg-secondary">
+                    <form method="post" onsubmit="search()">
+                        {% csrf_token %}
+                        <div class="input-group mh-3 mv-3 bg-dark text-white search">
+                            <input
+                                    id="search-input"
+                                    placeholder="앱 이름 or 패키지 명"
+                                    type="text"
+                                    class="form-control bg-dark text-white"
+                                    aria-label="Text input with dropdown button">
+                            <button class="btn btn-outline-secondary" type="button" id="button-addon2"
+                                    onclick="search()">Search
+                            </button>
+                        </div>
+                        <p class="description">검색하실 앱 또는 퍼블리셔 명을 2글자 이상 입력하시고 <b>검색</b>버튼을 눌러주세요.</p>
+                    </form>
+                </div>
+                <table class="flake-ui table second small rect bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="center">#</th>
+                        <th scope="col" class="center">아이콘</th>
+                        <th scope="col" class="center">앱이름</th>
+                        <th scope="col" class="center">패키지</th>
+                        <th scope="col" class="center">추적</th>
+                    </tr>
+                    </thead>
+                    <tbody id="search-table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        function search() {
+            let query = $("#search-input").val()
+            let tableBody = $("#search-table-body")
+            tableBody.empty()
+            axios.post(`/api/ranking?query=${query}`)
+                .then((res) => res.data)
+                .then((data) => data.items.forEach((item) => {
+                    let {id, app_name, icon_url, package_name} = item
+                    let one = parseInt(package_name)
+                        ? `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${package_name}`
+                        : `https://play.google.com/store/apps/details?id=${package_name}`
+                    let template = `<tr>
+                        <td class="center">${id}</td>
+                        <td class="center"><img src="${icon_url}" width="36" height="36" alt="${app_name}"></td>
+                        <td class="left"><a href="${one}">${app_name}</a></td>
+                        <td class="left">${package_name}</td>
+                        <td class="left">
+                            <button onclick="track('${app_name}')"
+                            >추적</button>
+                        </td>
+                    </tr>`
+                    tableBody.append(template)
+                }))
+        }
+
+        function track(appName) {
+            axios.post(`http://127.0.0.1:8000/api/follow?app_name=${appName}`)
+                .then((res) => res.data)
+                .then((data) => {
+                    console.log(data)
+                })
+        }
+    </script>
+{% endblock %}
