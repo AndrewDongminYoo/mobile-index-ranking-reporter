@@ -63,7 +63,7 @@
         let deal = "market_rank";
         let game = "app";
 
-        function onLoad () {
+        function onLoad() {
             let arr = window.location.pathname.split("/")
             game = arr.pop()
             deal = arr.pop()
@@ -84,10 +84,13 @@
             _.forEach(item_array, (items, rank) => {
                 let template = `<tr><td class="center">${rank}</td>`
                 _.forEach(items, (item) => {
-                    let {app_name, icon_url} = item
-                    template += `<td class="left"><span class="app">
+                    let {app_name, icon_url, package_name, market} = item
+                    let one = "#"
+                    if (market === "one") one = `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${package_name}`
+                    if (market === "google") one = `https://play.google.com/store/apps/details?id=${package_name}`
+                    template += `<td class="left"><a class="app" target="_blank" href="${one}">
             <img alt="app-icon" height="38" width="38" class="app-icon false" src="${icon_url}">
-            <span class="text"><span>${app_name}</span></span></span></td>`
+            <span class="text"><span>${app_name}</span></span></a></td>`
                 })
                 template += `</tr>`
                 $("tbody#statistic-table-body").append(template)
