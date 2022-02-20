@@ -59,9 +59,9 @@
         </table>
     </main>
     <script>
-        let market = "google";
-        let deal = "market_rank";
         let game = "app";
+        let deal = "market_rank";
+        let market = "google";
 
         function onLoad() {
             let arr = window.location.pathname.split("/")
@@ -80,17 +80,20 @@
             let free = await getData(market, "free")
             let paid = await getData(market, "paid")
             let gross = await getData(market, "gross")
+            free = _.uniqBy(free, (app)=>app["rank"])
+            paid = _.uniqBy(paid, (app)=>app["rank"])
+            gross = _.uniqBy(gross, (app)=>app["rank"])
             const item_array = _.groupBy([...free, ...paid, ...gross], 'rank')
             _.forEach(item_array, (items, rank) => {
                 let template = `<tr><td class="center">${rank}</td>`
                 _.forEach(items, (item) => {
-                    let {app_name, icon_url, package_name, market} = item
+                    let {id, app_name, icon_url, package_name, market} = item
                     let one = "#"
                     if (market === "one") one = `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${package_name}`
                     if (market === "google") one = `https://play.google.com/store/apps/details?id=${package_name}`
                     template += `<td class="left"><a class="app" target="_blank" href="${one}">
-            <img alt="app-icon" height="38" width="38" class="app-icon false" src="${icon_url}">
-            <span class="text"><span>${app_name}</span></span></a></td>`
+            <img alt="${app_name}" height="38" width="38" class="app-icon false" src="${icon_url}">
+            <span class="text"><span title="${id} | ${app_name} | ${package_name} | ${rank}">${app_name}</span></span></a></td>`
                 })
                 template += `</tr>`
                 $("tbody#statistic-table-body").append(template)
