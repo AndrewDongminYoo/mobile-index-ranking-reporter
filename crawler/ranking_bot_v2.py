@@ -95,13 +95,13 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
 
 def tracking_rank_flushing():
     following_applications = [f[0] for f in Following.objects.values_list("app_name")]
-    yesterday = timezone.now() - timedelta(days=2)
-    for item in Ranked.objects.filter(created_at__gte=yesterday):
+    yesterday = timezone.now() - timedelta(days=4)
+    for item in Ranked.objects.filter(created_at__gte=yesterday, app_name__in=following_applications):
         app_name = item.app_name
         date_id = item.date_id
         if TrackingApps.objects.filter(app_name=app_name, date_id=date_id).exists():
             pass
-        elif app_name in following_applications:
+        else:
             print(app_name)
             tracking = TrackingApps(
                 app=item.app,
@@ -149,6 +149,6 @@ def daily():
 
 
 if __name__ == '__main__':
+    tracking_rank_flushing()
     # daily()
-    hourly()
-
+    # hourly()
