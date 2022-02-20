@@ -7,7 +7,7 @@
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-body bg-secondary">
-                    <form method="post" onsubmit="search()">
+                    <form method="post">
                         {% csrf_token %}
                         <div class="input-group mh-3 mv-3 bg-dark text-white search">
                             <input
@@ -40,6 +40,15 @@
         </div>
     </div>
     <script>
+        $(document).ready(function () {
+            $(window).keydown(function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    search()
+                }
+            });
+        });
+
         function search() {
             let query = $("#search-input").val()
             let tableBody = $("#search-table-body")

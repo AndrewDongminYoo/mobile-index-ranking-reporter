@@ -46,15 +46,7 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
     obj = req.json()
     if obj["status"]:
         print(obj.items())
-
-        exist = timezone.now().strftime("%Y%m%d%H%M")
-        d_day = TimeIndex.objects.filter(date=exist)
-        if d_day.exists():
-            date = d_day.first()
-        else:
-            date = TimeIndex(date=exist)
-            date.save()
-
+        date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
         for app_data in obj["data"]:
             try:
                 query = App.objects.filter(app_name__icontains=app_data.get("app_name"))
@@ -95,7 +87,7 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
 
 def tracking_rank_flushing():
     following_applications = [f[0] for f in Following.objects.values_list("app_name")]
-    yesterday = timezone.now() - timedelta(days=4)
+    yesterday = timezone.now() - timedelta(days=3)
     for item in Ranked.objects.filter(created_at__gte=yesterday, app_name__in=following_applications):
         app_name = item.app_name
         date_id = item.date_id
@@ -121,7 +113,8 @@ def tracking_rank_flushing():
 
 
 def following_crawl():
-    date = TimeIndex.objects.filter(date=timezone.now().strftime("%Y%m%d%H%M")).last()
+    date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
+    print(date)
     for obj in Following.objects.filter(is_active=True).all():
         appid = obj.app_id
         app = App.objects.filter(pk=appid).first()
@@ -130,25 +123,25 @@ def following_crawl():
 
 def hourly():
     post_to_slack("시간 크롤링 시작")
-    following_crawl()
     for deal in ["realtime_rank_v2"]:
         for market in ["all"]:
             for price in ["gross", "paid", "free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
+    following_crawl()
 
 
 def daily():
     post_to_slack("일간 크롤링 시작")
-    tracking_rank_flushing()
     for deal in ["global_rank_v2"]:
         for market in ["all"]:
             for price in ["gross", "paid", "free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
+    tracking_rank_flushing()
 
 
 if __name__ == '__main__':
-    tracking_rank_flushing()
     # daily()
     # hourly()
+    following_crawl()
