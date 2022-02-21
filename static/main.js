@@ -117,7 +117,7 @@ function search() {
 }
 
 function track(appName) {
-    axios.post(`http://127.0.0.1:8000/api/follow?app_name=${appName}`)
+    axios.post(`/api/follow?app_name=${appName}`)
         .then((res) => res.data)
         .then((data) => {
             console.log(data)

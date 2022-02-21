@@ -24,6 +24,7 @@
     <orderEntry type="library" name="lodash" level="application" />
     <orderEntry type="library" name="moment.js" level="application" />
     <orderEntry type="library" name="vue" level="application" />
+    <orderEntry type="library" name="jquery-1.12.4" level="application" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
