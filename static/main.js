@@ -1,7 +1,8 @@
 async function getOneStoreItems(sort, limit = 100, offset = 0) {
+    let tableBody = $("tbody#ranking-table-body")
     tableBody.empty()
     const response = await axios.get(`/api/one?sort=${sort}&reverse=${reversed}&limit=${limit}&offset=${offset}`)
-    const ranks = _.sortedUniqBy(response.data.items, ({market_appid}) => market_appid)
+    const ranks = _.uniqBy(response.data.items, "market_appid")
     _.forEach(ranks, ranking => {
         const {market_appid, icon_url, app_name, downloads, volume, genre, released} = ranking
         const template = `<tr data-bs-toggle="modal"
@@ -12,7 +13,7 @@ async function getOneStoreItems(sort, limit = 100, offset = 0) {
                 <td class="left"><span class="app-name">
                 <img alt="app-icon" width="38" height="38" class="app-icon false" src="${icon_url}"><span>
                 <span>${app_name}</span></span></span></td>
-                <td class="center">${downloads}</td>
+                <td class="center">${(downloads).toLocaleString()}</td>
                 <td class="center">${genre}</td>
                 <td class="center">${volume}</td>
                 <td class="center">${released}</td></tr>`
