@@ -81,6 +81,15 @@ def get_ranked_list(request: WSGIRequest,
 
 
 # one "POST"
+@api.post("/app-detail", response=List[RankedSchema], tags=["ranking"])
+@paginate(LimitOffsetPagination)
+def find_app_with_app_id(request: WSGIRequest, app_id: int):
+    print(request.POST)
+    query_set = Ranked.objects.filter(app_id=app_id, created_at__gte=timezone.now()-timedelta(days=1))
+    return query_set
+
+
+# one "POST"
 @api.post("/ranking", response=List[ApplicationSchema], tags=["ranking"])
 @paginate(LimitOffsetPagination)
 def find_app_with_query(request: WSGIRequest, query):

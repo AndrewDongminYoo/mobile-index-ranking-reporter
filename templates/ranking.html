@@ -61,10 +61,11 @@
         </table>
     </main>
     {% include "includes/modal.html" %}
+{% endblock %}
+{% block script %}
     <script>
         let sortingKey = "created_at"
         let reversed = true
-
         getOneStoreItems("created_at", 200, 0)
     </script>
 {% endblock %}

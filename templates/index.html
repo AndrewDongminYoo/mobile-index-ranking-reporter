@@ -2,5 +2,95 @@
 {% load static %}
 {% block title %}STATISTIC{% endblock %}
 {% block content %}
-
+    <main id="root">
+        <table class="flake-ui table second small rect use-selection bordered "
+               style="border-radius: 0.25rem;">
+            <thead>
+            <tr>
+                <th scope="col">
+                    <div>앱 아이콘
+                        <div class="column-sort">
+                        </div>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div>앱 이름
+                        <div class="column-sort">
+                        </div>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div>날짜
+                        <div class="column-sort">
+                        </div>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div>스토어
+                        <div class="column-sort">
+                        </div>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div>앱 타입
+                        <div class="column-sort">
+                        </div>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div>순위 타입
+                        <div class="column-sort">
+                        </div>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div>기간
+                        <div class="column-sort">
+                        </div>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div>최고 순위
+                        <div class="column-sort">
+                        </div>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody id="my-rank-table-body">
+            </tbody>
+        </table>
+    </main>
+{% endblock %}
+{% block script %}
+    <script>
+        axios.get(`/api/follow?sort=created_at&reverse=true&limit=100&offset=0`)
+            .then(res => {
+                $("tbody#my-rank-table-bodymy-rank-table-body").empty()
+                return res.data.items
+            }).then(items => _.forEach(items, (item) => {
+                let {app, app_name, is_active, package_name} = item
+                axios.post(`/api/app-detail?app_id=${app}`)
+                    .then(res => res.data.items)
+                    .then((appDatas) => _.forEach(appDatas, (appData) => {
+                        let {app_name, rank, app_type, created_at, deal_type, market_appid, icon_url, market, package_name, rank_type} = appData;
+                        let template = `<tr>
+                            <td class="center"><img alt="app-icon" class="app-icon" width="38" height="38" src="${icon_url}">
+                            </td><td class="left"><span class="app-name">${app_name}</span></td>
+                            <td><span>${created_at}</span></td>
+                            <td class="center"><div class="markets"> {__market__}</div></td>
+                            <td class="center">${app_type}</td>
+                            <td class="center">${rank_type}</td>
+                            <td class="center">${deal_type}</td>
+                            <td class="center">${rank}</td> </tr>`
+                        if (market === "google") {
+                            $("tbody#my-rank-table-body").append(template.replace("{__market__}", Google))
+                        } else if (market === "apple") {
+                            $("tbody#my-rank-table-body").append(template.replace("{__market__}", Apple))
+                        } else if (market === "one") {
+                            $("tbody#my-rank-table-body").append(template.replace("{__market__}", oneStore))
+                        }
+                    }))
+            }))
+    </script>
 {% endblock %}

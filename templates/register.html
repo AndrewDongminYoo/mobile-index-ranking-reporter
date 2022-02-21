@@ -39,16 +39,16 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block script %}
     <script>
-        $(document).ready(function () {
-            $(window).keydown(function (event) {
-                if (event.key === "Enter") {
-                    event.preventDefault();
-                    search()
-                }
-            });
+    $(document).ready(function () {
+        $(window).keydown(function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                search()
+            }
         });
-
-
+    });
     </script>
 {% endblock %}

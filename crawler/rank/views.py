@@ -9,6 +9,7 @@ from crawler.models import TrackingApps, Ranked, OneStoreDL, TimeIndex
 
 
 def index(request: WSGIRequest):
+
     return render(request, "index.html")
 
 
