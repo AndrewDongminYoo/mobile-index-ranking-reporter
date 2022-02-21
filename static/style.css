@@ -5798,3 +5798,8 @@ footer.footer > div:last-of-type > :last-child {
 tbody#my-rank-table-body {
     vertical-align: middle
 }
+
+a, a:visited {
+    text-decoration: none;
+    color: inherit;
+}

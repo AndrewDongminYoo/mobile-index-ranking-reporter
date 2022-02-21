@@ -85,7 +85,9 @@
         $(window).keydown(function (event) {
             if (event.key === "Enter") {
                 event.preventDefault();
-                searchInModal();
+                if ($("#search-input").val()) {
+                    searchInModal();
+                }
             }
         })
 
@@ -104,9 +106,7 @@
                         <td class="center"><img src="${icon_url}" width="36" height="36" alt="${app_name}"></td>
                         <td class="left"><a href="${link}">${app_name}</a></td>
                         <td class="left">${package_name}</td>
-                        <td class="center">
-                            <button onclick="track('${app_name}')"
-                            >추적</button>
+                        <td class="center"><button onclick="track('${app_name}')">추적</button>
                         </td></tr>`
                     $("div.modal-body tbody").append(template)
                 })})
@@ -125,8 +125,7 @@
                 return `https://www.similarweb.com/app/app-store/${packageName}/statistics/`
             } else if (marketString === "google") {
                 return `https://play.google.com/store/apps/details?id=${packageName}`
-            }
-            return "#"
+            } return "#"
         }
 
         axios.get(`/api/follow?sort=created_at&reverse=true&limit=100&offset=0`)
@@ -140,16 +139,7 @@
                 .then((appDatas) => {
                         $("tbody#my-rank-table-body").append(`<tr style="border-width: 5px;"></tr>`)
                         _.forEach(appDatas, (appData) => {
-                            let {
-                                app_name,
-                                rank,
-                                app_type,
-                                created_at,
-                                deal_type,
-                                icon_url,
-                                market,
-                                package_name,
-                                rank_type
+                            let {app_name, rank, app_type, created_at, deal_type, icon_url, market, package_name, rank_type
                             } = appData;
                             let template = `<tr>
                             <td class="center"><img alt="app-icon" class="app-icon" width="38" height="38" src="${icon_url}">
