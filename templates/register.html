@@ -49,37 +49,6 @@
             });
         });
 
-        function search() {
-            let query = $("#search-input").val()
-            let tableBody = $("#search-table-body")
-            tableBody.empty()
-            axios.post(`/api/ranking?query=${query}`)
-                .then((res) => res.data)
-                .then((data) => data.items.forEach((item) => {
-                    let {id, app_name, icon_url, package_name} = item
-                    let one = parseInt(package_name)
-                        ? `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${package_name}`
-                        : `https://play.google.com/store/apps/details?id=${package_name}`
-                    let template = `<tr>
-                        <td class="center">${id}</td>
-                        <td class="center"><img src="${icon_url}" width="36" height="36" alt="${app_name}"></td>
-                        <td class="left"><a href="${one}">${app_name}</a></td>
-                        <td class="left">${package_name}</td>
-                        <td class="center">
-                            <button onclick="track('${app_name}')"
-                            >추적</button>
-                        </td>
-                    </tr>`
-                    tableBody.append(template)
-                }))
-        }
 
-        function track(appName) {
-            axios.post(`http://127.0.0.1:8000/api/follow?app_name=${appName}`)
-                .then((res) => res.data)
-                .then((data) => {
-                    console.log(data)
-                })
-        }
     </script>
 {% endblock %}

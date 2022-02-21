@@ -66,41 +66,6 @@
         let sortingKey = "created_at"
         let reversed = true
 
-        async function getOneStoreItems(sort, limit = 100, offset = 0) {
-            tableBody.empty()
-            const response = await axios.get(`/api/one?sort=${sort}&reverse=${reversed}&limit=${limit}&offset=${offset}`)
-            const ranks = _.sortedUniqBy(response.data.items, ({market_appid}) => market_appid)
-            _.forEach(ranks, ranking => {
-                const {market_appid, icon_url, app_name, downloads, volume, genre, released} = ranking
-                const template = `<tr data-bs-toggle="modal"
-                data-bs-target="#staticBackdrop"
-                onclick="showHistory('${market_appid}')">
-                <td class="center one-${market_appid}">
-                ${market_appid}</td>
-                <td class="left"><span class="app-name">
-                <img alt="app-icon" width="38" height="38" class="app-icon false" src="${icon_url}"><span>
-                <span>${app_name}</span></span></span></td>
-                <td class="center">${downloads}</td>
-                <td class="center">${genre}</td>
-                <td class="center">${volume}</td>
-                <td class="center">${released}</td></tr>`
-                tableBody.append(template)
-            })
-        }
-
-        const showHistory = (appId) => {
-            axios.get(`/api/one/${appId}?sort=${sortingKey}&reverse=${reversed}&limit=100&offset=0`)
-            .then(res=>res.data.items)
-            .then(items=>{
-                let downs = _.map(items, "downloads")
-                let dates = _.map(items, "created_at")
-                _.forEach(_.zip(downs, dates), function([down, date]){
-                    console.log(down)
-                    console.log(moment(date).fromNow())
-                })
-            })
-        }
-
         getOneStoreItems("created_at", 200, 0)
     </script>
 {% endblock %}
