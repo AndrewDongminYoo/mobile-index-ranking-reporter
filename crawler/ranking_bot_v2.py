@@ -122,10 +122,9 @@ def following_crawl():
 
 
 def hourly():
-    post_to_slack("시간 크롤링 시작")
     for deal in ["realtime_rank_v2"]:
         for market in ["all"]:
-            for price in ["gross", "paid", "free"]:
+            for price in ["paid", "free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
     following_crawl()

@@ -98,18 +98,19 @@
                 .then((res) => {
                     $("#staticBackdrop")?.modal("show")
                     _.forEach(res.data.items, (item) => {
-                    let {id, app_name, icon_url, package_name} = item
-                    let link = parseInt(package_name)
-                        ? `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${package_name}`
-                        : `https://play.google.com/store/apps/details?id=${package_name}`
-                    let template = `<tr>
+                        let {app_name, icon_url, package_name} = item
+                        let link = parseInt(package_name)
+                            ? `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${package_name}`
+                            : `https://play.google.com/store/apps/details?id=${package_name}`
+                        let template = `<tr>
                         <td class="center"><img src="${icon_url}" width="36" height="36" alt="${app_name}"></td>
                         <td class="left"><a href="${link}">${app_name}</a></td>
                         <td class="left">${package_name}</td>
                         <td class="center"><button onclick="track('${app_name}')">추적</button>
                         </td></tr>`
-                    $("div.modal-body tbody").append(template)
-                })})
+                        $("div.modal-body tbody").append(template)
+                    })
+                })
         }
 
         const rankType = rankString => {
@@ -125,7 +126,8 @@
                 return `https://www.similarweb.com/app/app-store/${packageName}/statistics/`
             } else if (marketString === "google") {
                 return `https://play.google.com/store/apps/details?id=${packageName}`
-            } return "#"
+            }
+            return "#"
         }
 
         axios.get(`/api/follow?sort=created_at&reverse=true&limit=100&offset=0`)
@@ -139,23 +141,34 @@
                 .then((appDatas) => {
                         $("tbody#my-rank-table-body").append(`<tr style="border-width: 5px;"></tr>`)
                         _.forEach(appDatas, (appData) => {
-                            let {app_name, rank, app_type, created_at, deal_type, icon_url, market, package_name, rank_type
+                            let {
+                                app_name,
+                                rank,
+                                app_type,
+                                created_at,
+                                deal_type,
+                                icon_url,
+                                market,
+                                package_name,
+                                rank_type,
+                                market_appid
                             } = appData;
                             let template = `<tr>
                             <td class="center"><img alt="app-icon" class="app-icon" width="38" height="38" src="${icon_url}">
-                            </td><td class="left"><a href="${getLink(market, package_name)}" class="app-name">${app_name}</a></td>
+                            </td><td class="left"><a href="${getLink(market, package_name)}" class="app-name">${app_name}(${package_name})</a></td>
                             <td><span>${moment(created_at).format("YY.MM.DD. hh:mm:ss")}</span></td>
                             <td class="center"><div class="markets">{__market__}</div></td>
                             <td class="center">${app_type === "app" ? "앱" : "게임"}</td>
                             <td class="center">${rankType(rank_type)}</td>
                             <td class="center">${deal_type === "market_rank" ? "일간" : "실시간"}</td>
-                            <td class="center">${rank.toString() + "위"}</td> </tr>`
+                            <td class="center">${rank.toString()} 위 (${moment(created_at).format("YY.MM.DD. hh:mm")})</td> </tr>`
                             if (market === "google") {
-                                $("tbody#my-rank-table-body").append(template.replace("{__market__}", Google))
+                                $("#my-rank-table-body").append(template.replace("{__market__}", Google))
                             } else if (market === "apple") {
-                                $("tbody#my-rank-table-body").append(template.replace("{__market__}", Apple))
+                                $("#my-rank-table-body").append(template.replace("{__market__}", Apple))
                             } else if (market === "one") {
-                                $("tbody#my-rank-table-body").append(template.replace("{__market__}", oneStore))
+                                axios.get(`/api/one/${market_appid}`).then((res) => res.data.items).then((items) => _.forEach(items, item => console.log(item)))
+                                $("#my-rank-table-body").append(template.replace("{__market__}", oneStore))
                             }
                         })
                     }
