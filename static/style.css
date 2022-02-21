@@ -1175,7 +1175,7 @@ section.processing-screen > div > p:last-of-type {
 }
 
 .flake-ui.input {
-    display: inline-block;
+    /*display: inline-block;*/
     position: relative;
     vertical-align: top;
     box-sizing: border-box
@@ -3426,6 +3426,7 @@ section.mi-chart.top100 > .more {
 }
 
 .flake-ui.table.second.bordered td, .flake-ui.table.second.bordered th {
+    word-break: break-word;
     border-color: #dcdeea;
     color: #4d4e5a
 }
