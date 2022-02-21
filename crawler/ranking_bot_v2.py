@@ -25,11 +25,11 @@ headers = {'origin': 'https://www.mobileindex.com',
 
 def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
     """
-    :param deal: "realtime_rank_v2", "global_rank_v2"
-    :param market: "all", "google"(global)
-    :param price: "gross", "paid", "free"
-    :param game: "app", "game"
-    :return: Ranked
+    param deal: "realtime_rank_v2", "global_rank_v2"
+    param market: "all", "google"(global)
+    param price: "gross", "paid", "free"
+    param game: "app", "game"
+    return: Ranked
     """
     url = f'https://proxy-insight.mobileindex.com/chart/{deal}'  # "realtime_rank_v2", "global_rank_v2"
     data = {
