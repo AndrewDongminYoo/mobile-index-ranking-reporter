@@ -154,7 +154,7 @@
                             let template = `<tr>
                             <td class="center"><img alt="app-icon" class="app-icon" width="38" height="38" src="${icon_url}">
                             </td><td class="left"><a href="${getLink(market, package_name)}" class="app-name">${app_name}</a></td>
-                            <td><span>${moment(created_at)}</span></td>
+                            <td><span>${moment(created_at).format("YY.MM.DD. hh:mm:ss")}</span></td>
                             <td class="center"><div class="markets">{__market__}</div></td>
                             <td class="center">${app_type === "app" ? "앱" : "게임"}</td>
                             <td class="center">${rankType(rank_type)}</td>
