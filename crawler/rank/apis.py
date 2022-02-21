@@ -85,7 +85,8 @@ def get_ranked_list(request: WSGIRequest,
 @paginate(LimitOffsetPagination)
 def find_app_with_app_id(request: WSGIRequest, app_id: int):
     print(request.POST)
-    query_set = Ranked.objects.filter(app_id=app_id, created_at__gte=timezone.now()-timedelta(days=1))
+    query_set = Ranked.objects\
+        .filter(app_id=app_id, created_at__gte=timezone.now()-timedelta(days=1))
     return query_set
 
 

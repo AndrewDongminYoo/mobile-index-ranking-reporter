@@ -50,7 +50,7 @@
                     </div>
                 </th>
                 <th scope="col">
-                    <div>최고 순위
+                    <div>순위
                         <div class="column-sort">
                         </div>
                     </div>
@@ -64,25 +64,45 @@
 {% endblock %}
 {% block script %}
     <script>
+        const rankType = rankString => {
+            if (rankString === "gross") return "매출"
+            if (rankString === "free") return "무료"
+            if (rankString === "paid") return "유료"
+        }
+
+        const getLink = (marketString, packageName) => {
+            if (marketString === "one") {
+                return `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${packageName}`
+            } else if (marketString === "apple") {
+                return `https://www.similarweb.com/app/app-store/${packageName}/statistics/`
+            } else if (marketString === "google") {
+                return `https://play.google.com/store/apps/details?id=${packageName}`
+            } else {
+                return "#"
+            }
+        }
+
         axios.get(`/api/follow?sort=created_at&reverse=true&limit=100&offset=0`)
             .then(res => {
-                $("tbody#my-rank-table-bodymy-rank-table-body").empty()
+                $("tbody#my-rank-table-body").empty()
                 return res.data.items
             }).then(items => _.forEach(items, (item) => {
                 let {app, app_name, is_active, package_name} = item
                 axios.post(`/api/app-detail?app_id=${app}`)
                     .then(res => res.data.items)
-                    .then((appDatas) => _.forEach(appDatas, (appData) => {
+                    .then((appDatas) => {
+                        $("tbody#my-rank-table-body").append(`<tr style="border-width: 5px;"></tr>`)
+                        _.forEach(appDatas, (appData) => {
                         let {app_name, rank, app_type, created_at, deal_type, market_appid, icon_url, market, package_name, rank_type} = appData;
                         let template = `<tr>
                             <td class="center"><img alt="app-icon" class="app-icon" width="38" height="38" src="${icon_url}">
-                            </td><td class="left"><span class="app-name">${app_name}</span></td>
+                            </td><td class="left"><a href="${getLink(market, package_name)}" class="app-name">${app_name}</a></td>
                             <td><span>${created_at}</span></td>
-                            <td class="center"><div class="markets"> {__market__}</div></td>
-                            <td class="center">${app_type}</td>
-                            <td class="center">${rank_type}</td>
-                            <td class="center">${deal_type}</td>
-                            <td class="center">${rank}</td> </tr>`
+                            <td class="center"><div class="markets">{__market__}</div></td>
+                            <td class="center">${app_type === "app" ? "앱" : "게임"}</td>
+                            <td class="center">${rankType(rank_type)}</td>
+                            <td class="center">${deal_type === "market_rank" ? "일간" : "실시간"}</td>
+                            <td class="center">${rank.toString() + "위"}</td> </tr>`
                         if (market === "google") {
                             $("tbody#my-rank-table-body").append(template.replace("{__market__}", Google))
                         } else if (market === "apple") {
@@ -90,7 +110,8 @@
                         } else if (market === "one") {
                             $("tbody#my-rank-table-body").append(template.replace("{__market__}", oneStore))
                         }
-                    }))
+                    })}
+                )
             }))
     </script>
 {% endblock %}

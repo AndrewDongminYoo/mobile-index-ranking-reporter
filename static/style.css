@@ -28063,3 +28063,7 @@ article.error-boundary > section > .main {
     background-color: #acacb8;
     border-radius: .25rem
 }
+
+tbody#my-rank-table-body {
+    vertical-align: middle;
+}
