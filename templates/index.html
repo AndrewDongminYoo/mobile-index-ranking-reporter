@@ -163,12 +163,12 @@
                             <td>${id}</td>
                             <td class="center"><img alt="app-icon" title="${id}" class="app-icon" width="38" height="38" src="${icon_url}">
                             </td><td class="left"><a href="${getLink(market, package_name)}" class="app-name">${app_name}<br>(${package_name})</a></td>
-                            <td><span>${moment(created_at).format("YY.MM.DD. hh:mm:ss")}</span></td>
+                            <td><span>${moment(created_at).format("YY.MM.DD. HH:mm:ss")}</span></td>
                             <td class="center"><div class="markets" onclick="location='${getLink(market, package_name)}'">{__market__}</div></td>
                             <td class="center"><span title="${app_type} ${rankType(rank_type)}">${deal_type === "market_rank" ? "일간" : "실시간"}</span></td>
                             <td class="center">${rankType(rank_type)}</td>
                             <td class="center  ${market === 'one'}" id="dl-count-${id}">-</td>
-                            <td class="center">${rank.toString()} 위 <br><small>(${moment(created_at).format("YY.MM.DD. hh:mm")})</small></td> </tr>`
+                            <td class="center">${rank.toString()} 위 <br><small>(${moment(created_at).format("YY.MM.DD. HH:mm")})</small></td> </tr>`
                             if (market === "google") {
                                 $("#my-rank-table-body").append(template.replace("{__market__}", Google))
                             } else if (market === "apple") {
