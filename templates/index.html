@@ -177,7 +177,8 @@
                                 axios.get(`/api/one/${market_appid}`)
                                     .then(res=>res.data)
                                     .then(item => {
-                                        $(`#dl-count-${id}.true`).text(item['downloads'].toLocaleString())
+                                        let {downloads, created_at} = item
+                                        $(`#dl-count-${id}.true`).html(downloads.toLocaleString()+`<br><small>(${moment(created_at).fromNow()})</small>`)
                                     })
                                 $("#my-rank-table-body").append(template.replace("{__market__}", oneStore))
                             }
