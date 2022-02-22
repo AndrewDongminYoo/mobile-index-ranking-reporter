@@ -10,7 +10,6 @@ from ninja.orm import create_schema
 from ninja.pagination import paginate, LimitOffsetPagination
 
 from crawler.models import Ranked, Following, TrackingApps, OneStoreDL, TimeIndex, App
-from crawler.ranking_bot_v2 import daily
 
 api = NinjaAPI(title="Ninja")
 
@@ -206,10 +205,3 @@ def get_download_counts_from_one_app(request: WSGIRequest,
     print(request.GET)
     query_set = OneStoreDL.objects.filter(market_appid=market_appid).order_by("-created_at")
     return query_set.first()
-
-
-# crawler "POST"
-@api.post("/crawl", tags=["crawling"])
-def forced_crawling(request: WSGIRequest):
-    daily()
-    return api.create_response(request, {"success": True})

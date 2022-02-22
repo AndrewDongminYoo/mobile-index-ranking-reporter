@@ -55,19 +55,13 @@
                     </div>
                 </th>
                 <th scope="col" style="width: 8%">
-                    <div>앱 타입
+                    <div>기간
                         <div class="column-sort">
                         </div>
                     </div>
                 </th>
                 <th scope="col" style="width: 8%">
                     <div>분야
-                        <div class="column-sort">
-                        </div>
-                    </div>
-                </th>
-                <th scope="col" style="width: 8%">
-                    <div>기간
                         <div class="column-sort">
                         </div>
                     </div>
@@ -110,12 +104,12 @@
                 .then((res) => {
                     $("#staticBackdrop")?.modal("show")
                     _.forEach(res.data.items, (item) => {
-                        let {app_name, icon_url, package_name} = item
+                        let {id, app_name, icon_url, package_name} = item
                         let link = parseInt(package_name)
                             ? `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${package_name}`
                             : `https://play.google.com/store/apps/details?id=${package_name}`
                         let template = `<tr>
-                        <td class="center"><img src="${icon_url}" width="36" height="36" alt="${app_name}"></td>
+                        <td class="center"><img src="${icon_url}" width="36" height="36" alt="${id}"></td>
                         <td class="left"><a href="${link}">${app_name}</a></td>
                         <td class="left">${package_name}</td>
                         <td class="center"><button onclick="track('${app_name}')">추적</button>
@@ -168,12 +162,11 @@
                             let template = `<tr>
                             <td>${id}</td>
                             <td class="center"><img alt="app-icon" title="${id}" class="app-icon" width="38" height="38" src="${icon_url}">
-                            </td><td class="left"><a href="${getLink(market, package_name)}" class="app-name">${app_name}(${package_name})</a></td>
+                            </td><td class="left"><a href="${getLink(market, package_name)}" class="app-name">${app_name}<br>(${package_name})</a></td>
                             <td><span>${moment(created_at).format("YY.MM.DD. hh:mm:ss")}</span></td>
                             <td class="center"><div class="markets" onclick="location='${getLink(market, package_name)}'">{__market__}</div></td>
-                            <td class="center">${app_type === "app" ? "앱" : "게임"}</td>
+                            <td class="center"><span title="${app_type} ${rankType(rank_type)}">${deal_type === "market_rank" ? "일간" : "실시간"}</span></td>
                             <td class="center">${rankType(rank_type)}</td>
-                            <td class="center">${deal_type === "market_rank" ? "일간" : "실시간"}</td>
                             <td class="center  ${market === 'one'}" id="dl-count-${id}">-</td>
                             <td class="center">${rank.toString()} 위 <br><small>(${moment(created_at).format("YY.MM.DD. hh:mm")})</small></td> </tr>`
                             if (market === "google") {
