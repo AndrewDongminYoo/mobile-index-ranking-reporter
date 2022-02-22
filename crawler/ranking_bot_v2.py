@@ -2,7 +2,7 @@ import os
 
 from django.db import IntegrityError
 
-from ranker.utils.slack import post_to_slack
+from utils.slack import post_to_slack
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
@@ -141,6 +141,6 @@ def daily():
 
 
 if __name__ == '__main__':
-    # daily()
-    # hourly()
-    following_crawl()
+    daily()
+    hourly()
+    # following_crawl()
