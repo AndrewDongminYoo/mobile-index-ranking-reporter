@@ -6,7 +6,6 @@ if 'setup' in dir(django):
 
 import requests
 from django.utils import timezone
-from django.db import IntegrityError
 from datetime import timedelta
 from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex, OneStoreDL
 
@@ -97,41 +96,27 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
         print(obj.items())
         date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
         for app_data in obj["data"]:
-            try:
-                query = App.objects.filter(app_name__icontains=app_data.get("app_name"))
-                package_name = app_data.get("market_appid")
-                if query.exists():
-                    app = query.first()
-                    if package_name:
-                        app.package_name = package_name
-                        app.save()
-                else:
-                    app = App(
-                        app_name=app_data.get("app_name"),
-                        package_name=package_name or "com.example.app",
-                        icon_url=app_data.get('icon_url'),
-                    )
-                    app.save()
+            app = App.objects.get_or_create(
+                app_name=app_data.get("app_name"),
+                package_name=app_data.get("market_appid") or "com.example.app",
+                icon_url=app_data.get('icon_url'),
+            )
+            app[0].save()
 
-                item = Ranked(
-                    app_id=app.id,
-                    app_name=app.app_name,
-                    icon_url=app.icon_url,
-                    date_id=date.id,
-                    package_name=app.package_name,
-                    market_appid=app_data.get('market_appid'),
-                    market=app_data.get("market_name"),  # "google", "apple", "one"
-                    deal_type=deal.removesuffix("_v2").replace("global", "market"),  # "realtime_rank", "market_rank"
-                    app_type=game,  # "game", "app"
-                    rank=app_data.get('rank'),
-                    rank_type=app_data.get('rank_type'),
-                )
-                item.save()
-
-            except IntegrityError:
-                pass
-            except AttributeError:
-                pass
+            item = Ranked(
+                date_id=date.id,
+                app_id=app[0].id,
+                app_name=app[0].app_name,
+                icon_url=app[0].icon_url,
+                package_name=app[0].package_name,
+                market_appid=app_data.get('market_appid'),
+                market=app_data.get("market_name"),  # "google", "apple", "one"
+                deal_type=deal.removesuffix("_v2").replace("global", "market"),  # "realtime_rank", "market_rank"
+                app_type=game,  # "game", "app"
+                rank=app_data.get('rank'),
+                rank_type=app_data.get('rank_type'),
+            )
+            item.save()
 
 
 def tracking_rank_flushing():
@@ -140,11 +125,7 @@ def tracking_rank_flushing():
     for item in Ranked.objects.filter(created_at__gte=yesterday, app_name__in=following_applications):
         app_name = item.app_name
         date_id = item.date_id
-        if TrackingApps.objects.filter(app_name=app_name, date_id=date_id).exists():
-            pass
-        else:
-            print(app_name)
-            tracking = TrackingApps(
+        tracking = TrackingApps.objects.get_or_create(
                 app=item.app,
                 deal_type=item.deal_type,
                 market=item.market,
@@ -155,7 +136,7 @@ def tracking_rank_flushing():
                 rank=item.rank,
                 date_id=date_id,
             )
-            tracking.save()
+        tracking[0].save()
     weekdays = timezone.now() - timedelta(days=7)
     for old in TrackingApps.objects.filter(created_at__lt=weekdays):
         old.delete()
@@ -176,7 +157,6 @@ def hourly():
             for price in ["paid", "free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
-    following_crawl()
     post_to_slack("시간 크롤링 완료")
 
 
@@ -186,11 +166,12 @@ def daily():
             for price in ["gross", "paid", "free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
-    tracking_rank_flushing()
     post_to_slack("일간 크롤링 완료")
 
 
 if __name__ == '__main__':
     # daily()
-    hourly()
+    following_crawl()
+    tracking_rank_flushing()
+    # hourly()
     # following_crawl()
