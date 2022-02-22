@@ -7,7 +7,7 @@ if 'setup' in dir(django):
     django.setup()
 from django.utils import timezone
 from django.db.utils import IntegrityError
-from crawler.models import Ranked, Following, TrackingApps, OneStoreDL, App, TimeIndex
+from crawler.models import Ranked, Following, OneStoreDL, App, TimeIndex
 import requests
 
 user_agent = " ".join(
@@ -97,7 +97,8 @@ def crawl_app_store_rank(store: str, deal: str, game: str):
                     get_one_store_app_download_count(item.market_appid)
                 app_name = item.app_name
                 if app_name in following_applications:
-                    TrackingApps().from_rank(item)
+                    pass
+                    # TrackingApps().from_rank(item)
             except IntegrityError:
                 pass
             except AttributeError:
@@ -119,5 +120,6 @@ def daily():
 
 
 if __name__ == '__main__':
+    pass
     # hourly()
-    daily()
+    # daily()

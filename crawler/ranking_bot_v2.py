@@ -1,12 +1,11 @@
+import sys
+sys.path.append('home/ubuntu/app-rank/ranker/settings.py')
 import os
-
-import requests
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
-
 if 'setup' in dir(django):
     django.setup()
+import requests
 from django.utils import timezone
 from django.db import IntegrityError
 from datetime import timedelta
@@ -140,6 +139,6 @@ def daily():
 
 
 if __name__ == '__main__':
-    daily()
-    hourly()
-    # following_crawl()
+    # daily()
+    # hourly()
+    following_crawl()
