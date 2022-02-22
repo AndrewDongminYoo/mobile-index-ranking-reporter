@@ -1,4 +1,7 @@
 import os
+
+import requests
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 
@@ -7,7 +10,6 @@ if 'setup' in dir(django):
 from django.utils import timezone
 from django.db import IntegrityError
 from datetime import timedelta
-import requests
 from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex
 from crawler.ranking_bot import get_one_store_app_download_count
 from crawler.utils.slack import post_to_slack

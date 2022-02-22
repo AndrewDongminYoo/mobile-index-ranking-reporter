@@ -19,7 +19,7 @@ from django.urls import path
 
 from crawler.rank.apis import api
 from crawler.rank.views import statistic, my_rank, ranking, index, app_register
-from ranker import settings
+from ..ranker import settings
 
 urlpatterns = [
     path("", index),
