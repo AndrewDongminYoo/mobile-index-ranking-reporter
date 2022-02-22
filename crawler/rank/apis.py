@@ -200,24 +200,12 @@ def find_download_counts_of_app_with_name(request: WSGIRequest,
 
 
 # one "GET"
-@api.get("/one/{market_appid}", response=List[OneStoreSchema], tags=["one-store"])
-@paginate(LimitOffsetPagination)
+@api.get("/one/{market_appid}", response=OneStoreSchema, tags=["one-store"])
 def get_download_counts_from_one_app(request: WSGIRequest,
-                                     market_appid: str,
-                                     sort="created_at",
-                                     reverse=True):
-    """
-    ## parameters:
-    - request: WSGIRequest
-    - sort: "id", "created_at", "deal_type", "app_name", "icon_url", "market_appid", "package_name", "rank"
-    - reverse: reversed or not
-    - market_appid:
-    """
+                                     market_appid: str):
     print(request.GET)
-    query_set = OneStoreDL.objects.filter(market_appid=market_appid).order_by(sort)
-    if reverse:
-        return query_set.reverse()
-    return query_set.all()
+    query_set = OneStoreDL.objects.filter(market_appid=market_appid).order_by("-created_at")
+    return query_set.first()
 
 
 # crawler "POST"
