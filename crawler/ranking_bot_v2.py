@@ -1,10 +1,9 @@
-import sys
-sys.path.append('home/ubuntu/app-rank/ranker/settings.py')
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 if 'setup' in dir(django):
     django.setup()
+
 import requests
 from django.utils import timezone
 from django.db import IntegrityError
@@ -178,16 +177,17 @@ def hourly():
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
     following_crawl()
+    post_to_slack("시간 크롤링 완료")
 
 
 def daily():
-    post_to_slack("일간 크롤링 시작")
     for deal in ["global_rank_v2"]:
         for market in ["all"]:
             for price in ["gross", "paid", "free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
     tracking_rank_flushing()
+    post_to_slack("일간 크롤링 완료")
 
 
 if __name__ == '__main__':
