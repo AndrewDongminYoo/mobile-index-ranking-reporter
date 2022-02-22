@@ -192,5 +192,5 @@ def daily():
 
 if __name__ == '__main__':
     # daily()
-    # hourly()
-    following_crawl()
+    hourly()
+    # following_crawl()
