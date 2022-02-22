@@ -9,9 +9,7 @@ import requests
 from django.utils import timezone
 from django.db import IntegrityError
 from datetime import timedelta
-from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex
-from crawler.ranking_bot import get_one_store_app_download_count
-from crawler.utils.slack import post_to_slack
+from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex, OneStoreDL
 
 user_agent = " ".join(
     ["Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
@@ -19,6 +17,60 @@ user_agent = " ".join(
      "Chrome/98.0.4758.80 Safari/537.36"])
 headers = {'origin': 'https://www.mobileindex.com',
            'user-agent': user_agent}
+
+
+def post_to_slack(text=None):
+    import requests
+    import json
+    url = 'https://hooks.slack.com/services/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'
+    _headers = {'Content-type': 'application/json'}
+    body = json.dumps({"text": text})
+    req = requests.post(url, headers=_headers, data=body)
+    print(req.status_code)
+
+
+def get_soup(appid, back=True):
+    one_url = "https://m.onestore.co.kr/mobilepoc/web/apps/appsDetail/spec.omp?prodId=" + appid \
+        if back else "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" + appid
+    from bs4 import BeautifulSoup
+    response = requests.get(one_url)
+    if response.status_code == 200:
+        return BeautifulSoup(response.text, "html.parser")
+
+
+def get_one_store_app_download_count(date: TimeIndex, appid: str, app: App):
+    try:
+        soup = get_soup(appid, True)
+        download = soup.select_one("li:-soup-contains('다운로드수') > span").text
+        d_string = soup.select_one("li:-soup-contains('출시일') > span").text
+        genre = soup.select_one("li:-soup-contains('장르') > span").text
+        volume = soup.select_one("li:-soup-contains('용량') > span").text
+        style = soup.select_one("#header > div > div > div.header-co-right > span").get('style')
+        icon_url = style.removeprefix("background-image:url(").removesuffix(")")
+
+        soup2 = get_soup(appid, False)
+        app_name = soup2.title.get_text().removesuffix(" - 원스토어")
+        print(app_name)
+
+        import datetime
+        array = [i for i in map(int, d_string.split("."))]
+        released = datetime.date(year=array[0], month=array[1], day=array[2])
+        d_counts = int(download.replace(",", ""))
+
+        ones_app = OneStoreDL(
+            date_id=date.id,
+            app_id=app.id,
+            market_appid=appid,
+            downloads=d_counts,
+            genre=genre,
+            volume=volume,
+            released=released,
+            icon_url=icon_url,
+            app_name=app_name,
+        )
+        ones_app.save()
+    except AttributeError:
+        pass
 
 
 def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
