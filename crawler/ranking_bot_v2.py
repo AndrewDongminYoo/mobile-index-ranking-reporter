@@ -1,19 +1,16 @@
 import os
-
-from django.db import IntegrityError
-
-from utils.slack import post_to_slack
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 
 if 'setup' in dir(django):
     django.setup()
 from django.utils import timezone
+from django.db import IntegrityError
 from datetime import timedelta
 import requests
 from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex
 from crawler.ranking_bot import get_one_store_app_download_count
+from utils.slack import post_to_slack
 
 user_agent = " ".join(
     ["Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
