@@ -17,9 +17,9 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
-import settings
 from crawler.rank.apis import api
 from crawler.rank.views import statistic, my_rank, ranking, index, app_register
+from settings import STATIC_URL, STATIC_ROOT
 
 urlpatterns = [
     path("", index),
@@ -29,4 +29,4 @@ urlpatterns = [
     path("my_rank", my_rank, name="my_rank"),
     path('admin/', admin.site.urls),
     path("api/", api.urls),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(STATIC_URL, document_root=STATIC_ROOT)
