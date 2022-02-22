@@ -17,9 +17,9 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
+import settings
 from crawler.rank.apis import api
 from crawler.rank.views import statistic, my_rank, ranking, index, app_register
-from ..ranker import settings
 
 urlpatterns = [
     path("", index),
