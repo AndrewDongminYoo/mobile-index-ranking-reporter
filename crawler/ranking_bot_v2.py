@@ -49,7 +49,7 @@ def get_one_store_app_download_count(date: TimeIndex, appid: str, app: App):
         genre = soup.select_one("li:-soup-contains('장르') > span").text
         volume = soup.select_one("li:-soup-contains('용량') > span").text
         style = soup.select_one("#header > div > div > div.header-co-right > span").get('style')
-        icon_url = style.removeprefix("background-image:url(").removesuffix(")")
+        icon_url = style.replace("background-image:url(", "").replace(")", "")
 
         soup2 = get_soup(appid, False)
         app_name = soup2.title.get_text().replace(" - 원스토어", "")
