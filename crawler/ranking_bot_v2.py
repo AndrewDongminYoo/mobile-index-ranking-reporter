@@ -158,11 +158,12 @@ def following_crawl():
 def hourly():
     for deal in ["realtime_rank_v2"]:
         for market in ["all"]:
-            for price in ["paid", "free"]:
+            for price in ["free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
     following_crawl()
-    post_to_slack("시간 크롤링 완료")
+    tracking_rank_flushing()
+    post_to_slack("정기 크롤링 완료")
 
 
 def daily():
@@ -171,10 +172,9 @@ def daily():
             for price in ["gross", "paid", "free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
-    tracking_rank_flushing()
     post_to_slack("일간 크롤링 완료")
 
 
 if __name__ == '__main__':
-    daily()
+    # daily()
     hourly()

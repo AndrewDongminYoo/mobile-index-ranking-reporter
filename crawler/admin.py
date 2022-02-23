@@ -48,7 +48,7 @@ def dedupe_application(self, request: WSGIRequest, queryset: QuerySet):
 
 
 class AppAdmin(admin.ModelAdmin):
-    list_display = ["app_name", "package_name"]
+    list_display = ["app_name", "package_name", "icon_url"]
     search_fields = ["app_name", "package_name"]
     actions = [dedupe_application, follow_application]
 
@@ -65,7 +65,7 @@ class RankedAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class FollowingAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["app", "created_at", "is_active"]
+    list_display = ["app", "created_at", "is_active", "package_name"]
     list_select_related = ["app"]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

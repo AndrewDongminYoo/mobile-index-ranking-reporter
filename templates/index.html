@@ -136,29 +136,21 @@
             return "#"
         }
 
-        axios.get(`/api/follow?sort=created_at&reverse=true&limit=100&offset=0`)
+        axios.get(`/v1/follow`)
             .then(res => {
-                $("tbody#my-rank-table-body").empty()
+                $("#my-rank-table-body").empty()
                 return res.data.items
             }).then(items => _.forEach(items, (item) => {
-            let {id, app} = item
-            axios.post(`/api/app-detail?app_id=${app}`)
+                let {id, app, app_name, created_at} = item;
+                let template = `<tr></tr>`
+                $("#my-rank-table-body").append()
+            axios.post(`/v1/app-detail?app_id=${app}`)
                 .then(res => res.data.items)
                 .then((appDatas) => {
                         $("tbody#my-rank-table-body").append(`<tr style="border-width: 5px;"></tr>`)
                         _.forEach(appDatas, (appData) => {
-                            let {
-                                app_name,
-                                rank,
-                                app_type,
-                                created_at,
-                                deal_type,
-                                icon_url,
-                                market,
-                                package_name,
-                                rank_type,
-                                market_appid
-                            } = appData;
+                            let { app_name, rank, app_type, created_at, deal_type, icon_url, market, package_name, rank_type, market_appid
+} = appData;
                             let template = `<tr>
                             <td>${id}</td>
                             <td class="center"><img alt="app-icon" title="${id}" class="app-icon" width="38" height="38" src="${icon_url}">
@@ -174,7 +166,7 @@
                             } else if (market === "apple") {
                                 $("#my-rank-table-body").append(template.replace("{__market__}", Apple))
                             } else if (market === "one") {
-                                axios.get(`/api/one/${market_appid}`)
+                                axios.get(`/v1/one/${market_appid}`)
                                     .then(res=>res.data)
                                     .then(item => {
                                         let {downloads, created_at} = item

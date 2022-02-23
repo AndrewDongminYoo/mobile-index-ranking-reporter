@@ -11,7 +11,7 @@ from ninja.pagination import paginate, LimitOffsetPagination
 
 from crawler.models import Ranked, Following, TrackingApps, OneStoreDL, TimeIndex, App
 
-api = NinjaAPI(title="Ninja")
+api = NinjaAPI(title="Ninja", urls_namespace="v1")
 
 RankedSchema = create_schema(Ranked)
 ApplicationSchema = create_schema(App)
@@ -26,11 +26,9 @@ TrackingSchema = create_schema(TrackingApps)
 def list_tracking(request: WSGIRequest, sort="created_at", reverse=True):
     """
     ## parameters:
-    - request: WSGIRequest
     - sort: "id", "created_at", "deal_type", "app_name", "icon_url", "market_appid", "package_name", "rank"
     - reverse: reversed or not
     """
-    print(request.GET)
     if reverse:
         return TrackingApps.objects.order_by(sort).reverse().all()
     return TrackingApps.objects.order_by(sort).all()
@@ -58,7 +56,6 @@ def get_ranked_list(request: WSGIRequest,
                     reverse=True):
     """
     ## parameters:
-    - request: WSGIRequest
     - store: apple, google, one-store
     - rtype: gross, free, paid
     - deal: **realtime**_rank, **market**_rank(daily)
@@ -66,7 +63,6 @@ def get_ranked_list(request: WSGIRequest,
     - sort: "id", "created_at", "deal_type", "app_name", "icon_url", "market_appid", "package_name", "rank"
     - reverse: reversed or not
     """
-    print(request.GET)
     query_set = Ranked.objects \
         .filter(rank_type__startswith=rtype) \
         .filter(market__startswith=store) \
@@ -83,7 +79,6 @@ def get_ranked_list(request: WSGIRequest,
 @api.post("/app-detail", response=List[RankedSchema], tags=["ranking"])
 @paginate(LimitOffsetPagination)
 def find_app_with_app_id(request: WSGIRequest, app_id: int):
-    print(request.POST)
     query_set = Ranked.objects\
         .filter(app_id=app_id, created_at__gte=timezone.now()-timedelta(days=1))
     return query_set
@@ -93,7 +88,6 @@ def find_app_with_app_id(request: WSGIRequest, app_id: int):
 @api.post("/ranking", response=List[ApplicationSchema], tags=["ranking"])
 @paginate(LimitOffsetPagination)
 def find_app_with_query(request: WSGIRequest, query):
-    print(request.POST)
     query_set = App.objects.filter(Q(app_name__icontains=query) | Q(package_name__icontains=query))
     return query_set.order_by("app_name").all()
 
@@ -102,7 +96,6 @@ def find_app_with_query(request: WSGIRequest, query):
 @api.post("/follow", response=FollowingSchema, tags=["follow"])
 def add_following_app_and_search(request: WSGIRequest,
                                  app_name):
-    print(request.POST)
     ranked_app = Ranked.objects.filter(app_name=app_name).order_by("-created_at").first()
     try:
         tracking = TrackingApps(
@@ -139,11 +132,9 @@ def view_following(request: WSGIRequest,
                    reverse=True):
     """
     ## parameters:
-    - request: WSGIRequest
     - sort: "id", "created_at", "deal_type", "app_name", "icon_url", "market_appid", "package_name", "rank"
     - reverse: reversed or not
     """
-    print(request.GET)
     if reverse:
         return Following.objects.order_by(sort).reverse().all()
     return Following.objects.order_by(sort).all()
@@ -153,7 +144,6 @@ def view_following(request: WSGIRequest,
 @api.delete("/follow/{following_id}", tags=["follow"])
 def delete_following(request: WSGIRequest,
                      following_id: int):
-    print(request.META)
     following = get_object_or_404(Following, id=following_id)
     following.delete()
     return api.create_response(request, {"success": True})
@@ -167,11 +157,9 @@ def get_download_counts_from_apps(request: WSGIRequest,
                                   reverse=True):
     """
     ## parameters:
-    - request: WSGIRequest
     - sort: "id", "created_at", "deal_type", "app_name", "icon_url", "market_appid", "package_name", "rank"
     - reverse: reversed or not
     """
-    print(request.GET)
     query_set = OneStoreDL.objects.filter(created_at__gte=timezone.now() - timedelta(days=2)).order_by(sort)
     if reverse:
         return query_set.reverse()
@@ -187,11 +175,9 @@ def find_download_counts_of_app_with_name(request: WSGIRequest,
                                           reverse=True):
     """
     ## parameters:
-    - request: WSGIRequest
     - sort: "id", "created_at", "deal_type", "app_name", "icon_url", "market_appid", "package_name", "rank"
     - reverse: reversed or not
     """
-    print(request.POST)
     query_set = OneStoreDL.objects.filter(app_name__contains=query).order_by(sort)
     if reverse:
         return query_set.reverse()
@@ -202,6 +188,5 @@ def find_download_counts_of_app_with_name(request: WSGIRequest,
 @api.get("/one/{market_appid}", response=OneStoreSchema, tags=["one-store"])
 def get_download_counts_from_one_app(request: WSGIRequest,
                                      market_appid: str):
-    print(request.GET)
     query_set = OneStoreDL.objects.filter(market_appid=market_appid).order_by("-created_at")
     return query_set.first()
