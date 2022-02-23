@@ -1,7 +1,5 @@
 import sys
-sys.path.append('/home/ubuntu/app-rank')
 sys.path.append('/home/ubuntu/app-rank/ranker')
-sys.path.append('/home/ubuntu/app-rank/crawler')
 import os
 os.environ.setdefault("PYTHONUNBUFFERED;", "1")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
@@ -35,8 +33,8 @@ def post_to_slack(text=None):
 
 
 def get_soup(appid, back=True):
-    one_url = "https://m.onestore.co.kr/mobilepoc/web/apps/appsDetail/spec.omp?prodId=" + appid \
-        if back else "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" + appid
+    one_url = f"https://m.onestore.co.kr/mobilepoc/web/apps/appsDetail/spec.omp?prodId={appid}" \
+        if back else f"https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId={appid}"
     from bs4 import BeautifulSoup
     response = requests.get(one_url)
     if response.status_code == 200:
@@ -54,7 +52,7 @@ def get_one_store_app_download_count(date: TimeIndex, appid: str, app: App):
         icon_url = style.removeprefix("background-image:url(").removesuffix(")")
 
         soup2 = get_soup(appid, False)
-        app_name = soup2.title.get_text().removesuffix(" - 원스토어")
+        app_name = soup2.title.get_text().replace(" - 원스토어", "")
         logger.debug(app_name)
 
         import datetime
@@ -164,6 +162,7 @@ def hourly():
             for price in ["paid", "free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
+    following_crawl()
     post_to_slack("시간 크롤링 완료")
 
 
@@ -173,12 +172,10 @@ def daily():
             for price in ["gross", "paid", "free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
+    tracking_rank_flushing()
     post_to_slack("일간 크롤링 완료")
 
 
 if __name__ == '__main__':
     daily()
-    # following_crawl()
-    # tracking_rank_flushing()
     hourly()
-    # following_crawl()
