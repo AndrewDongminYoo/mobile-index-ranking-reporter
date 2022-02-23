@@ -9,6 +9,7 @@ from django.utils import timezone
 from datetime import timedelta
 from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex, OneStoreDL
 
+
 user_agent = " ".join(
     ["Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
      "AppleWebKit/537.36 (KHTML, like Gecko)",
@@ -93,12 +94,12 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
     req = requests.post(url, data=data, headers=headers)
     obj = req.json()
     if obj["status"]:
-        print(obj.items())
         date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
         for app_data in obj["data"]:
+            print(app_data)
             app = App.objects.get_or_create(
                 app_name=app_data.get("app_name"),
-                package_name=app_data.get("market_appid") or "com.example.app",
+                package_name=app_data.get("market_appid"),
                 icon_url=app_data.get('icon_url'),
             )
             app[0].save()
@@ -170,8 +171,8 @@ def daily():
 
 
 if __name__ == '__main__':
-    # daily()
-    following_crawl()
-    tracking_rank_flushing()
-    # hourly()
+    daily()
+    # following_crawl()
+    # tracking_rank_flushing()
+    hourly()
     # following_crawl()
