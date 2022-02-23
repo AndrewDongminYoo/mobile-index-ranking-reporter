@@ -118,7 +118,7 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
                 package_name=app[0].package_name,
                 market_appid=app_data.get('market_appid'),
                 market=app_data.get("market_name"),  # "google", "apple", "one"
-                deal_type=deal.removesuffix("_v2").replace("global", "market"),  # "realtime_rank", "market_rank"
+                deal_type=deal.replace("_v2", "").replace("global", "market"),  # "realtime_rank", "market_rank"
                 app_type=game,  # "game", "app"
                 rank=app_data.get('rank'),
                 rank_type=app_data.get('rank_type'),
