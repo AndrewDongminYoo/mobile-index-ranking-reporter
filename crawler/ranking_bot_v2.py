@@ -1,3 +1,5 @@
+import sys
+sys.path.append('/home/ubuntu/app-rank/ranker')
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
