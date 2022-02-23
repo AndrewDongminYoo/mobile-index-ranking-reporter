@@ -162,8 +162,7 @@
                     <td class="center" id="">$기간</td>
                     <td class="center" id="">$분야</td>
                     <td class="center" id="">$다운</td>
-                    <td class="center" id="">$순위</td>
-                    </tr>`
+                    <td class="center" id="">$순위</td></tr>`
             axios.post(`/v1/app-detail?app_id=${app}`)  // app = app_id
                 .then(res => res.data.items)
                 .then((appDatas) => {
@@ -182,7 +181,7 @@
                             .then(res=>res.data)
                             .then(item => {let {downloads, created_at} = item
                                 template = template.replace("$원스토어", `${downloads.toLocaleString()}<br><small>(${moment(created_at).fromNow()})</small>`)
-                            $("tbody#my-rank-table-body").append(template)
+                                $("tbody#my-rank-table-body").append(template)
                             })
                     })
                 }
