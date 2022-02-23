@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Min
 from django.shortcuts import render
@@ -8,8 +9,8 @@ from django.utils import timezone
 from crawler.models import TrackingApps, Ranked, OneStoreDL, TimeIndex
 
 
+@staff_member_required
 def index(request: WSGIRequest):
-
     return render(request, "index.html")
 
 

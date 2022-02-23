@@ -94,7 +94,6 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
         "startRank": 1,
         "endRank": 100,
     }
-
     req = requests.post(url, data=data, headers=headers)
     obj = req.json()
     if obj["status"]:
