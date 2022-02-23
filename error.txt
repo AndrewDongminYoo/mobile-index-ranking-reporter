@@ -1,0 +1,22 @@
+(venv) ubuntu@ip-172-31-31-7:~/app-rank$ python3 crawler/ranking_bot_v2.py
+Traceback (most recent call last):
+  File "crawler/ranking_bot_v2.py", line 7, in <module>
+    django.setup()
+  File "/home/ubuntu/app-rank/venv/lib/python3.8/site-packages/django/__init__.py", line 19, in setup
+    configure_logging(settings.LOGGING_CONFIG, settings.LOGGING)
+  File "/home/ubuntu/app-rank/venv/lib/python3.8/site-packages/django/conf/__init__.py", line 82, in __getattr__
+    self._setup(name)
+  File "/home/ubuntu/app-rank/venv/lib/python3.8/site-packages/django/conf/__init__.py", line 69, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/home/ubuntu/app-rank/venv/lib/python3.8/site-packages/django/conf/__init__.py", line 170, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/lib/python3.8/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1014, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 961, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1014, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 973, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'ranker'
