@@ -6,10 +6,11 @@ if 'setup' in dir(django):
 
 import requests
 from django.utils import timezone
+from logging import getLogger
 from datetime import timedelta
 from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex, OneStoreDL
 
-
+logger = getLogger(__name__)
 user_agent = " ".join(
     ["Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
      "AppleWebKit/537.36 (KHTML, like Gecko)",
@@ -25,7 +26,7 @@ def post_to_slack(text=None):
     _headers = {'Content-type': 'application/json'}
     body = json.dumps({"text": text})
     req = requests.post(url, headers=_headers, data=body)
-    print(req.status_code)
+    logger.debug(req.status_code)
 
 
 def get_soup(appid, back=True):
@@ -49,7 +50,7 @@ def get_one_store_app_download_count(date: TimeIndex, appid: str, app: App):
 
         soup2 = get_soup(appid, False)
         app_name = soup2.title.get_text().removesuffix(" - 원스토어")
-        print(app_name)
+        logger.debug(app_name)
 
         import datetime
         array = [i for i in map(int, d_string.split("."))]
@@ -96,7 +97,7 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
     if obj["status"]:
         date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
         for app_data in obj["data"]:
-            print(app_data)
+            logger.debug(app_data)
             app = App.objects.get_or_create(
                 app_name=app_data.get("app_name"),
                 package_name=app_data.get("market_appid"),
@@ -145,7 +146,7 @@ def tracking_rank_flushing():
 
 def following_crawl():
     date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
-    print(date)
+    logger.debug(date)
     for obj in Following.objects.filter(is_active=True).all():
         appid = obj.app_id
         app = App.objects.filter(pk=appid).first()
