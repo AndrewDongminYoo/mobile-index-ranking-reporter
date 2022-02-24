@@ -3,7 +3,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import QuerySet
 from import_export.admin import ImportExportMixin
 
-from crawler.forms import AppChoiceField
+from crawler.forms import AppChoiceField, FollowingChoiceField
 from crawler.models import Following, App
 from crawler.models import OneStoreDL
 from crawler.models import Ranked
@@ -35,26 +35,24 @@ def follow_application(self, request: WSGIRequest, queryset: QuerySet):
 
 @admin.action(description="선택된 앱 을/를 중복 정리합니다!")
 def dedupe_application(self, request: WSGIRequest, queryset: QuerySet):
-    app_list = []
-    app_names = []
+    packages = []
+    appnames = []
     for obj in queryset:
-        app_name = obj.app_name
-        app_id = obj.package_name
-        if (app_name, app_id,) in app_list or app_name in app_names:
+        if obj.package_name in packages or obj.app_name in appnames:
             obj.delete()
         else:
-            app_names.append(app_name)
-            app_list.append((app_name, app_id,))
+            appnames.append(obj.app_name)
+            packages.append(obj.package_name)
 
 
 class AppAdmin(admin.ModelAdmin):
-    list_display = ["app_name", "package_name", "icon_url"]
-    search_fields = ["app_name", "package_name"]
+    list_display = ['id', 'app_name', 'package_name', 'market_appid']
+    search_fields = ["app_name", "package_name", "market_appid"]
     actions = [dedupe_application, follow_application]
 
 
 class RankedAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["app", "package_name", "rank", "market", "deal_type", "rank_type", "created_at"]
+    list_display = ['app', 'market', 'deal_type', 'app_type', 'chart_type', 'app_name', 'date', 'market_appid', 'package_name', 'rank']
     search_fields = ["app_name", "market_appid", "package_name"]
     actions = [follow_application, ]
 
@@ -65,27 +63,21 @@ class RankedAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class FollowingAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["app", "created_at", "is_active", "package_name"]
-    list_select_related = ["app"]
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "app":
-            return AppChoiceField(queryset=App.objects.order_by("app_name").all())
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    list_display = ['id', 'app_name', 'package_name', 'market_appid', 'is_active']
 
 
 class TrackingAppsAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["app", "package_name", "market", "rank", "deal_type", "rank_type", "created_at"]
+    list_display = ['app', 'following', 'deal_type', 'market', 'chart_type', 'rank', 'date']
     search_fields = ["app_name", "package_name", ]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "app":
-            return AppChoiceField(queryset=App.objects.order_by("app_name").all())
+        if db_field.name == "following":
+            return FollowingChoiceField(queryset=Following.objects.order_by("app_name").all())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class OneStoreDLAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["app", "market_appid", "genre", "downloads", "volume", "released", "created_at"]
+    list_display = ['id', 'app', 'market_appid', 'genre', 'downloads', 'volume', 'released']
     search_fields = ["app_name", "market_appid", ]
     actions = [follow_application, ]
 

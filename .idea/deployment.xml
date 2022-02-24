@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="aws-deployment-server" uploadOnCheckin="d25e2c9f-beaa-4e4c-ad84-81b106df4e14" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" uploadOnCheckin="d25e2c9f-beaa-4e4c-ad84-81b106df4e14" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="aws-deployment-server">
         <serverdata>

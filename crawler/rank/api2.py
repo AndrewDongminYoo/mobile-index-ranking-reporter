@@ -1,3 +1,7 @@
+from datetime import timedelta
+from typing import List
+
+from django.utils import timezone
 from ninja import NinjaAPI
 from ninja.orm import create_schema
 
@@ -13,7 +17,7 @@ OneStoreSchema = create_schema(OneStoreDL)
 TrackingSchema = create_schema(TrackingApps)
 
 
-@api.get("/tracked", tags=["index"])
+@api.get("/tracked", response=List[RankedSchema], tags=["index"])
 def show_all_apps(request, *args, **kwargs):
     """
     TODO:
@@ -22,7 +26,9 @@ def show_all_apps(request, *args, **kwargs):
     원스토어 앱의 경우 가장 최근의 다운로드 수를 첨부한다.
     일별 가장 높은 데이터(Min)를 리턴한다.
     """
-    pass
+    follows = Following.objects.values_list("app_name")
+    limit = timezone.now() - timedelta(hours=30)
+    return Ranked.objects.filter(app__app_name__in=follows, created_at__gte=limit)
 
 
 @api.post("/search", tags=["index"])
@@ -37,13 +43,14 @@ def search_with_query(request, *args, **kwargs):
     pass
 
 
-@api.get("/", tags=["index"])
+@api.get("/detail", tags=["index"])
 def show_details(request, *args, **kwargs):
     """
     TODO:
     특정 앱을 자세히 보려고 클릭하면,
     그 앱의 최근 추적 결과 30건을 리턴한다.
-    # 최근 30건(30시간) 동안의 추적 결과를 모두 가져온 다음 앱에 따라 그룹바이한다.
+    # 최근 30건(30시간) 동안의 추적 결과를 모두 가져온 다음 앱에 따라 그룹바이한다. -> 다운로드 수만
+    # 최근 3일간 날짜별 최고 랭킹!!!!!! 변화 기록 (히스토리)
     (순위권 밖에 있을 때는 200위로 설정)
     """
     pass

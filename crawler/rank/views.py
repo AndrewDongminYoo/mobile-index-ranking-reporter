@@ -25,8 +25,8 @@ def statistic(request: WSGIRequest, market=None, deal=None, app=None):
 def my_rank(request: WSGIRequest):
     # 등록한 애플리케이션 최근 3일 차트
     apps = TrackingApps.objects.filter(created_at__gte=timezone.now() - timedelta(days=3))
-    ratings = apps.values("created_at__date", "app_name", "market", "deal_type", "rank_type").annotate(
-        rank=Min("rank")).values("created_at__date", "icon_url", "app_name", "market", "deal_type", "rank_type",
+    ratings = apps.values("created_at__date", "app_name", "market", "deal_type", "chart_type").annotate(
+        rank=Min("rank")).values("created_at__date", "icon_url", "app_name", "market", "deal_type", "chart_type",
                                  "rank").order_by("-created_at__date")
     return render(request, "my_rank.html", {"apps": ratings})
 

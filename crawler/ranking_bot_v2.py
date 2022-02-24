@@ -1,9 +1,14 @@
 import sys
+
+from django.db.models import Q
+
 sys.path.append('/home/ubuntu/app-rank/ranker')
 import os
+
 os.environ.setdefault("PYTHONUNBUFFERED;", "1")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
+
 if 'setup' in dir(django):
     django.setup()
 
@@ -14,12 +19,8 @@ from datetime import timedelta
 from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex, OneStoreDL
 
 logger = getLogger(__name__)
-user_agent = " ".join(
-    ["Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-     "AppleWebKit/537.36 (KHTML, like Gecko)",
-     "Chrome/98.0.4758.80 Safari/537.36"])
-headers = {'origin': 'https://www.mobileindex.com',
-           'user-agent': user_agent}
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36"
+headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
 
 
 def post_to_slack(text=None):
@@ -32,39 +33,42 @@ def post_to_slack(text=None):
     logger.debug(req.status_code)
 
 
-def get_soup(appid, back=True):
-    one_url = f"https://m.onestore.co.kr/mobilepoc/web/apps/appsDetail/spec.omp?prodId={appid}" \
-        if back else f"https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId={appid}"
+def get_soup(market_id, back=True):
+    one_url = "https://m.onestore.co.kr/mobilepoc/"
+    if back:
+        one_url += f"web/apps/appsDetail/spec.omp?prodId={market_id}"
+    else:
+        one_url += f"apps/appsDetail.omp?prodId={market_id}"
     from bs4 import BeautifulSoup
     response = requests.get(one_url)
     if response.status_code == 200:
         return BeautifulSoup(response.text, "html.parser")
 
 
-def get_one_store_app_download_count(date: TimeIndex, appid: str, app: App):
+def get_one_store_app_download_count(date: TimeIndex, market_id: str, app: App):
     try:
-        soup = get_soup(appid, True)
-        download = soup.select_one("li:-soup-contains('다운로드수') > span").text
+        soup = get_soup(market_id, True)
+        d_counts = soup.select_one("li:-soup-contains('다운로드수') > span").text
         d_string = soup.select_one("li:-soup-contains('출시일') > span").text
         genre = soup.select_one("li:-soup-contains('장르') > span").text
         volume = soup.select_one("li:-soup-contains('용량') > span").text
         style = soup.select_one("#header > div > div > div.header-co-right > span").get('style')
         icon_url = style.replace("background-image:url(", "").replace(")", "")
 
-        soup2 = get_soup(appid, False)
+        soup2 = get_soup(market_id, False)
         app_name = soup2.title.get_text().replace(" - 원스토어", "")
         logger.debug(app_name)
 
         import datetime
         array = [i for i in map(int, d_string.split("."))]
         released = datetime.date(year=array[0], month=array[1], day=array[2])
-        d_counts = int(download.replace(",", ""))
+        download = int(d_counts.replace(",", ""))
 
         ones_app = OneStoreDL(
             date_id=date.id,
             app_id=app.id,
-            market_appid=appid,
-            downloads=d_counts,
+            market_appid=market_id,
+            downloads=download,
             genre=genre,
             volume=volume,
             released=released,
@@ -76,7 +80,25 @@ def get_one_store_app_download_count(date: TimeIndex, appid: str, app: App):
         pass
 
 
-def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
+def create_app(app_data: dict):
+    app = App.objects.filter(Q(app_name=app_data.get("app_name"))
+                             | Q(icon_url=app_data.get('icon_url'))
+                             | Q(market_appid=app_data.get("market_appid")))
+    if not app.exists():
+        app = App(
+            app_name=app_data.get("app_name"),
+            icon_url=app_data.get('icon_url'),
+            market_appid=app_data.get("market_appid")
+        )
+        app.package_name = app_data.get("package_name")
+        app.save()
+        print(app)
+        return app
+    print(app)
+    return app.first()
+
+
+def crawl_app_store_rank(term: str, market: str, price: str, game_or_app: str):
     """
     param deal: "realtime_rank_v2", "global_rank_v2"
     param market: "all", "google"(global)
@@ -84,41 +106,73 @@ def crawl_app_store_rank(deal: str, market: str, price: str, game: str):
     param game: "app", "game"
     return: Ranked
     """
-    url = f'https://proxy-insight.mobileindex.com/chart/{deal}'  # "realtime_rank_v2", "global_rank_v2"
+    url = f'https://proxy-insight.mobileindex.com/chart/{term}'  # "realtime_rank_v2", "global_rank_v2"
     data = {
         "market": market,  # "all", "google"
         "country": "kr",
         "rankType": price,  # "gross", "paid", "free"
-        "appType": game,  # "game", "app"
+        "appType": game_or_app,  # "game", "app"
         "date": timezone.now().strftime("%Y%m%d"),
         "startRank": 1,
         "endRank": 100,
     }
     req = requests.post(url, data=data, headers=headers)
-    obj = req.json()
-    if obj["status"]:
-        date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
-        for app_data in obj["data"]:
+    response = req.json()
+    if response["status"]:
+        _date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
+        print(_date)
+        for app_data in response["data"]:
             logger.debug(app_data)
-            app = App.objects.get_or_create(
-                app_name=app_data.get("app_name"),
-                package_name=app_data.get("market_appid"),
-                icon_url=app_data.get('icon_url'),
-            )
-            app[0].save()
+            _app = create_app(app_data)
 
             item = Ranked(
-                date_id=date.id,
-                app_id=app[0].id,
-                app_name=app[0].app_name,
-                icon_url=app[0].icon_url,
-                package_name=app[0].package_name,
+                date_id=_date.id,
+                app_id=_app.id,
+                app_name=_app.app_name,
+                icon_url=_app.icon_url,
+                package_name=_app.package_name,
                 market_appid=app_data.get('market_appid'),
                 market=app_data.get("market_name"),  # "google", "apple", "one"
-                deal_type=deal.replace("_v2", "").replace("global", "market"),  # "realtime_rank", "market_rank"
-                app_type=game,  # "game", "app"
+                deal_type=term.replace("_v2", "").replace("global", "market"),  # "realtime_rank", "market_rank"
+                app_type=game_or_app,  # "game", "app"
                 rank=app_data.get('rank'),
-                rank_type=app_data.get('rank_type'),
+                chart_type=app_data.get('rank_type'),
+            )
+            item.save()
+
+
+def collecting_datas(term: str, market: str, price: str, game_or_app: str, date: int):
+    url = f'https://proxy-insight.mobileindex.com/chart/{term}'  # "realtime_rank_v2", "global_rank_v2"
+    data = {
+        "market": market,  # "all", "google"
+        "country": "kr",
+        "rankType": price,  # "gross", "paid", "free"
+        "appType": game_or_app,  # "game", "app"
+        "date": 20220200 + date,
+        "startRank": 1,
+        "endRank": 100,
+    }
+    req = requests.post(url, data=data, headers=headers)
+    response = req.json()
+    if response["status"]:
+        from datetime import datetime
+        _date = TimeIndex.objects.get_or_create(date=datetime.strptime(response["date"], "%Y-%m-%d").strftime("%Y%m%d%H%M"))[0]
+        for app_data in response["data"]:
+            logger.debug(app_data)
+            _app = create_app(app_data)
+
+            item = Ranked(
+                date_id=_date.id,
+                app_id=_app.id,
+                app_name=_app.app_name,
+                icon_url=_app.icon_url,
+                package_name=_app.package_name,
+                market_appid=app_data.get('market_appid'),
+                market=app_data.get("market_name"),  # "google", "apple", "one"
+                deal_type=term.replace("_v2", "").replace("global", "market"),  # "realtime_rank", "market_rank"
+                app_type=game_or_app,  # "game", "app"
+                rank=app_data.get('rank'),
+                chart_type=app_data.get('rank_type'),
             )
             item.save()
 
@@ -130,16 +184,16 @@ def tracking_rank_flushing():
         app_name = item.app_name
         date_id = item.date_id
         tracking = TrackingApps.objects.get_or_create(
-                app=item.app,
-                deal_type=item.deal_type,
-                market=item.market,
-                rank_type=item.rank_type,
-                app_name=app_name,
-                icon_url=item.app.icon_url,
-                package_name=item.app.package_name,
-                rank=item.rank,
-                date_id=date_id,
-            )
+            app=item.app,
+            deal_type=item.deal_type,
+            market=item.market,
+            chart_type=item.chart_type,
+            app_name=app_name,
+            icon_url=item.app.icon_url,
+            package_name=item.app.package_name,
+            rank=item.rank,
+            date_id=date_id,
+        )
         tracking[0].save()
     weekdays = timezone.now() - timedelta(days=7)
     for old in TrackingApps.objects.filter(created_at__lt=weekdays):
@@ -175,6 +229,16 @@ def daily():
     post_to_slack("일간 크롤링 완료")
 
 
+def main():
+    for deal in ["global_rank_v2"]:
+        for market in ["all"]:
+            for price in ["gross", "paid", "free"]:
+                for game in ["app", "game"]:
+                    for day in range(14, 25):
+                        collecting_datas(deal, market, price, game, day)
+
+
 if __name__ == '__main__':
     # daily()
-    hourly()
+    # hourly()
+    main()

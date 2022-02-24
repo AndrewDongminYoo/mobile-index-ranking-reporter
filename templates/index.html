@@ -168,12 +168,12 @@
                 .then((appDatas) => {
                     $("tbody#my-rank-table-body").append(`<tr style="border-width: 5px;"></tr>`)
                     _.forEach(appDatas, (appData) => {
-                        let { app_name, rank, app_type, created_at, deal_type, icon_url, market, package_name, rank_type, market_appid} = appData;
+                        let { app_name, rank, app_type, created_at, deal_type, icon_url, market, package_name, chart_type, market_appid} = appData;
                         template = template
                             .replace("#ICON", icon_url)
                             .replace("#LINK", getLink(market, package_name))
                             .replace("$기간", deal_type === "market_rank" ? "일간" : "실시간")
-                            .replace("$분야", rankType(rank_type))
+                            .replace("$분야", rankType(chart_type))
                             .replace("$스토어", getStoreIcon(market))
                             .replace("$순위", `${rank.toString()} 위 <br><small>(${moment(created_at).format("YY.MM.DD. HH:mm")})</small>`)
                             .replace("$다운", market !== "one" ? "-" : "$원스토어")

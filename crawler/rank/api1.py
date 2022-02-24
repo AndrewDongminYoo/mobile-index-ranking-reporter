@@ -64,7 +64,7 @@ def get_ranked_list(request: WSGIRequest,
     - reverse: reversed or not
     """
     query_set = Ranked.objects \
-        .filter(rank_type__startswith=rtype) \
+        .filter(chart_type__startswith=rtype) \
         .filter(market__startswith=store) \
         .filter(deal_type__startswith=deal) \
         .filter(app_type=game)
@@ -102,7 +102,7 @@ def add_following_app_and_search(request: WSGIRequest,
             app=ranked_app.app,
             deal_type=ranked_app.deal_type,
             market=ranked_app.market,
-            rank_type=ranked_app.rank_type,
+            chart_type=ranked_app.chart_type,
             app_name=app_name,
             icon_url=ranked_app.app.icon_url,
             package_name=ranked_app.app.package_name,

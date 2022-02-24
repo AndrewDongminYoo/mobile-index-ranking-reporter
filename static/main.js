@@ -37,7 +37,7 @@ const getMyRanks = () => {
     axios.get(`/api/following?sort=created_at&reverse=true&limit=100&offset=0`)
         .then(res => res.data.items)
         .then((items) => {
-            let item_array = _.groupBy(items, ({app_name, deal_type, market, rank_type}) => _.join([app_name, deal_type, market, rank_type], " "))
+            let item_array = _.groupBy(items, ({app_name, deal_type, market, chart_type}) => _.join([app_name, deal_type, market, chart_type], " "))
             _.forEach(item_array, (item, name) => {
                 console.log(name)
                 console.log(item)
@@ -49,7 +49,7 @@ const getMyRanks = () => {
 }
 
 const some = (index, response) => {
-    let {market, icon_url, app_name, date, rank_type, deal_type, rank} = response
+    let {market, icon_url, app_name, date, chart_type, deal_type, rank} = response
     let template = `<tr>
         <td class="center">${index + 1}</td>
         <td class="center">
@@ -60,7 +60,7 @@ const some = (index, response) => {
         </td><td class="center">
         <div class="markets">
         [[[[__market__]]]]
-        </div></td><td class="center">${rank_type}</td>
+        </div></td><td class="center">${chart_type}</td>
         <td class="center">${deal_type}</td>
         <td class="center">${rank}</td>
     </tr>`
