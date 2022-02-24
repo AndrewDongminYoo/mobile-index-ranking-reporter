@@ -4,7 +4,8 @@ from django.db.models import QuerySet
 from import_export.admin import ImportExportMixin
 
 from crawler.forms import AppChoiceField, FollowingChoiceField
-from crawler.models import Following, App
+from crawler.models import App
+from crawler.models import Following
 from crawler.models import OneStoreDL
 from crawler.models import Ranked
 from crawler.models import TrackingApps
