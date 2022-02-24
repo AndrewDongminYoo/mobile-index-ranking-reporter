@@ -1,11 +1,12 @@
 from datetime import timedelta
 from typing import List
 
+from django.db.models import Min
+from django.db.models import Q
 from django.utils import timezone
 from ninja import NinjaAPI
 from ninja.orm import create_schema
 
-# from django.db.models import Sum, Count, Max, Min, Avg
 from crawler.models import Ranked, Following, TrackingApps, OneStoreDL, App
 
 api = NinjaAPI(title="Application", urls_namespace="v2")
@@ -26,9 +27,7 @@ def show_all_apps(request, *args, **kwargs):
     원스토어 앱의 경우 가장 최근의 다운로드 수를 첨부한다.
     일별 가장 높은 데이터(Min)를 리턴한다.
     """
-    follows = Following.objects.values_list("app_name")
-    limit = timezone.now() - timedelta(hours=30)
-    return Ranked.objects.filter(app__app_name__in=follows, created_at__gte=limit)
+    return Following.objects.all()
 
 
 @api.post("/search", tags=["index"])
@@ -40,7 +39,8 @@ def search_with_query(request, *args, **kwargs):
     그 단어를 '패키지명'에 포함하고 있는 앱을
     함께 리턴한다.
     """
-    pass
+    query = request.POST.get('query')
+    return App.objects.filter(Q(app_name__search=query) | Q(market_appid__search=query)).all()
 
 
 @api.get("/detail", tags=["index"])
@@ -53,4 +53,14 @@ def show_details(request, *args, **kwargs):
     # 최근 3일간 날짜별 최고 랭킹!!!!!! 변화 기록 (히스토리)
     (순위권 밖에 있을 때는 200위로 설정)
     """
-    pass
+    appid = request.GET.get("app")
+    time3 = timezone.now() - timedelta(hours=30)
+    d_day = timezone.now() - timedelta(days=3)
+
+    downloads = OneStoreDL.objects.filter(app_id=appid,
+                                          created_at__gte=time3).values_list("downloads")
+    queryset = TrackingApps.objects\
+        .filter(app_id=appid, created_at__gte=d_day)\
+        .annotate(min_rank=Min("rank"))\
+        .values("app_name", "min_rank", "date")
+    return
