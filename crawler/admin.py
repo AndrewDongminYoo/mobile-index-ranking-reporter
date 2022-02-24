@@ -11,12 +11,11 @@ from crawler.models import TrackingApps
 
 
 # Register your models here.
-@admin.action(description="선택된 랭킹 을/를 추적합니다!")
+@admin.action(description=f"선택된 애플리케이션 을/를 추적합니다!")
 def follow_application(self, request: WSGIRequest, queryset: QuerySet):
     for obj in queryset:
         if type(obj) == App:
             follow = Following(
-                app=obj,
                 app_name=obj.app_name,
                 package_name=obj.package_name,
                 market_appid=obj.market_appid,
@@ -26,7 +25,6 @@ def follow_application(self, request: WSGIRequest, queryset: QuerySet):
         elif type(obj) in [Ranked, OneStoreDL]:
             app = App.objects.filter(pk=obj.app_id).first()
             following = Following(
-                app=app,
                 app_name=app.app_name,
                 package_name=app.package_name,
                 market_appid=app.market_appid,

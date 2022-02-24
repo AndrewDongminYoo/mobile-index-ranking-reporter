@@ -45,9 +45,9 @@ def get_soup(market_id, back=True):
         return BeautifulSoup(response.text, "html.parser")
 
 
-def get_one_store_app_download_count(date: TimeIndex, market_id: str, app: App):
+def get_one_store_app_download_count(date: TimeIndex, app: App):
     try:
-        soup = get_soup(market_id, True)
+        soup = get_soup(app.market_appid, True)
         d_counts = soup.select_one("li:-soup-contains('다운로드수') > span").text
         d_string = soup.select_one("li:-soup-contains('출시일') > span").text
         genre = soup.select_one("li:-soup-contains('장르') > span").text
@@ -55,7 +55,7 @@ def get_one_store_app_download_count(date: TimeIndex, market_id: str, app: App):
         style = soup.select_one("#header > div > div > div.header-co-right > span").get('style')
         icon_url = style.replace("background-image:url(", "").replace(")", "")
 
-        soup2 = get_soup(market_id, False)
+        soup2 = get_soup(app.market_appid, False)
         app_name = soup2.title.get_text().replace(" - 원스토어", "")
         logger.debug(app_name)
 
@@ -65,9 +65,9 @@ def get_one_store_app_download_count(date: TimeIndex, market_id: str, app: App):
         download = int(d_counts.replace(",", ""))
 
         ones_app = OneStoreDL(
-            date_id=date.id,
-            app_id=app.id,
-            market_appid=market_id,
+            date=date,
+            app=app,
+            market_appid=app.market_appid,
             downloads=download,
             genre=genre,
             volume=volume,
@@ -143,33 +143,35 @@ def crawl_app_store_rank(term: str, market: str, price: str, game_or_app: str):
 
 
 def tracking_rank_flushing():
-    following = [f[0] for f in Following.objects.values_list("package_name")]
+    following = [f[0] for f in Following.objects.values_list("market_appid")]
     yesterday = timezone.now() - timedelta(days=3)
-    for item in Ranked.objects.filter(created_at__gte=yesterday, app_name__in=following):
-        tracking = TrackingApps.objects.get_or_create(
-            app=item.app,
-            deal_type=item.deal_type,
-            market=item.market,
-            chart_type=item.chart_type,
-            app_name=item.app_name,
-            icon_url=item.app.icon_url,
-            package_name=item.app.package_name,
-            rank=item.rank,
-            date_id=item.date_id,
+    for ranked_ in Ranked.objects.filter(created_at__gte=yesterday, market_appid__in=following):
+        f_app = Following.objects.filter(market_appid=ranked_.market_appid).first()
+        tracking = TrackingApps.objects.update_or_create(
+            following=f_app,
+            app=ranked_.app,
+            deal_type=ranked_.deal_type,
+            market=ranked_.market,
+            chart_type=ranked_.chart_type,
+            app_name=ranked_.app_name,
+            icon_url=ranked_.app.icon_url,
+            package_name=ranked_.app.package_name,
+            rank=ranked_.rank,
+            date_id=ranked_.date_id,
         )
-        tracking[0].save()
+        if len(tracking):
+            tracking[0].save()
     weekdays = timezone.now() - timedelta(days=7)
     for old in TrackingApps.objects.filter(created_at__lt=weekdays):
         old.delete()
 
 
-def following_crawl():
+def following_one_crawl():
     date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
     logger.debug(date)
     for obj in Following.objects.filter(is_active=True).all():
-        appid = obj.app_id
-        app = App.objects.filter(pk=appid).first()
-        get_one_store_app_download_count(date, app.package_name, app)
+        app = App.objects.filter(market_appid=obj.market_appid).first()
+        get_one_store_app_download_count(date, app)
 
 
 def hourly():
@@ -178,7 +180,7 @@ def hourly():
             for price in ["free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
-    following_crawl()
+    following_one_crawl()
     tracking_rank_flushing()
     post_to_slack("정기 크롤링 완료")
 
@@ -194,5 +196,6 @@ def daily():
 
 if __name__ == '__main__':
     # daily()
-    hourly()
+    # hourly()
+    following_one_crawl()
 

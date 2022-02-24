@@ -64,7 +64,7 @@ class Following(Timestamped):
         verbose_name = "순위 추적"
 
     app_name = models.CharField(max_length=64, verbose_name="앱 이름")
-    package_name = models.CharField(max_length=64, verbose_name="패키지명")
+    package_name = models.CharField(max_length=64, null=True, verbose_name="패키지명")
     market_appid = models.CharField(max_length=64, verbose_name="스토어 ID")
     is_active = models.BooleanField(default=True, verbose_name="추적 중 여부")
 
@@ -93,7 +93,6 @@ class OneStoreDL(Timestamped):
         verbose_name = "원스토어 순위"
 
     app = models.ForeignKey(App, on_delete=models.CASCADE, verbose_name="애플리케이션")
-
     market_appid = models.CharField(max_length=32, verbose_name="스토어 ID")
     app_name = models.CharField(max_length=128, verbose_name="앱 이름")
     icon_url = models.URLField(default=None, verbose_name="앱 아이콘")
