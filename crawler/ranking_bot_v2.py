@@ -76,6 +76,7 @@ def get_one_store_app_download_count(date: TimeIndex, market_id: str, app: App):
             app_name=app_name,
         )
         ones_app.save()
+        return ones_app
     except AttributeError:
         pass
 
@@ -126,73 +127,35 @@ def crawl_app_store_rank(term: str, market: str, price: str, game_or_app: str):
             _app = create_app(app_data)
 
             item = Ranked(
-                date_id=_date.id,
                 app_id=_app.id,
+                date_id=_date.id,
+                app_type=game_or_app,  # "game", "app"
                 app_name=_app.app_name,
                 icon_url=_app.icon_url,
-                package_name=_app.package_name,
-                market_appid=app_data.get('market_appid'),
-                market=app_data.get("market_name"),  # "google", "apple", "one"
-                deal_type=term.replace("_v2", "").replace("global", "market"),  # "realtime_rank", "market_rank"
-                app_type=game_or_app,  # "game", "app"
                 rank=app_data.get('rank'),
-                chart_type=app_data.get('rank_type'),
-            )
-            item.save()
-
-
-def collecting_datas(term: str, market: str, price: str, game_or_app: str, date: int):
-    url = f'https://proxy-insight.mobileindex.com/chart/{term}'  # "realtime_rank_v2", "global_rank_v2"
-    data = {
-        "market": market,  # "all", "google"
-        "country": "kr",
-        "rankType": price,  # "gross", "paid", "free"
-        "appType": game_or_app,  # "game", "app"
-        "date": 20220200 + date,
-        "startRank": 1,
-        "endRank": 100,
-    }
-    req = requests.post(url, data=data, headers=headers)
-    response = req.json()
-    if response["status"]:
-        from datetime import datetime
-        _date = TimeIndex.objects.get_or_create(date=datetime.strptime(response["date"], "%Y-%m-%d").strftime("%Y%m%d%H%M"))[0]
-        for app_data in response["data"]:
-            logger.debug(app_data)
-            _app = create_app(app_data)
-
-            item = Ranked(
-                date_id=_date.id,
-                app_id=_app.id,
-                app_name=_app.app_name,
-                icon_url=_app.icon_url,
                 package_name=_app.package_name,
-                market_appid=app_data.get('market_appid'),
+                market_appid=_app.market_appid,
                 market=app_data.get("market_name"),  # "google", "apple", "one"
-                deal_type=term.replace("_v2", "").replace("global", "market"),  # "realtime_rank", "market_rank"
-                app_type=game_or_app,  # "game", "app"
-                rank=app_data.get('rank'),
                 chart_type=app_data.get('rank_type'),
+                deal_type=term.replace("_v2", "").replace("global", "market"),  # "realtime_rank", "market_rank"
             )
             item.save()
 
 
 def tracking_rank_flushing():
-    following_applications = [f[0] for f in Following.objects.values_list("app_name")]
+    following = [f[0] for f in Following.objects.values_list("package_name")]
     yesterday = timezone.now() - timedelta(days=3)
-    for item in Ranked.objects.filter(created_at__gte=yesterday, app_name__in=following_applications):
-        app_name = item.app_name
-        date_id = item.date_id
+    for item in Ranked.objects.filter(created_at__gte=yesterday, app_name__in=following):
         tracking = TrackingApps.objects.get_or_create(
             app=item.app,
             deal_type=item.deal_type,
             market=item.market,
             chart_type=item.chart_type,
-            app_name=app_name,
+            app_name=item.app_name,
             icon_url=item.app.icon_url,
             package_name=item.app.package_name,
             rank=item.rank,
-            date_id=date_id,
+            date_id=item.date_id,
         )
         tracking[0].save()
     weekdays = timezone.now() - timedelta(days=7)
@@ -229,16 +192,7 @@ def daily():
     post_to_slack("일간 크롤링 완료")
 
 
-def main():
-    for deal in ["global_rank_v2"]:
-        for market in ["all"]:
-            for price in ["gross", "paid", "free"]:
-                for game in ["app", "game"]:
-                    for day in range(14, 25):
-                        collecting_datas(deal, market, price, game, day)
-
-
 if __name__ == '__main__':
     # daily()
-    # hourly()
-    main()
+    hourly()
+

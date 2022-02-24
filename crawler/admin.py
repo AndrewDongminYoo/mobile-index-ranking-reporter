@@ -15,46 +15,36 @@ from crawler.models import TrackingApps
 def follow_application(self, request: WSGIRequest, queryset: QuerySet):
     for obj in queryset:
         if type(obj) == App:
-            print("hello")
             follow = Following(
-                app_name=obj.app_name,
                 app=obj,
+                app_name=obj.app_name,
+                package_name=obj.package_name,
+                market_appid=obj.market_appid,
+                is_active=True,
             )
             follow.save()
         elif type(obj) in [Ranked, OneStoreDL]:
-            print("hi")
-            app_name = obj.app_name
-            app_id = obj.app_id
-            app = App.objects.filter(pk=app_id).first()
+            app = App.objects.filter(pk=obj.app_id).first()
             following = Following(
-                app_name=app_name,
                 app=app,
+                app_name=app.app_name,
+                package_name=app.package_name,
+                market_appid=app.market_appid,
+                is_active=True,
             )
             following.save()
-
-
-@admin.action(description="선택된 앱 을/를 중복 정리합니다!")
-def dedupe_application(self, request: WSGIRequest, queryset: QuerySet):
-    packages = []
-    appnames = []
-    for obj in queryset:
-        if obj.package_name in packages or obj.app_name in appnames:
-            obj.delete()
-        else:
-            appnames.append(obj.app_name)
-            packages.append(obj.package_name)
 
 
 class AppAdmin(admin.ModelAdmin):
     list_display = ['id', 'app_name', 'package_name', 'market_appid']
     search_fields = ["app_name", "package_name", "market_appid"]
-    actions = [dedupe_application, follow_application]
+    actions = [follow_application]
 
 
 class RankedAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ['app', 'market', 'deal_type', 'app_type', 'chart_type', 'app_name', 'date', 'market_appid', 'package_name', 'rank']
+    list_display = ['rank', 'app', 'market', 'deal_type', 'app_type', 'chart_type', 'app_name', 'date', 'market_appid']
     search_fields = ["app_name", "market_appid", "package_name"]
-    actions = [follow_application, ]
+    actions = [follow_application]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "app":
@@ -64,11 +54,12 @@ class RankedAdmin(ImportExportMixin, admin.ModelAdmin):
 
 class FollowingAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ['id', 'app_name', 'package_name', 'market_appid', 'is_active']
+    search_fields = ["app_name", "market_appid", "package_name"]
 
 
 class TrackingAppsAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ['app', 'following', 'deal_type', 'market', 'chart_type', 'rank', 'date']
-    search_fields = ["app_name", "package_name", ]
+    search_fields = ["app_name", "market_appid", "package_name"]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "following":
