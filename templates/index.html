@@ -85,6 +85,7 @@
         </table>
     </main>
     {% include "includes/modal.html" %}
+    {% include "includes/bigger_modal.html" %}
 {% endblock %}
 {% block script %}
     <script>
@@ -99,24 +100,61 @@
 
         const searchInModal = () => {
             let query = $("#search-input").val()
-            $("div.modal-body tbody").empty()
-            axios.post(`/api/ranking?query=${query}`)
-                .then((res) => {
-                    $("#staticBackdrop")?.modal("show")
-                    _.forEach(res.data.items, (item) => {
-                        let {id, app_name, icon_url, package_name} = item
-                        let link = parseInt(package_name)
-                            ? `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${package_name}`
-                            : `https://play.google.com/store/apps/details?id=${package_name}`
-                        let template = `<tr>
+            $("#staticBackdrop > div > div > div > div.modal-body tbody").empty()
+            axios.post(`/v1/ranking?query=${query}`)
+            .then((res) => {
+                $("#staticBackdrop")?.modal("show")
+                _.forEach(res.data.items, (item) => {
+                    let {id, app_name, icon_url, market_appid} = item
+                    let link
+                    if (icon_url.includes("onestore")) {
+                        link = `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${market_appid}`
+                    } else if (icon_url.includes("google")) {
+                        link = `https://play.google.com/store/apps/details?id=${market_appid}`
+                    } else {
+                        link = `https://apps.apple.com/us/app/id${market_appid}`
+                    }
+                    let template = `<tr>
                         <td class="center"><img src="${icon_url}" width="36" height="36" alt="${id}"></td>
                         <td class="left"><a href="${link}">${app_name}</a></td>
-                        <td class="left">${package_name}</td>
+                        <td class="left">${market_appid}</td>
                         <td class="center"><button onclick="track('${app_name}')">추적</button>
                         </td></tr>`
-                        $("div.modal-body tbody").append(template)
-                    })
+                    $("#staticBackdrop > div > div > div > div.modal-body tbody").append(template)
                 })
+            })
+        }
+
+        const showStatistic = (marketPackage, followID) => {
+            $("#myLarge tbody").empty()
+            axios.get(`/v2/downloads?app=${marketPackage}`)
+            .then((res) => {
+                $("#myLarge")?.modal("show")
+                _.forEach(res.data.items, item => {
+                    let {app, app_name, market_appid, created_at, downloads, genre, icon_url, released, volume} = item
+                    let template = `<tr>
+                        <td class=""><img src="${icon_url}" alt=${app} width="24"></td>
+                        <td class="">${app_name}</td>
+                        <td class="">${moment(created_at).format("YY.MM.DD. HH:mm")}</td>
+                        <td class="">${downloads}</td>
+                        </tr>`
+                    $("#myLarge #downloadTable").append(template)
+                })
+            })
+            axios.get(`/v2/tracking/statistics?app=${followID}`)
+            .then((res)=>{
+                _.forEach(res.data.items, item => {
+                    let {app, app_name, chart_type, deal_type, icon_url, market, rank} = item
+                    let template = `<tr>
+                        <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
+                        <td class="center">${app_name}</td>
+                        <td class="center">${market}</td>
+                        <td class="center">${chart_type}</td>
+                        <td class="center">${deal_type === "market_rank" ? "일간" : "실시간"}</td>
+                        <td class="center">${rank} 위</td></tr>`
+                    $("#myLarge #trackingTable").append(template)
+                })
+            })
         }
 
         const rankType = rankString => {
@@ -125,8 +163,8 @@
             if (rankString === "paid") return "유료"
         }
 
-        const getLink = (marketString, packageName) => {
-            if (marketString === "one") {
+        const getLink = (packageName, marketString) => {
+            if ((marketString === "one")||(packageName.startsWith('0000'))) {
                 return `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${packageName}`
             } else if (marketString === "apple") {
                 return `https://www.similarweb.com/app/app-store/${packageName}/statistics/`
@@ -147,17 +185,17 @@
                 $("#my-rank-table-body").empty()
                 return res.data.items
             }).then(items => _.forEach(items, (item) => {
-                let {id, market_appid} = item;
+                let {id, updated_at, market_appid} = item;
             axios.get(`/v2/tracking/last?app=${id}`)
             .then((res)=>{
-                let {chart_type, following, app, app_name, created_at, deal_type, icon_url, market, rank } = res.data;
+                let {chart_type, following, app, created_at, app_name, deal_type, icon_url, market, rank } = res.data;
                 let template = `<tr><td>${id}</td>
                     <td class="center" id="">
                     <img alt="app-icon" title="${following}"
                      class="app-icon" width="38" height="38" src="${icon_url}"></td>
-                    <td class="center" id="">${app_name}</td>
-                    <td class="center" id="">${moment(created_at).fromNow()} 등록</td>
-                    <td class="center" id=""><a href="${getLink(market, market_appid)}">${getStoreIcon(market)}</a></td>
+                    <td class="center" id=""><span onclick="showStatistic('${market_appid}', '${following}')">${app_name}</span></td>
+                    <td class="center" id="">${moment(updated_at).fromNow()} 등록</td>
+                    <td class="center" id=""><a href="${getLink(market_appid, market)}">${getStoreIcon(market)}</a></td>
                     <td class="center" id="">${deal_type === "market_rank" ? "일간" : "실시간"}</td>
                     <td class="center" id="">${rankType(chart_type)}</td>
                     <td class="center" id="">${market !== "one" ? "-" : "$원스토어"}</td>

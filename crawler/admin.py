@@ -56,7 +56,7 @@ class TrackingAppsAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class OneStoreDLAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ['id', 'app', 'market_appid', 'genre', 'downloads', 'volume', 'released']
+    list_display = ['id', 'app', 'market_appid', 'genre', 'date', 'downloads', 'volume', 'released']
     search_fields = ["app_name", "market_appid", ]
     actions = [follow_application, ]
 
