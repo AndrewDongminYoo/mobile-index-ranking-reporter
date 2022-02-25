@@ -3,7 +3,6 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import QuerySet
 from import_export.admin import ImportExportMixin
 
-from crawler.forms import AppChoiceField, FollowingChoiceField
 from crawler.models import App
 from crawler.models import Following
 from crawler.models import OneStoreDL
@@ -45,11 +44,6 @@ class RankedAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ["app_name", "market_appid", "package_name"]
     actions = [follow_application]
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "app":
-            return AppChoiceField(queryset=App.objects.order_by("app_name").all())
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
 
 class FollowingAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ['id', 'app_name', 'package_name', 'market_appid', 'is_active']
@@ -60,21 +54,11 @@ class TrackingAppsAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ['app', 'following', 'deal_type', 'market', 'chart_type', 'rank', 'date']
     search_fields = ["app_name", "market_appid", "package_name"]
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "following":
-            return FollowingChoiceField(queryset=Following.objects.order_by("app_name").all())
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
 
 class OneStoreDLAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ['id', 'app', 'market_appid', 'genre', 'downloads', 'volume', 'released']
     search_fields = ["app_name", "market_appid", ]
     actions = [follow_application, ]
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "app":
-            return AppChoiceField(queryset=App.objects.order_by("app_name").all())
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 admin.site.register(App, AppAdmin)

@@ -182,9 +182,6 @@ def tracking_rank_flushing():
         )
         if len(tracking):
             tracking[0].save()
-    weekdays = timezone.now() - timedelta(days=7)
-    for old in TrackingApps.objects.filter(created_at__lt=weekdays):
-        old.delete()
 
 
 def following_one_crawl():
