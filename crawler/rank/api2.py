@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.utils import timezone
 from ninja import NinjaAPI
 from ninja.orm import create_schema
+from ninja.pagination import LimitOffsetPagination, paginate
 
 from crawler.models import Ranked, Following, TrackingApps, OneStoreDL, App
 
@@ -24,13 +25,20 @@ def show_all_tracking_apps(request):
     return TrackingApps.objects.all()
 
 
+@api.get("/tracking", response=List[TrackingSchema], tags=["index"])
+@paginate(LimitOffsetPagination)
+def show_all_tracking_apps(request):
+    following = request.GET.get("following")
+    return TrackingApps.objects.filter(following_id=following)
+
+
 @api.post("/search", response=ApplicationSchema, tags=["index"])
 def search_apps_with_query(request):
     query = request.POST.get('query')
     return App.objects.filter(Q(app_name__search=query) | Q(market_appid__search=query)).all()
 
 
-@api.post("/new", response=FollowingSchema, tags=["index"])
+@api.post("/follow/new", response=FollowingSchema, tags=["index"])
 def new_follow_register(request):
     app_data = request.POST
     follow = Following.objects.get_or_create(
@@ -43,7 +51,13 @@ def new_follow_register(request):
     return follow
 
 
-@api.get("/detail-1", response=OneStoreSchema, tags=["index"])
+@api.get("/follow/list", response=List[FollowingSchema], tags=["index"])
+@paginate(LimitOffsetPagination)
+def load_all_following(request):
+    return Following.objects.all()
+
+
+@api.get("/detail-1", response=List[OneStoreSchema], tags=["index"])
 def show_details_of_downloads(request):
     appid = request.GET.get("app")
     time3 = timezone.now() - timedelta(hours=30)
@@ -52,7 +66,7 @@ def show_details_of_downloads(request):
         .values_list("downloads")
 
 
-@api.get("/detail-2", response=TrackingSchema, tags=["index"])
+@api.get("/detail-2", response=List[TrackingSchema], tags=["index"])
 def show_details_of_highest_ranks(request):
     appid = request.GET.get("app")
     d_day = timezone.now() - timedelta(days=3)

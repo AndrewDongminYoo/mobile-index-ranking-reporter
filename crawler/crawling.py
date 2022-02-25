@@ -47,10 +47,6 @@ def get_soup(market_id, back=True):
 
 def get_one_store_app_download_count(date: TimeIndex, app: App):
     try:
-        app.market_appid = str(int(app.market_appid))
-    except ValueError:
-        return 404
-    try:
         soup = get_soup(app.market_appid, True)
         d_counts = soup.select_one("li:-soup-contains('다운로드수') > span").text
         d_string = soup.select_one("li:-soup-contains('출시일') > span").text
