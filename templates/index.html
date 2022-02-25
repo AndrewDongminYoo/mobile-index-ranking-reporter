@@ -147,28 +147,30 @@
                 $("#my-rank-table-body").empty()
                 return res.data.items
             }).then(items => _.forEach(items, (item) => {
-                let {id, market_appid, app_name, created_at} = item;
+                let {id, market_appid} = item;
+            axios.get(`/v2/tracking/last?app=${id}`)
+            .then((res)=>{
+                let {chart_type, following, app, app_name, created_at, deal_type, icon_url, market, rank } = res.data;
                 let template = `<tr><td>${id}</td>
                     <td class="center" id="">
-                    <img alt="app-icon" title="${id}"
-                     class="app-icon" width="38" height="38" src="#ICON"></td>
+                    <img alt="app-icon" title="${following}"
+                     class="app-icon" width="38" height="38" src="${icon_url}"></td>
                     <td class="center" id="">${app_name}</td>
                     <td class="center" id="">${moment(created_at).fromNow()} 등록</td>
-                    <td class="center" id=""><a href="#LINK">$스토어</a></td>
-                    <td class="center" id="">$기간</td>
-                    <td class="center" id="">$분야</td>
-                    <td class="center" id="">$다운</td>
-                    <td class="center" id="">$순위</td></tr>`
-            axios.get(`/v2/tracking?following=${item.id}&limit=30&offset=0`)  // app = app_id
-                .then(res => res.data.items)
-                .then((appDatas) => {
-                    $("tbody#my-rank-table-body").append(`<tr style="border-width: 5px;"></tr>`)
-                    _.forEach(appDatas, (appData) => {
-                        let { app, app_name, rank, date, created_at, deal_type, icon_url, market, package_name, chart_type} = appData;
-                        console.log(app, app_name, rank, date, created_at, deal_type, icon_url, market, package_name, chart_type)
+                    <td class="center" id=""><a href="${getLink(market, market_appid)}">${getStoreIcon(market)}</a></td>
+                    <td class="center" id="">${deal_type === "market_rank" ? "일간" : "실시간"}</td>
+                    <td class="center" id="">${rankType(chart_type)}</td>
+                    <td class="center" id="">${market !== "one" ? "-" : "$원스토어"}</td>
+                    <td class="center" id="">${rank} 위 <br><small>(${moment(created_at).format("YY.MM.DD. HH:mm")})</small></td></tr>`
+                if (template.includes("$원스토어")) {
+                    axios.get(`/v2/down/last?app=${app}`)
+                    .then((res) => {
+                        $("#my-rank-table-body").append(template.replace("$원스토어", (res.data["downloads"]).toLocaleString()))
                     })
+                } else {
+                    $("#my-rank-table-body").append(template)
                 }
-            )
+            })
         }))
     </script>
 {% endblock %}
