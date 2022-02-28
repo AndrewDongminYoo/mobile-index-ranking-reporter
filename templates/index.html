@@ -129,8 +129,12 @@
             $('#myChart1').remove()
             axios.get(`/v2/tracking/statistics?app=${followID}&deal_type=${dealType}&market=${market}`)
                 .then((res) => {
-                    if (!res.data.items.length) return;
-                    _.forEachRight(res.data.items, item => {
+                    if (!res.data.items.length) {
+                        $("#myLarge #trackingTable")
+                            .append("<tr><td></td><td>데이터가 없어요</td><td>데이터가 없어요</td><td></td></tr>");
+                    }
+                    _.forEachRight(res.data.items, (item, i) => {
+                        if (i%6!==0) return
                         let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
                         let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
@@ -180,8 +184,12 @@
             $('#myChart2').remove()
             axios.get(`/v2/downloads?app=${marketPackage}`)
                 .then((res) => {
-                    if (!res.data.items.length) return;
-                    _.forEachRight(res.data.items, item => {
+                    if (!res.data.items.length) {
+                        $("#myLarge #downloadTable")
+                            .append("<tr><td></td><td>데이터가 없어요</td><td>데이터가 없어요</td><td></td></tr>");
+                    }
+                    _.forEachRight(res.data.items, (item, i) => {
+                        if (i%6!==4) return
                         let {app, app_name, created_at, downloads, icon_url,} = item
                         let template = `<tr>
                         <td class=""><img src="${icon_url}" alt=${app} width="24"></td>
