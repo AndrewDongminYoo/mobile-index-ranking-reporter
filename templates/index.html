@@ -102,91 +102,131 @@
             let query = $("#search-input").val()
             $("#modalTableBody").empty()
             axios.post(`/v1/ranking?query=${query}`)
-            .then((res) => {
-                $("#staticBackdrop")?.modal("show")
-                _.forEach(res.data.items, (item) => {
-                    let {id, app_name, icon_url, market_appid} = item
-                    let link
-                    if (icon_url.includes("onestore")) {
-                        link = `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${market_appid}`
-                    } else if (icon_url.includes("google")) {
-                        link = `https://play.google.com/store/apps/details?id=${market_appid}`
-                    } else {
-                        link = `https://apps.apple.com/us/app/id${market_appid}`
-                    }
-                    let template = `<tr>
+                .then((res) => {
+                    $("#staticBackdrop")?.modal("show")
+                    _.forEach(res.data.items, (item) => {
+                        let {id, app_name, icon_url, market_appid} = item
+                        let link
+                        if (icon_url.includes("onestore")) {
+                            link = `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${market_appid}`
+                        } else if (icon_url.includes("google")) {
+                            link = `https://play.google.com/store/apps/details?id=${market_appid}`
+                        } else {
+                            link = `https://apps.apple.com/us/app/id${market_appid}`
+                        }
+                        let template = `<tr>
                         <td class="center"><img src="${icon_url}" width="36" height="36" alt="${id}"></td>
                         <td class="left"><a href="${link}">${app_name}</a></td>
                         <td class="left">${market_appid}</td>
                         <td class="center"><button onclick="track('${app_name}')">추적</button>
                         </td></tr>`
-                    $("#modalTableBody").append(template)
+                        $("#modalTableBody").append(template)
+                    })
                 })
-            })
         }
 
-        const showStatistic = (marketPackage, followID, deal_type) => {
-            $('#myChart').remove()
-            $("#canvas").append(`<canvas id="myChart" width="600" height="200"></canvas>`)
-            const ctx = document.getElementById('myChart').getContext('2d');
-            $("#myLarge tbody").empty()
-            axios.get(`/v2/downloads?app=${marketPackage}`)
-            .then((res) => {
-                $("#myLarge")?.modal("show")
-                _.forEach(res.data.items, item => {
-                    let {app, app_name, created_at, downloads, icon_url, } = item
-                    let template = `<tr>
-                        <td class=""><img src="${icon_url}" alt=${app} width="24"></td>
-                        <td class="">${app_name}</td>
-                        <td class="">${moment(created_at).format("YY.MM.DD. HH:mm")}</td>
-                        <td class="">${downloads}</td>
-                        </tr>`
-                    $("#myLarge #downloadTable").append(template)
-                })
-            })
-            axios.get(`/v2/tracking/statistics?app=${followID}&deal_type=${deal_type}`)
-            .then((res)=>{
-                _.forEach(res.data.items, item => {
-                    let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
-                    let template = `<tr>
+        const drawRankingChart = (market, followID, dealType) => {
+            $('#myChart1').remove()
+            axios.get(`/v2/tracking/statistics?app=${followID}&deal_type=${dealType}&market=${market}`)
+                .then((res) => {
+                    if (!res.data.items.length) return;
+                    _.forEachRight(res.data.items, item => {
+                        let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
+                        let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
                         <td class="center">${app_name}</td>
                         <td class="center">${market}</td>
                         <td class="center">${chart_type}</td>
                         <td class="center">${moment(created_at).format("MM.DD HH:mm")}</td>
                         <td class="center">${rank} 위</td></tr>`
-                    $("#myLarge #trackingTable").append(template)
-                })
-                let labels = _.map(res.data.items, item => moment(item['created_at']).format("MM.DD. HH:mm"))
-                let data = {
-                    labels: labels,
-                    datasets: [{
-                        label: res.data.items[0]['app_name'],
-                        backgroundColor: 'rgb(255, 99, 132)',
-                        borderColor: 'rgb(255, 99, 132)',
-                        data: _.map(res.data.items, item => item["rank"])
-                    }]
-                }
-                let config = {
-                    type: 'line',
-                    data: data,
-                    options: {
-                        {#responsive: true,#}
-                        scales: {
-                            y: {
-                                reverse: true,
-                                min: 1,
-                                max: 50,
-                            },
+                        $("#myLarge #trackingTable").append(template)
+                    })
+                    $("#canvas1").append(`<canvas id="myChart1" width="600" height="200"></canvas>`)
+                    let ctx1 = document.getElementById('myChart1').getContext('2d');
+                    let labels1 = _.map(res.data.items, item => moment(item['created_at']).format("DD일 HH시"))
+                    let data1 = {
+                        labels: labels1,
+                        datasets: [{
+                            label: "실시간 랭킹",
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: _.map(res.data.items, item => item["rank"])
+                        }]
+                    }
+                    let config1 = {
+                        type: 'line',
+                        data: data1,
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    reverse: true,
+                                    min: 0,
+                                    max: 50,
+                                },
+                            }
                         }
                     }
-                }
-                const myChart = new Chart(
-                    ctx,
-                    config
-                )
-                myChart.draw()
-            })
+                    let myChart1 = new Chart(
+                        ctx1,
+                        config1
+                    )
+                    myChart1.draw()
+                })
+        }
+
+        const drawDownloadsChart = (marketPackage) => {
+            $("#myLarge tbody").empty()
+            $('#myChart2').remove()
+            axios.get(`/v2/downloads?app=${marketPackage}`)
+                .then((res) => {
+                    if (!res.data.items.length) return;
+                    _.forEachRight(res.data.items, item => {
+                        let {app, app_name, created_at, downloads, icon_url,} = item
+                        let template = `<tr>
+                        <td class=""><img src="${icon_url}" alt=${app} width="24"></td>
+                        <td class="">${app_name}</td>
+                        <td class="">${moment(created_at).format("YY.MM.DD. HH:mm")}</td>
+                        <td class="">${downloads}</td>
+                        </tr>`
+                        $("#myLarge #downloadTable").append(template)
+                    })
+                    $("#canvas2").append(`<canvas id="myChart2" width="600" height="200"></canvas>`)
+                    let ctx2 = document.getElementById('myChart2').getContext('2d');
+                    let labels2 = _.map(res.data.items, item => moment(item['created_at']).format("DD일 HH시"))
+                    let data2 = {
+                        labels: labels2,
+                        datasets: [{
+                            label: "다운로드 수",
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: _.map(res.data.items, item => item["downloads"])
+                        }]
+                    }
+                    let config2 = {
+                        type: 'line',
+                        data: data2,
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    reverse: false,
+                                },
+                            }
+                        }
+                    }
+                    let myChart2 = new Chart(
+                        ctx2,
+                        config2
+                    )
+                    myChart2.draw()
+                })
+        }
+
+        const showStatistic = (market, marketPackage, follow_id, deal_type) => {
+            $("#myLarge")?.modal("show")
+            drawDownloadsChart(marketPackage)
+            drawRankingChart(market, follow_id, deal_type)
         }
 
         const rankType = rankString => {
@@ -196,7 +236,7 @@
         }
 
         const getLink = (packageName, marketString) => {
-            if ((marketString === "one")||(packageName.startsWith('0000'))) {
+            if ((marketString === "one") || (packageName.startsWith('0000'))) {
                 return `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${packageName}`
             } else if (marketString === "apple") {
                 return `https://www.similarweb.com/app/app-store/${packageName}/statistics/`
@@ -217,30 +257,40 @@
                 $("#my-rank-table-body").empty()
                 return res.data.items
             }).then(items => _.forEach(items, (item) => {
-                let {id, updated_at, market_appid} = item;
+            let {id, updated_at, market_appid} = item;
             axios.get(`/v2/tracking/last?app=${id}`)
-            .then((res)=>{
-                let {chart_type, following, app, created_at, app_name, deal_type, icon_url, market, rank } = res.data;
-                let template = `<tr><td>${id}</td>
+                .then((res) => {
+                    let {
+                        chart_type,
+                        following,
+                        app,
+                        created_at,
+                        app_name,
+                        deal_type,
+                        icon_url,
+                        market,
+                        rank
+                    } = res.data;
+                    let template = `<tr><td>${id}</td>
                     <td class="center" id="">
                     <img alt="app-icon" title="${following}"
                      class="app-icon" width="38" height="38" src="${icon_url}"></td>
-                    <td class="center" id=""><span onclick="showStatistic('${market_appid}', '${following}', '${deal_type}')">${app_name}</span></td>
+                    <td class="center" id=""><span onclick="showStatistic('${market}', '${market_appid}', '${following}', '${deal_type}')">${app_name}</span></td>
                     <td class="center" id="">${moment(updated_at).fromNow()} 등록</td>
                     <td class="center" id=""><a href="${getLink(market_appid, market)}">${getStoreIcon(market)}</a></td>
                     <td class="center" id="">${deal_type === "market_rank" ? "일간" : "실시간"}</td>
                     <td class="center" id="">${rankType(chart_type)}</td>
                     <td class="center" id="">${market !== "one" ? "-" : "$원스토어"}</td>
-                    <td class="center" id="">${rank} 위 <br><small>(${moment(created_at).format("YY.MM.DD. HH:mm")})</small></td></tr>`
-                if (template.includes("$원스토어")) {
-                    axios.get(`/v2/down/last?app=${app}`)
-                    .then((res) => {
-                        $("#my-rank-table-body").append(template.replace("$원스토어", (res.data["downloads"]).toLocaleString()))
-                    })
-                } else {
-                    $("#my-rank-table-body").append(template)
-                }
-            })
+                    <td class="center" id="">${moment().isSame(created_at, "date") ? `${rank} 위` : "-"}<br><small>(${moment(created_at).format("YY.MM.DD. HH:mm")})</small></td></tr>`
+                    if (template.includes("$원스토어")) {
+                        axios.get(`/v2/down/last?app=${app}`)
+                            .then((res) => {
+                                $("#my-rank-table-body").append(template.replace("$원스토어", (res.data["downloads"]).toLocaleString()))
+                            })
+                    } else {
+                        $("#my-rank-table-body").append(template)
+                    }
+                })
         }))
     </script>
 {% endblock %}

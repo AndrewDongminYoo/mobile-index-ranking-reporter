@@ -43,12 +43,13 @@ def show_all_tracking_apps_with_following(request):
 
 @api.get("/tracking/statistics", response=List[TrackingSchema], tags=["index"])
 @paginate(LimitOffsetPagination)
-def show_details_of_highest_ranks(request, deal_type="realtime_rank"):
+def show_details_of_highest_ranks(request, market, deal_type="realtime_rank"):
     """앱 아이디 기준으로 일별 추적 결과 리턴"""
     appid = request.GET.get("app")
-    d_day = timezone.now() - timedelta(hours=30)
+    d_day = timezone.now() - timedelta(days=3)
     return TrackingApps.objects\
         .filter(following_id=appid,
+                market=market,
                 deal_type=deal_type,
                 created_at__gte=d_day)
 
@@ -90,7 +91,7 @@ def show_details_of_downloads(request):
     time3 = timezone.now() - timedelta(days=3)
     return OneStoreDL.objects\
         .filter(market_appid=appid,
-                created_at__gte=time3).order_by("-created_at")
+                created_at__gte=time3).order_by("created_at")
 
 
 @api.get("/down/last", response=OneStoreSchema, tags=["index"])
