@@ -1,4 +1,7 @@
-<!-- Modal -->
+{% extends "base.html" %}
+{% load static %}
+{% block title %}STATISTIC{% endblock %}
+{% block content %}
 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
      aria-hidden="true" id="myLarge">
     <div class="modal-dialog modal-lg" style="max-width: 720px;">
@@ -41,3 +44,13 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block script %}
+    <script>
+        let game = "app";
+        let deal = "market_rank";
+        let market = "google";
+        onLoad()
+        getResults()
+    </script>
+{% endblock %}

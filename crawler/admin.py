@@ -10,54 +10,53 @@ from crawler.models import Ranked
 from crawler.models import TrackingApps
 
 
-# Register your models here.
 @admin.action(description=f"선택된 애플리케이션 을/를 추적합니다!")
 def follow_application(self, request: WSGIRequest, queryset: QuerySet):
     for obj in queryset:
-        if type(obj) == App:
-            follow = Following(
-                app_name=obj.app_name,
-                package_name=obj.package_name,
-                market_appid=obj.market_appid,
-                is_active=True,
-            )
-            follow.save()
-        elif type(obj) in [Ranked, OneStoreDL]:
+        if type(obj) is Ranked:
             app = App.objects.filter(pk=obj.app_id).first()
             following = Following(
                 app_name=app.app_name,
-                package_name=app.package_name,
+                market_appid=app.market_appid,
+                market=app.market,
+                is_active=True,
+            )
+            following.save()
+        elif type(obj) is OneStoreDL:
+            app = App.objects.filter(pk=obj.app_id).first()
+            following = Following(
+                app_name=app.app_name,
                 market_appid=app.market_appid,
                 is_active=True,
+                market="one",
             )
             following.save()
 
 
 class AppAdmin(admin.ModelAdmin):
-    list_display = ['id', 'app_name', 'package_name', 'market_appid']
-    search_fields = ["app_name", "package_name", "market_appid"]
-    actions = [follow_application]
+    list_display = ['id', 'app_name', 'market_appid']
+    search_fields = ["app_name", "market_appid"]
 
 
 class RankedAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ['rank', 'app', 'market', 'deal_type', 'app_type', 'chart_type', 'app_name', 'date', 'market_appid']
-    search_fields = ["app_name", "market_appid", "package_name"]
+    search_fields = ["app_name", "market_appid"]
     actions = [follow_application]
 
 
 class FollowingAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ['id', 'app_name', 'package_name', 'market_appid', 'is_active']
-    search_fields = ["app_name", "market_appid", "package_name"]
+    list_display = ['id', 'app_name', 'market_appid', 'market', 'is_active']
+    search_fields = ["app_name", "market_appid"]
 
 
 class TrackingAppsAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ['app', 'following', 'deal_type', 'market', 'chart_type', 'rank', 'date']
-    search_fields = ["app_name", "market_appid", "package_name"]
+    list_display = ['app', 'following', 'market', 'deal_type', 'chart_type', 'rank', 'date']
+    search_fields = ["app_name", "market_appid"]
 
 
 class OneStoreDLAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ['id', 'app', 'market_appid', 'genre', 'date', 'downloads', 'volume', 'released']
-    search_fields = ["app_name", "market_appid", ]
+    search_fields = ["app_name", "market_appid"]
     actions = [follow_application, ]
 
 

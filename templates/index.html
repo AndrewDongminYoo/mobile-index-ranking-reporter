@@ -24,12 +24,6 @@
                style="border-radius: 0.25rem;">
             <thead>
             <tr>
-                <th scope="col" style="width: 5%">
-                    <div>#
-                        <div class="column-sort">
-                        </div>
-                    </div>
-                </th>
                 <th scope="col" style="width: 10%">
                     <div>앱 아이콘
                         <div class="column-sort">
@@ -132,6 +126,7 @@
                     if (!res.data.items.length) {
                         $("#myLarge #trackingTable")
                             .append("<tr><td></td><td>데이터가 없어요</td><td>데이터가 없어요</td><td></td></tr>");
+                        return
                     }
                     _.forEachRight(res.data.items, (item, i) => {
                         if (i%6!==0) return
@@ -187,6 +182,7 @@
                     if (!res.data.items.length) {
                         $("#myLarge #downloadTable")
                             .append("<tr><td></td><td>데이터가 없어요</td><td>데이터가 없어요</td><td></td></tr>");
+                        return
                     }
                     _.forEachRight(res.data.items, (item, i) => {
                         if (i%6!==4) return
@@ -264,9 +260,10 @@
             .then(res => {
                 $("#my-rank-table-body").empty()
                 return res.data.items
-            }).then(items => _.forEach(items, (item) => {
-            let {id, updated_at, market_appid} = item;
-            axios.get(`/v2/tracking/last?app=${id}`)
+            }).then(items =>
+            _.forEach(items, (item) => {
+                let {id, updated_at, market_appid} = item;
+                axios.get(`/v2/tracking/last?app=${id}`)
                 .then((res) => {
                     let {
                         chart_type,
@@ -279,7 +276,7 @@
                         market,
                         rank
                     } = res.data;
-                    let template = `<tr><td>${id}</td>
+                    let template = `<tr>
                     <td class="center" id="">
                     <img alt="app-icon" title="${following}"
                      class="app-icon" width="38" height="38" src="${icon_url}"></td>

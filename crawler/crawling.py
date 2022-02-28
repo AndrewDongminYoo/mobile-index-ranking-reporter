@@ -1,7 +1,5 @@
 import sys
 
-from django.db.models import Q
-
 sys.path.append('/home/ubuntu/app-rank/ranker')
 import os
 
@@ -82,20 +80,13 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
 
 
 def create_app(app_data: dict):
-    app = App.objects.filter(Q(app_name=app_data.get("app_name"))
-                             | Q(icon_url=app_data.get('icon_url'))
-                             | Q(market_appid=app_data.get("market_appid")))
-    if not app.exists():
-        app = App(
+    app = App.objects.get_or_create(
             app_name=app_data.get("app_name"),
             icon_url=app_data.get('icon_url'),
             market_appid=app_data.get("market_appid")
-        )
-        app.package_name = app_data.get("package_name")
-        app.save()
-        print(app)
-        return app
-    print(app)
+        )[0]
+    app.package_name = app_data.get("package_name")
+    app.save()
     return app.first()
 
 
@@ -133,7 +124,6 @@ def crawl_app_store_rank(term: str, market: str, price: str, game_or_app: str):
                 app_name=_app.app_name,
                 icon_url=_app.icon_url,
                 rank=app_data.get('rank'),
-                package_name=_app.package_name,
                 market_appid=_app.market_appid,
                 market=app_data.get("market_name"),  # "google", "apple", "one"
                 chart_type=app_data.get('rank_type'),
@@ -172,7 +162,7 @@ def tracking_rank_flushing():
             chart_type=ranked_.chart_type,
             app_name=ranked_.app_name,
             icon_url=ranked_.app.icon_url,
-            package_name=ranked_.app.package_name,
+            market_appid=ranked_.app.market_appid,
             rank=ranked_.rank,
             date_id=ranked_.date_id,
         )

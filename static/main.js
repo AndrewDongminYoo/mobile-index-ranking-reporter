@@ -98,15 +98,15 @@ function search() {
     axios.post(`/api/ranking?query=${query}`)
         .then((res) => res.data)
         .then((data) => data.items.forEach((item) => {
-            let {id, app_name, icon_url, package_name} = item
-            let one = parseInt(package_name)
-                ? `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${package_name}`
-                : `https://play.google.com/store/apps/details?id=${package_name}`
+            let {id, app_name, icon_url, market_appid} = item
+            let one = parseInt(market_appid)
+                ? `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${market_appid}`
+                : `https://play.google.com/store/apps/details?id=${market_appid}`
             let template = `<tr>
                         <td class="center">${id}</td>
                         <td class="center"><img src="${icon_url}" width="36" height="36" alt="${app_name}"></td>
                         <td class="left"><a href="${one}">${app_name}</a></td>
-                        <td class="left">${package_name}</td>
+                        <td class="left">${market_appid}</td>
                         <td class="center">
                             <button onclick="track('${app_name}')"
                             >추적</button>
@@ -148,13 +148,13 @@ const getResults = async () => {
     _.forEach(item_array, (items, rank) => {
         let template = `<tr><td class="center">${rank}</td>`
         _.forEach(items, (item) => {
-            let {id, app_name, icon_url, package_name, market} = item
+            let {id, app_name, icon_url, market_appid, market} = item
             let one = "#"
-            if (market === "one") one = `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${package_name}`
-            if (market === "google") one = `https://play.google.com/store/apps/details?id=${package_name}`
+            if (market === "one") one = `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${market_appid}`
+            if (market === "google") one = `https://play.google.com/store/apps/details?id=${market_appid}`
             template += `<td class="left"><a class="app" target="_blank" href="${one}">
             <img alt="${app_name}" height="38" width="38" class="app-icon false" src="${icon_url}">
-            <span class="text"><span title="${id} | ${app_name} | ${package_name} | ${rank}">${app_name}</span></span></a></td>`
+            <span class="text"><span title="${id} | ${app_name} | ${market_appid} | ${rank}">${app_name}</span></span></a></td>`
         })
         template += `</tr>`
         $("tbody#statistic-table-body").append(template)

@@ -68,8 +68,7 @@ def new_follow_register(request):
     app_data = request.POST
     follow = Following.objects.get_or_create(
         app_name=app_data.get('app_name'),
-        package_name=app_data.get('package_name'),
-        market_appid=app_data.get('market_appid'),
+        market_appid=app_data.get('market_appid') or app_data.get('market_appid'),
         is_active=True,
     )[0]
     follow.save()
