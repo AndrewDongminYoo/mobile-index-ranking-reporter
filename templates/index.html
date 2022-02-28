@@ -147,13 +147,13 @@
             axios.get(`/v2/tracking/statistics?app=${followID}&deal_type=${deal_type}`)
             .then((res)=>{
                 _.forEach(res.data.items, item => {
-                    let {app, app_name, chart_type, deal_type, icon_url, market, rank} = item
+                    let {app, app_name, chart_type, date, icon_url, market, rank} = item
                     let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
                         <td class="center">${app_name}</td>
                         <td class="center">${market}</td>
                         <td class="center">${chart_type}</td>
-                        <td class="center">${deal_type === "market_rank" ? "일간" : "실시간"}</td>
+                        <td class="center">${date}</td>
                         <td class="center">${rank} 위</td></tr>`
                     $("#myLarge #trackingTable").append(template)
                 })

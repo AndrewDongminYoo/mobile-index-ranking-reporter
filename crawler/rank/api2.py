@@ -51,8 +51,6 @@ def show_details_of_highest_ranks(request, deal_type="realtime_rank"):
         .filter(following_id=appid,
                 deal_type=deal_type,
                 created_at__gte=d_day)
-    # .annotate(min_rank=Min("rank"))\
-    # .values("app_name", "min_rank", "date")
 
 
 @api.post("/search", response=List[ApplicationSchema], tags=["index"])
@@ -92,7 +90,7 @@ def show_details_of_downloads(request):
     time3 = timezone.now() - timedelta(days=3)
     return OneStoreDL.objects\
         .filter(market_appid=appid,
-                created_at__gte=time3)
+                created_at__gte=time3).order_by("-created_at")
 
 
 @api.get("/down/last", response=OneStoreSchema, tags=["index"])
