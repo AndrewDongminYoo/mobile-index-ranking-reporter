@@ -147,21 +147,21 @@
             axios.get(`/v2/tracking/statistics?app=${followID}&deal_type=${deal_type}`)
             .then((res)=>{
                 _.forEach(res.data.items, item => {
-                    let {app, app_name, chart_type, date, icon_url, market, rank} = item
+                    let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
                     let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
                         <td class="center">${app_name}</td>
                         <td class="center">${market}</td>
                         <td class="center">${chart_type}</td>
-                        <td class="center">${date}</td>
+                        <td class="center">${moment(created_at).format("MM.DD HH:mm")}</td>
                         <td class="center">${rank} 위</td></tr>`
                     $("#myLarge #trackingTable").append(template)
                 })
-                let labels = _.map(res.data.items, item => item["date"])
+                let labels = _.map(res.data.items, item => moment(item['created_at']).format("MM.DD. HH:mm"))
                 let data = {
                     labels: labels,
                     datasets: [{
-                        label: "My First Chart",
+                        label: res.data.items[0]['app_name'],
                         backgroundColor: 'rgb(255, 99, 132)',
                         borderColor: 'rgb(255, 99, 132)',
                         data: _.map(res.data.items, item => item["rank"])
@@ -171,10 +171,13 @@
                     type: 'line',
                     data: data,
                     options: {
+                        {#responsive: true,#}
                         scales: {
                             y: {
                                 reverse: true,
-                            }
+                                min: 1,
+                                max: 50,
+                            },
                         }
                     }
                 }
