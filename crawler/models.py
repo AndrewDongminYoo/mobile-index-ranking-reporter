@@ -30,7 +30,6 @@ class App(models.Model):
 
     app_name = models.CharField(max_length=64, verbose_name="앱 이름")
     icon_url = models.URLField(max_length=200, verbose_name="아이콘 이미지")
-    package_name = models.CharField(max_length=64, null=True, verbose_name="앱 아이디")
     market_appid = models.CharField(max_length=64, verbose_name="스토어 아이디")
 
 

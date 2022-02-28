@@ -16,6 +16,7 @@ from logging import getLogger
 from datetime import timedelta
 from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex, OneStoreDL
 
+
 logger = getLogger(__name__)
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36"
 headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
@@ -83,9 +84,8 @@ def create_app(app_data: dict):
     app = App.objects.get_or_create(
             app_name=app_data.get("app_name"),
             icon_url=app_data.get('icon_url'),
-            market_appid=app_data.get("market_appid")
+            market_appid=app_data.get("market_appid") or app_data.get("package_name")
         )[0]
-    app.package_name = app_data.get("package_name")
     app.save()
     return app.first()
 
