@@ -129,7 +129,7 @@
                         return
                     }
                     _.forEachRight(res.data.items, (item, i) => {
-                        if (i%6!==0) return
+                        if (i % 6 !== 0) return
                         let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
                         let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
@@ -185,7 +185,7 @@
                         return
                     }
                     _.forEachRight(res.data.items, (item, i) => {
-                        if (i%6!==4) return
+                        if (i % 6 !== 4) return
                         let {app, app_name, created_at, downloads, icon_url,} = item
                         let template = `<tr>
                         <td class=""><img src="${icon_url}" alt=${app} width="24"></td>
@@ -264,22 +264,22 @@
             _.forEach(items, (item) => {
                 let {id, updated_at, market_appid} = item;
                 axios.get(`/v2/tracking/last?app=${id}`)
-                .then((res) => {
-                    let {
-                        chart_type,
-                        following,
-                        app,
-                        created_at,
-                        app_name,
-                        deal_type,
-                        icon_url,
-                        market,
-                        rank
-                    } = res.data;
-                    let template = `<tr>
+                    .then((res) => {
+                        let {
+                            chart_type,
+                            following,
+                            app,
+                            created_at,
+                            app_name,
+                            deal_type,
+                            icon_url,
+                            market,
+                            rank
+                        } = res.data;
+                        let template = `<tr>
                     <td class="center" id="">
                     <img alt="app-icon" title="${following}"
-                     class="app-icon" width="38" height="38" src="${icon_url}"></td>
+                     class="app-icon" width="24" height="24" src="${icon_url}"></td>
                     <td class="center" id=""><span onclick="showStatistic('${market}', '${market_appid}', '${following}', '${deal_type}')">${app_name}</span></td>
                     <td class="center" id="">${moment(updated_at).fromNow()} 등록</td>
                     <td class="center" id=""><a href="${getLink(market_appid, market)}">${getStoreIcon(market)}</a></td>
@@ -287,15 +287,15 @@
                     <td class="center" id="">${rankType(chart_type)}</td>
                     <td class="center" id="">${market !== "one" ? "-" : "$원스토어"}</td>
                     <td class="center" id="">${moment().isSame(created_at, "date") ? `${rank} 위` : "-"}<br><small>(${moment(created_at).format("YY.MM.DD. HH:mm")})</small></td></tr>`
-                    if (template.includes("$원스토어")) {
-                        axios.get(`/v2/down/last?app=${app}`)
-                            .then((res) => {
-                                $("#my-rank-table-body").append(template.replace("$원스토어", (res.data["downloads"]).toLocaleString()))
-                            })
-                    } else {
-                        $("#my-rank-table-body").append(template)
-                    }
-                })
-        }))
+                        if (template.includes("$원스토어")) {
+                            axios.get(`/v2/down/last?app=${app}`)
+                                .then((res) => {
+                                    $("#my-rank-table-body").append(template.replace("$원스토어", `${(res.data["downloads"]).toLocaleString()} <br><small>(${moment(res.data['created_at']).format("MM/DD")})</small>`))
+                                })
+                        } else {
+                            $("#my-rank-table-body").append(template)
+                        }
+                    })
+            }))
     </script>
 {% endblock %}

@@ -43,14 +43,13 @@ def show_all_tracking_apps_with_following(request):
 
 @api.get("/tracking/statistics", response=List[TrackingSchema], tags=["index"])
 @paginate(LimitOffsetPagination)
-def show_details_of_highest_ranks(request, market, deal_type="realtime_rank"):
+def show_details_of_highest_ranks(request):
     """앱 아이디 기준으로 일별 추적 결과 리턴"""
-    appid = request.GET.get("app")
+    app_id = request.GET.get("app")
     d_day = timezone.now() - timedelta(days=3)
+    app = App.objects.filter(market_appid=app_id).first()
     return TrackingApps.objects\
-        .filter(following_id=appid,
-                market=market,
-                deal_type=deal_type,
+        .filter(app_id=app.id,
                 created_at__gte=d_day)
 
 
