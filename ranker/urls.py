@@ -19,12 +19,12 @@ from django.urls import path
 
 from crawler.rank.api1 import api as api1
 from crawler.rank.api2 import api as api2
-from crawler.rank.views import index, stat
+from crawler.rank.views import index, rank
 from .settings import STATIC_URL, STATIC_ROOT
 
 urlpatterns = [
     path("", index),
-    path("stat/", stat),
+    path("rank/", rank),
     # path("ranking", ranking),
     # path("register", app_register),
     # path("statistic/<str:market>/<str:deal>/<str:app>", statistic),

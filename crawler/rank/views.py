@@ -12,11 +12,16 @@ def index(request: WSGIRequest):
     return render(request, "index.html")
 
 
-def stat(request: WSGIRequest):
+def rank(request: WSGIRequest):
     package_name: str = request.GET.get('pkg')
     market_name: str = request.GET.get('mkt')
-    following = Following.objects.filter(market_appid=package_name, market=market_name).first()
-    return render(request, "stat.html", {"following": following})
+    following_id: str = request.GET.get('follow')
+    following = Following.objects.last()
+    if package_name and market_name:
+        following = Following.objects.filter(market_appid=package_name, market=market_name).first()
+    elif following_id:
+        following = Following.objects.filter(id=following_id).first()
+    return render(request, "rank.html", {"following": following})
 
 
 def statistic(request: WSGIRequest, market=None, deal=None, app=None):
