@@ -21,7 +21,8 @@ def rank(request: WSGIRequest):
         following = Following.objects.filter(market_appid=package_name, market=market_name).first()
     elif following_id:
         following = Following.objects.filter(id=following_id).first()
-    return render(request, "rank.html", {"following": following})
+        package_name = following.market_appid
+    return render(request, "rank.html", {"following": following, "package_name": package_name})
 
 
 def statistic(request: WSGIRequest, market=None, deal=None, app=None):

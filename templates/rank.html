@@ -51,7 +51,7 @@
         }
 
         let app_id = "{{ following.id }}"
-        let pkg_id = getParams("pkg")
+        let pkg_id = "{{ package_name }}" || getParams("pkg")
 
         $('#myChart1').remove()
         axios.get(`/v2/tracking/statistics?app=${app_id}`)
