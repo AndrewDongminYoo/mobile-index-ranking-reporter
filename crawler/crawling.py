@@ -154,7 +154,7 @@ def tracking_rank_flushing():
     yesterday = timezone.now() - timedelta(days=3)
     for ranked_ in Ranked.objects.filter(created_at__gte=yesterday, market_appid__in=following):
         f_app = Following.objects.filter(market_appid=ranked_.market_appid).first()
-        tracking = TrackingApps.objects.update_or_create(
+        tracking = TrackingApps(
             following=f_app,
             app=ranked_.app,
             deal_type=ranked_.deal_type,
@@ -166,8 +166,7 @@ def tracking_rank_flushing():
             rank=ranked_.rank,
             date_id=ranked_.date_id,
         )
-        if len(tracking):
-            tracking[0].save()
+        tracking.save()
 
 
 def following_one_crawl():
@@ -199,7 +198,7 @@ def daily():
 
 
 if __name__ == '__main__':
-    daily()
+    # daily()
     hourly()
     # following_one_crawl()
 
