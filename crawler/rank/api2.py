@@ -44,12 +44,11 @@ def show_all_tracking_apps_with_following(request):
 @api.get("/tracking/statistics", response=List[TrackingSchema], tags=["index"])
 @paginate(LimitOffsetPagination)
 def show_details_of_highest_ranks(request):
-    """앱 아이디 기준으로 일별 추적 결과 리턴"""
     app_id = request.GET.get("app")
     d_day = timezone.now() - timedelta(days=3)
-    app = App.objects.filter(market_appid=app_id).first()
     return TrackingApps.objects\
-        .filter(app_id=app.id,
+        .filter(following_id=app_id,
+                chart_type="free",
                 created_at__gte=d_day)
 
 
@@ -95,6 +94,6 @@ def show_details_of_downloads(request):
 @api.get("/down/last", response=OneStoreSchema, tags=["index"])
 def show_details_of_downloads_last(request):
     """앱 기준으로 원스토어 다운로드 수 리스트"""
-    appid = request.GET.get("app")
-    app = OneStoreDL.objects.filter(app_id=appid).order_by("-created_at").first()
-    return app if app else OneStoreSchema()
+    market_appid = request.GET.get("app")
+    app = OneStoreDL.objects.filter(market_appid=market_appid).order_by("-created_at").first()
+    return app

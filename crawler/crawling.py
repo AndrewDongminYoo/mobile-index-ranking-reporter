@@ -151,7 +151,7 @@ def get_history(app: Ranked):
 
 def tracking_rank_flushing():
     following = [f[0] for f in Following.objects.values_list("market_appid")]
-    yesterday = timezone.now() - timedelta(days=3)
+    yesterday = timezone.now() - timedelta(days=1)
     for ranked_ in Ranked.objects.filter(created_at__gte=yesterday, market_appid__in=following):
         f_app = Following.objects.filter(market_appid=ranked_.market_appid).first()
         tracking = TrackingApps(
@@ -172,7 +172,7 @@ def tracking_rank_flushing():
 def following_one_crawl():
     date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
     logger.debug(date)
-    for obj in Following.objects.filter(is_active=True).all():
+    for obj in Following.objects.filter(is_active=True, market="one").all():
         app = App.objects.filter(market_appid=obj.market_appid).first()
         get_one_store_app_download_count(date, app)
 
@@ -198,7 +198,8 @@ def daily():
 
 
 if __name__ == '__main__':
+    following_one_crawl()
     # daily()
-    hourly()
+    # hourly()
     # following_one_crawl()
 
