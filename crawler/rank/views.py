@@ -5,7 +5,7 @@ from django.db.models import Min
 from django.shortcuts import render
 from django.utils import timezone
 
-from crawler.models import TrackingApps, Ranked, OneStoreDL, TimeIndex
+from crawler.models import TrackingApps, Ranked, OneStoreDL, TimeIndex, Following
 
 
 def index(request: WSGIRequest):
@@ -13,7 +13,10 @@ def index(request: WSGIRequest):
 
 
 def stat(request: WSGIRequest):
-    return render(request, "stat.html")
+    package_name: str = request.GET.get('pkg')
+    market_name: str = request.GET.get('mkt')
+    following = Following.objects.filter(market_appid=package_name, market=market_name).first()
+    return render(request, "stat.html", {"following": following})
 
 
 def statistic(request: WSGIRequest, market=None, deal=None, app=None):

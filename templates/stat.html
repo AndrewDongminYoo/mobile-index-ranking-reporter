@@ -42,15 +42,16 @@
 {% endblock %}
 {% block script %}
     <script>
-        let app_id = "market_appid";
-
-        function onLoad() {
-            app_id = window.location.hash.substring(1)
-            console.log(app_id)
+        const getParams = (name) => {
+            const params = window.location.search.substring(1).split("&")
+            console.log(params)
+            const target = params.filter(value => value.startsWith(name))
+            console.log(target)
+            return target[0].split("=")[1]
         }
 
-        onLoad()
-
+        let app_id = "{{ following.id }}"
+        let pkg_id = getParams("pkg")
 
         $('#myChart1').remove()
         axios.get(`/v2/tracking/statistics?app=${app_id}`)
@@ -107,7 +108,7 @@
 
         $("#myLarge tbody").empty()
         $('#myChart2').remove()
-        axios.get(`/v2/downloads?app=${app_id}`)
+        axios.get(`/v2/downloads?app=${pkg_id}`)
             .then((res) => {
                 if (!res.data.items.length) {
                     $("#myLarge #downloadTable")

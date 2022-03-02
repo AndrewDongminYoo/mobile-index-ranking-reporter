@@ -33,6 +33,18 @@ class App(models.Model):
     market_appid = models.CharField(max_length=64, verbose_name="스토어 아이디")
 
 
+class AppInformation(models.Model):
+    class Meta:
+        verbose_name = "애플리케이션 정보"
+        verbose_name_plural = "어플 정보"
+
+    app = models.ForeignKey(App, on_delete=models.SET_NULL, null=True)
+    google_url = models.URLField(max_length=200, null=True, verbose_name="구글 주소")
+    apple_url = models.URLField(max_length=200, null=True, verbose_name="애플 주소")
+    one_url = models.URLField(max_length=200, null=True, verbose_name="원스토어 주소")
+    description = models.TextField(null=True, verbose_name="앱 상세 설명")
+
+
 class Ranked(Timestamped):
     class Meta:
         verbose_name_plural = "랭킹"

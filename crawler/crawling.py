@@ -149,6 +149,22 @@ def get_history(app: Ranked):
     return response["data"]
 
 
+def get_contact_number(app: Ranked):
+    url = 'https://proxy-insight.mobileindex.com/app/market_info'
+    body = {
+        "packageName": app.market_appid,
+    }
+    req = requests.post(url, body, headers=headers)
+    if req.status_code == 200:
+        response = req.json()
+        desc = response["description"].split("<br/>")
+        data = response["data"]["market_info"]
+        google = data.get("google_url")
+        apple = data.get("apple_url")
+        one = data.get("one_url")
+        print(desc)
+
+
 def tracking_rank_flushing():
     following = [f[0] for f in Following.objects.values_list("market_appid")]
     yesterday = timezone.now() - timedelta(days=1)
@@ -198,7 +214,9 @@ def daily():
 
 
 if __name__ == '__main__':
-    following_one_crawl()
+    a = App.objects.filter(market_appid="com.ncsoft.lineagew").first()
+    get_contact_number(a)
+    # following_one_crawl()
     # daily()
     # hourly()
     # following_one_crawl()
