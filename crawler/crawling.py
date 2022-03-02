@@ -87,7 +87,7 @@ def create_app(app_data: dict):
             market_appid=app_data.get("market_appid") or app_data.get("package_name")
         )[0]
     app.save()
-    return app.first()
+    return app
 
 
 def crawl_app_store_rank(term: str, market: str, price: str, game_or_app: str):
@@ -200,6 +200,6 @@ def daily():
 
 if __name__ == '__main__':
     daily()
-    # hourly()
+    hourly()
     # following_one_crawl()
 
