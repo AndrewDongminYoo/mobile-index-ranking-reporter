@@ -86,6 +86,12 @@ def create_app(app_data: dict):
             icon_url=app_data.get('icon_url'),
             market_appid=app_data.get("market_appid") or app_data.get("package_name")
         )[0]
+    if app.market_appid.startswith("0000"):
+        app.market = "one"
+    elif app.market_appid[0].isalpha():
+        app.market = "google"
+    else:
+        app.market = "apple"
     app.save()
     return app
 
