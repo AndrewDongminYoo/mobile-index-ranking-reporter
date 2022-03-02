@@ -31,6 +31,7 @@ class App(models.Model):
     app_name = models.CharField(max_length=64, verbose_name="앱 이름")
     icon_url = models.URLField(max_length=200, verbose_name="아이콘 이미지")
     market_appid = models.CharField(max_length=64, verbose_name="스토어 아이디")
+    market = models.CharField(max_length=16, verbose_name="마켓명")
 
 
 class AppInformation(models.Model):
@@ -38,11 +39,11 @@ class AppInformation(models.Model):
         verbose_name = "애플리케이션 정보"
         verbose_name_plural = "어플 정보"
 
-    app = models.ForeignKey(App, on_delete=models.SET_NULL, null=True)
     google_url = models.URLField(max_length=200, null=True, verbose_name="구글 주소")
     apple_url = models.URLField(max_length=200, null=True, verbose_name="애플 주소")
     one_url = models.URLField(max_length=200, null=True, verbose_name="원스토어 주소")
     description = models.TextField(null=True, verbose_name="앱 상세 설명")
+    contact = models.CharField(max_length=200, null=True, verbose_name="개발자 연락처")
 
 
 class Ranked(Timestamped):
