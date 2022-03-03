@@ -92,7 +92,18 @@ def app_market():
         app.save()
 
 
+def ranked_dedupe():
+    app_list = []
+    for ranked in TrackingApps.objects.all():
+        reg = ranked.created_at.strftime("%Y%m%d%H%M")
+        fol = ranked.following_id
+        app = ranked.app_id
+        rnk = ranked.rank
+        if (reg, fol, app, rnk) not in app_list:
+            app_list.append((reg, fol, app, rnk))
+        else:
+            ranked.delete()
+
+
 if __name__ == '__main__':
-    # deduplicate()
-    # get_contact_number()
-    app_market()
+    ranked_dedupe()

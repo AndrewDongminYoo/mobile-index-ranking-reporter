@@ -57,7 +57,7 @@ def show_details_of_highest_ranks(request):
     d_day = timezone.now() - timedelta(days=3)
     return TrackingApps.objects\
         .filter(following_id=app_id,
-                created_at__gte=d_day).order_by("-created_at")
+                created_at__gte=d_day)
 
 
 @api.post("/search", response=List[ApplicationSchema], tags=["index"])
