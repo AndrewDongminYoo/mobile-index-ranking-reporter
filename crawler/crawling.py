@@ -81,11 +81,19 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
 
 
 def create_app(app_data: dict):
-    app = App.objects.get_or_create(
-            market_appid=app_data.get("market_appid") or app_data.get("package_name")
-        )[0]
-    app.app_name = app_data.get("app_name")
-    app.icon_url = app_data.get('icon_url')
+    app = App.objects.filter(market_appid=app_data.get("market_appid"))
+    if app.exists():
+        app = app.first()
+        app.app_name = app_data.get("app_name")
+        app.icon_url = app_data.get('icon_url')
+        app.save()
+    else:
+        app = App(
+            app_name=app_data.get("app_name"),
+            market_appid=app_data.get("market_appid"),
+            icon_url=app_data.get('icon_url'),
+        )
+        app.save()
     if app.market_appid.startswith("0000"):
         app.market = "one"
     elif app.market_appid[0].isalpha():
@@ -205,6 +213,6 @@ def daily():
 
 if __name__ == '__main__':
     daily()
-    # hourly()
+    hourly()
     # following_one_crawl()
 

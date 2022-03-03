@@ -243,7 +243,7 @@
             if ((marketString === "one") || (packageName.startsWith('0000'))) {
                 return `https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=${packageName}`
             } else if (marketString === "apple") {
-                return `https://www.similarweb.com/app/app-store/${packageName}/statistics/`
+                return `https://apps.apple.com/kr/app/id${packageName}`
             } else if (marketString === "google") {
                 return `https://play.google.com/store/apps/details?id=${packageName}`
             }
