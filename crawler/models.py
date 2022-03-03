@@ -42,8 +42,8 @@ class AppInformation(models.Model):
     google_url = models.URLField(max_length=200, null=True, verbose_name="구글 주소")
     apple_url = models.URLField(max_length=200, null=True, verbose_name="애플 주소")
     one_url = models.URLField(max_length=200, null=True, verbose_name="원스토어 주소")
-    description = models.TextField(null=True, verbose_name="앱 상세 설명")
-    contact = models.CharField(max_length=200, null=True, verbose_name="개발자 연락처")
+    email = models.TextField(null=True, verbose_name="앱 상세 설명")
+    phone = models.CharField(max_length=200, null=True, verbose_name="개발자 연락처")
 
 
 class Ranked(Timestamped):

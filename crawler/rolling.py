@@ -12,7 +12,7 @@ if 'setup' in dir(django):
 
 import requests
 from logging import getLogger
-from crawler.models import Ranked, TrackingApps, App, OneStoreDL, AppInformation
+from crawler.models import Ranked, TrackingApps, App, OneStoreDL, AppInformation, Following
 
 logger = getLogger(__name__)
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36"
@@ -105,5 +105,25 @@ def ranked_dedupe():
             ranked.delete()
 
 
+def ive_korea_internal_api():
+    url = 'http://dev.i-screen.kr/channel/rank_ads_list?apikey=wkoo4ko0g808s0kkossoo4o8ow0kwwg88gw004sg'
+    req = requests.get(url)
+
+    if req.status_code == 200:
+        response = req.json()
+        for advertisement in response["list"]:
+            if advertisement["ads_package"] and "." in advertisement["ads_package"]:
+                if Following.objects.filter(market_appid=advertisement["ads_package"]).exists():
+                    pass
+                else:
+                    following = Following(
+                        app_name=advertisement["ads_name"],
+                        market_appid=advertisement["ads_package"],
+                        is_active=True,
+                        market="google",
+                    )
+                    following.save()
+
+
 if __name__ == '__main__':
-    ranked_dedupe()
+    ive_korea_internal_api()

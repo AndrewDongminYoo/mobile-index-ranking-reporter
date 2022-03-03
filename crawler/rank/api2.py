@@ -35,7 +35,8 @@ def show_last_tracking_app(request):
     """팔로잉 아이디로 추적 결과 리스트"""
     following = request.GET.get("app")
     tracking = TrackingApps.objects.filter(
-        following_id=following).order_by("-created_at")
+        following_id=following,
+        chart_type="free").order_by("-created_at")
     if tracking.exists():
         return 200, tracking.first()
     else:
@@ -55,9 +56,10 @@ def show_all_tracking_apps_with_following(request):
 def show_details_of_highest_ranks(request):
     app_id = request.GET.get("app")
     d_day = timezone.now() - timedelta(days=3)
-    return TrackingApps.objects\
+    return TrackingApps.objects \
         .filter(following_id=app_id,
-                created_at__gte=d_day)
+                created_at__gte=d_day,
+                chart_type="free")
 
 
 @api.post("/search", response=List[ApplicationSchema], tags=["index"])
@@ -94,7 +96,7 @@ def show_details_of_downloads(request):
     """앱 기준으로 원스토어 다운로드수 리스트"""
     appid = request.GET.get("app")
     time3 = timezone.now() - timedelta(days=3)
-    return OneStoreDL.objects\
+    return OneStoreDL.objects \
         .filter(market_appid=appid,
                 created_at__gte=time3).order_by("created_at")
 
@@ -108,4 +110,3 @@ def show_details_of_downloads_last(request):
         return 200, app.first()
     else:
         return 404, ""
-

@@ -158,7 +158,7 @@ def get_history(app: Ranked):
 def tracking_rank_flushing():
     following = [f[0] for f in Following.objects.values_list("market_appid")]
     yesterday = timezone.now() - timedelta(days=1)
-    for ranked_ in Ranked.objects.filter(created_at__gte=yesterday, market_appid__in=following):
+    for ranked_ in Ranked.objects.filter(created_at__gte=yesterday, market_appid__in=following, deal_type="market_rank"):
         f_app = Following.objects.filter(market_appid=ranked_.market_appid).first()
         tracking = TrackingApps(
             following=f_app,
@@ -204,7 +204,7 @@ def daily():
 
 
 if __name__ == '__main__':
-    following_one_crawl()
+    ive_korea_internal_api()
     # daily()
     # hourly()
     # following_one_crawl()
