@@ -129,7 +129,7 @@
                         return
                     }
                     _.forEachRight(res.data.items, (item, i) => {
-                        if (i % 6 !== 0) return
+                        // if (i % 6 !== 0) return
                         let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
                         let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
@@ -161,7 +161,7 @@
                                 y: {
                                     reverse: true,
                                     min: 0,
-                                    max: 50,
+                                    max: 100,
                                 },
                             }
                         }
@@ -185,7 +185,7 @@
                         return
                     }
                     _.forEachRight(res.data.items, (item, i) => {
-                        if (i % 6 !== 4) return
+                        // if (i % 6 !== 4) return
                         let {app, app_name, created_at, downloads, icon_url,} = item
                         let template = `<tr>
                         <td class=""><img src="${icon_url}" alt=${app} width="24"></td>
@@ -278,7 +278,7 @@
                         let template = `<tr>
                     <td class="center" id="">
                     <img alt="app-icon" title="${following}"
-                     class="app-icon" width="24" height="24" src="${icon_url}"></td>
+                     class="app-icon" width="30" height=30" src="${icon_url}"></td>
                     <td class="center" id=""><span onclick="showStatistic('${market}', '${market_appid}', '${following}', '${deal_type}')">${app_name}</span></td>
                     <td class="center" id=""><a href="/rank/?follow=${following}">${moment(updated_at).fromNow()} 등록</a></td>
                     <td class="center" id=""><a href="${getLink(market_appid, market)}">${getStoreIcon(market)}</a></td>
@@ -290,11 +290,11 @@
                             axios.get(`/v2/down/last?app=${market_appid}`)
                                 .then((res) => {
                                     $("#my-rank-table-body").append(template.replace("$원스토어", `${(res.data["downloads"]).toLocaleString()} <br><small>(${moment(res.data['created_at']).format("MM/DD")})</small>`))
-                                })
+                                }).catch(() => console.log(`/v2/down/last?app=${market_appid}`))
                         } else {
                             $("#my-rank-table-body").append(template)
                         }
-                    })
-            }))
+                    }).catch(() => console.log(`/v2/tracking/last?app=${id}`))
+            })).catch(() => console.log(`/v2/follow/list`))
     </script>
 {% endblock %}

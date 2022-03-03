@@ -190,7 +190,6 @@ def hourly():
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
     following_one_crawl()
-    tracking_rank_flushing()
     post_to_slack("정기 크롤링 완료")
 
 
@@ -200,6 +199,7 @@ def daily():
             for price in ["gross", "paid", "free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
+    tracking_rank_flushing()
     post_to_slack("일간 크롤링 완료")
 
 
