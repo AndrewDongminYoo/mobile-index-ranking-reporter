@@ -290,11 +290,11 @@
                             axios.get(`/v2/down/last?app=${market_appid}`)
                                 .then((res) => {
                                     $("#my-rank-table-body").append(template.replace("$원스토어", `${(res.data["downloads"]).toLocaleString()} <br><small>(${moment(res.data['created_at']).format("MM/DD")})</small>`))
-                                }).catch(() => console.log(`/v2/down/last?app=${market_appid}`))
+                                }).catch(() => console.log(`down/last?app=${market_appid}`))
                         } else {
                             $("#my-rank-table-body").append(template)
                         }
-                    }).catch(() => console.log(`/v2/tracking/last?app=${id}`))
-            })).catch(() => console.log(`/v2/follow/list`))
+                    }).catch(() => console.log(`tracking/last?app=${id}`))
+            })).catch(() => console.log(`follow/list`))
     </script>
 {% endblock %}
