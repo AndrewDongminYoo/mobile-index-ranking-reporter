@@ -265,27 +265,19 @@
                 let {id, updated_at, market_appid} = item;
                 axios.get(`/v2/tracking/last?app=${id}`)
                     .then((res) => {
-                        let {
-                            chart_type,
-                            following,
-                            created_at,
-                            app_name,
-                            deal_type,
-                            icon_url,
-                            market,
-                            rank
-                        } = res.data;
+                        if (res.status !== 200) return
+                        let {chart_type, following, created_at, app_name, deal_type, icon_url, market, rank} = res.data;
                         let template = `<tr>
-                    <td class="center" id="">
-                    <img alt="app-icon" title="${following}"
-                     class="app-icon" width="30" height=30" src="${icon_url}"></td>
-                    <td class="center" id=""><span onclick="showStatistic('${market}', '${market_appid}', '${following}', '${deal_type}')">${app_name}</span></td>
-                    <td class="center" id=""><a href="/rank/?follow=${following}">${moment(updated_at).fromNow()} 등록</a></td>
-                    <td class="center" id=""><a href="${getLink(market_appid, market)}">${getStoreIcon(market)}</a></td>
-                    <td class="center" id="">${deal_type === "market_rank" ? "일간" : "실시간"}</td>
-                    <td class="center" id="">${rankType(chart_type)}</td>
-                    <td class="center" id="">${market !== "one" ? "-" : "$원스토어"}</td>
-                    <td class="center" id="">${moment().isSame(created_at, "date") ? `${rank} 위` : "-"}<br><small>(${moment(created_at).format("YY.MM.DD. HH:mm")})</small></td></tr>`
+                            <td class="center" id="">
+                            <img alt="app-icon" title="${following}"
+                             class="app-icon" width="30" height=30" src="${icon_url}"></td>
+                            <td class="center" id=""><span onclick="showStatistic('${market}', '${market_appid}', '${following}', '${deal_type}')">${app_name}</span></td>
+                            <td class="center" id=""><a href="/rank/?follow=${following}">${moment(updated_at).fromNow()} 등록</a></td>
+                            <td class="center" id=""><a href="${getLink(market_appid, market)}">${getStoreIcon(market)}</a></td>
+                            <td class="center" id="">${deal_type === "market_rank" ? "일간" : "실시간"}</td>
+                            <td class="center" id="">${rankType(chart_type)}</td>
+                            <td class="center" id="">${market !== "one" ? "-" : "$원스토어"}</td>
+                            <td class="center" id="">${moment().isSame(created_at, "date") ? `${rank} 위` : "-"}<br><small>(${moment(created_at).format("YY.MM.DD. HH:mm")})</small></td></tr>`
                         if (template.includes("$원스토어")) {
                             axios.get(`/v2/down/last?app=${market_appid}`)
                                 .then((res) => {

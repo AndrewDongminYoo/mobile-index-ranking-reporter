@@ -17,6 +17,7 @@ class TimeIndex(models.Model):
 
     def __str__(self):
         return self.date
+
     date = models.CharField(max_length=16, verbose_name="날짜", db_index=True)
 
 
@@ -42,7 +43,7 @@ class AppInformation(models.Model):
     google_url = models.URLField(max_length=200, null=True, verbose_name="구글 주소")
     apple_url = models.URLField(max_length=200, null=True, verbose_name="애플 주소")
     one_url = models.URLField(max_length=200, null=True, verbose_name="원스토어 주소")
-    email = models.TextField(null=True, verbose_name="앱 상세 설명")
+    email = models.CharField(max_length=200, null=True, verbose_name="개발자 이메일")
     phone = models.CharField(max_length=200, null=True, verbose_name="개발자 연락처")
 
 

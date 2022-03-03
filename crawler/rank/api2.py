@@ -30,7 +30,7 @@ def show_all_tracking_apps(request):
     return TrackingApps.objects.all()
 
 
-@api.get("/tracking/last", response={200: TrackingSchema, 404: EmptySchema}, tags=["index"])
+@api.get("/tracking/last", response={200: TrackingSchema, 204: EmptySchema}, tags=["index"])
 def show_last_tracking_app(request):
     """팔로잉 아이디로 추적 결과 리스트"""
     following = request.GET.get("app")
@@ -40,7 +40,7 @@ def show_last_tracking_app(request):
     if tracking.exists():
         return 200, tracking.first()
     else:
-        return 404, ""
+        return 204, ""
 
 
 @api.get("/tracking", response=List[TrackingSchema], tags=["index"])
@@ -70,17 +70,19 @@ def search_apps_with_query(request):
     return App.objects.filter(Q(app_name__search=query) | Q(market_appid__search=query)).all()
 
 
-@api.post("/follow/new", response=FollowingSchema, tags=["index"])
+@api.post("/follow/new", response={201: FollowingSchema, 200: FollowingSchema}, tags=["index"])
 def new_follow_register(request):
     """새로운 팔로우할 앱 등록하기"""
     app_data = request.POST
     follow = Following.objects.get_or_create(
         app_name=app_data.get('app_name'),
-        market_appid=app_data.get('market_appid') or app_data.get('market_appid'),
+        market_appid=app_data.get('market_appid') or app_data.get('package_name'),
         is_active=True,
-    )[0]
-    follow.save()
-    return follow
+    )
+    if follow[1]:
+        return 201, follow[0].save()
+    else:
+        return 200, follow[0]
 
 
 @api.get("/follow/list", response=List[FollowingSchema], tags=["index"])
@@ -101,7 +103,7 @@ def show_details_of_downloads(request):
                 created_at__gte=time3).order_by("created_at")
 
 
-@api.get("/down/last", response={200: OneStoreSchema, 404: EmptySchema}, tags=["index"])
+@api.get("/down/last", response={200: OneStoreSchema, 204: EmptySchema}, tags=["index"])
 def show_details_of_downloads_last(request):
     """앱 기준으로 원스토어 다운로드 수 리스트"""
     market_appid = request.GET.get("app")
@@ -109,4 +111,4 @@ def show_details_of_downloads_last(request):
     if app.exists():
         return 200, app.first()
     else:
-        return 404, ""
+        return 204, ""

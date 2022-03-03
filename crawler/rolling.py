@@ -106,15 +106,18 @@ def ranked_dedupe():
 
 
 def ive_korea_internal_api():
-    url = 'http://dev.i-screen.kr/channel/rank_ads_list?apikey=wkoo4ko0g808s0kkossoo4o8ow0kwwg88gw004sg'
+    API_KEY = 'wkoo4ko0g808s0kkossoo4o8ow0kwwg88gw004sg'
+    url = f'http://dev.i-screen.kr/channel/rank_ads_list?apikey={API_KEY}'
     req = requests.get(url)
 
     if req.status_code == 200:
         response = req.json()
         for advertisement in response["list"]:
             if advertisement["ads_package"] and "." in advertisement["ads_package"]:
-                if Following.objects.filter(market_appid=advertisement["ads_package"]).exists():
-                    pass
+                followings = Following.objects.filter(market_appid=advertisement["ads_package"])
+                if followings.exists():
+                    followings.first().is_active = True
+                    followings.first().save()
                 else:
                     following = Following(
                         app_name=advertisement["ads_name"],

@@ -204,8 +204,7 @@ def daily():
 
 
 if __name__ == '__main__':
-    ive_korea_internal_api()
-    # daily()
+    daily()
     # hourly()
     # following_one_crawl()
 
