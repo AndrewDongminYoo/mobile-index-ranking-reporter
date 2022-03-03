@@ -129,4 +129,4 @@ def ive_korea_internal_api():
 
 
 if __name__ == '__main__':
-    ive_korea_internal_api()
+    deduplicate()

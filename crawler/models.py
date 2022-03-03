@@ -29,10 +29,10 @@ class App(models.Model):
     def __str__(self):
         return self.app_name
 
-    app_name = models.CharField(max_length=64, verbose_name="앱 이름")
-    icon_url = models.URLField(max_length=200, verbose_name="아이콘 이미지")
+    app_name = models.CharField(max_length=64, null=True, verbose_name="앱 이름")
+    icon_url = models.URLField(max_length=200, null=True, verbose_name="아이콘 이미지")
     market_appid = models.CharField(max_length=64, verbose_name="스토어 아이디")
-    market = models.CharField(max_length=16, verbose_name="마켓명")
+    market = models.CharField(max_length=16, null=True, verbose_name="마켓명")
 
 
 class AppInformation(models.Model):

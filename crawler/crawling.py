@@ -82,10 +82,10 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
 
 def create_app(app_data: dict):
     app = App.objects.get_or_create(
-            app_name=app_data.get("app_name"),
-            icon_url=app_data.get('icon_url'),
             market_appid=app_data.get("market_appid") or app_data.get("package_name")
         )[0]
+    app.app_name = app_data.get("app_name")
+    app.icon_url = app_data.get('icon_url')
     if app.market_appid.startswith("0000"):
         app.market = "one"
     elif app.market_appid[0].isalpha():
