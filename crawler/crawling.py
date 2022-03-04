@@ -78,7 +78,7 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
         ones_app.save()
         return ones_app
     except AttributeError:
-        pass
+        print("AttributeError")
 
 
 def create_app(app_data: dict):
@@ -127,6 +127,7 @@ def crawl_app_store_rank(term: str, market: str, price: str, game_or_app: str):
     response = req.json()
     if response["status"]:
         _date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
+        following = [f[0] for f in Following.objects.values_list("market_appid")]
         print(_date)
         for app_data in response["data"]:
             logger.debug(app_data)
@@ -145,6 +146,20 @@ def crawl_app_store_rank(term: str, market: str, price: str, game_or_app: str):
                 deal_type=term.replace("_v2", "").replace("global", "market"),  # "realtime_rank", "market_rank"
             )
             item.save()
+            if _app.market_appid in following:
+                tracking = TrackingApps(
+                    following=Following.objects.get(market_appid=_app.market_appid),
+                    app=item,
+                    deal_type=item.deal_type,
+                    market=item.market,
+                    chart_type=item.chart_type,
+                    app_name=item.app_name,
+                    icon_url=item.app.icon_url,
+                    market_appid=item.app.market_appid,
+                    rank=item.rank,
+                    date_id=item.date_id,
+                )
+                tracking.save()
 
 
 def get_history(app: Ranked):
@@ -162,26 +177,6 @@ def get_history(app: Ranked):
         _date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
         print(_date)
     return response["data"]
-
-
-def tracking_rank_flushing():
-    following = [f[0] for f in Following.objects.values_list("market_appid")]
-    yesterday = timezone.now() - timedelta(days=1)
-    for ranked_ in Ranked.objects.filter(created_at__gte=yesterday, market_appid__in=following, deal_type="market_rank"):
-        f_app = Following.objects.filter(market_appid=ranked_.market_appid).first()
-        tracking = TrackingApps(
-            following=f_app,
-            app=ranked_.app,
-            deal_type=ranked_.deal_type,
-            market=ranked_.market,
-            chart_type=ranked_.chart_type,
-            app_name=ranked_.app_name,
-            icon_url=ranked_.app.icon_url,
-            market_appid=ranked_.app.market_appid,
-            rank=ranked_.rank,
-            date_id=ranked_.date_id,
-        )
-        tracking.save()
 
 
 def following_one_crawl():
@@ -208,12 +203,11 @@ def daily():
             for price in ["gross", "paid", "free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
-    tracking_rank_flushing()
     post_to_slack("일간 크롤링 완료")
 
 
 if __name__ == '__main__':
     # daily()
-    hourly()
+    following_one_crawl()
     # following_one_crawl()
 
