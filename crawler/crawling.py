@@ -1,6 +1,7 @@
 import sys
 
 sys.path.append('/home/ubuntu/app-rank/ranker')
+
 import os
 
 os.environ.setdefault("PYTHONUNBUFFERED;", "1")
@@ -212,7 +213,7 @@ def daily():
 
 
 if __name__ == '__main__':
-    daily()
+    # daily()
     hourly()
     # following_one_crawl()
 
