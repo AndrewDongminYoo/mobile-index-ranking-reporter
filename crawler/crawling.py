@@ -14,7 +14,6 @@ if 'setup' in dir(django):
 import requests
 from django.utils import timezone
 from logging import getLogger
-from datetime import timedelta
 from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex, OneStoreDL
 
 
@@ -30,7 +29,7 @@ def post_to_slack(text=None):
     _headers = {'Content-type': 'application/json'}
     body = json.dumps({"text": text})
     req = requests.post(url, headers=_headers, data=body)
-    logger.debug(req.status_code)
+    logger.debug(req.headers)
 
 
 def get_soup(market_id, back=True):
@@ -150,6 +149,7 @@ def crawl_app_store_rank(term: str, market: str, price: str, game_or_app: str):
                 tracking = TrackingApps(
                     following=Following.objects.get(market_appid=_app.market_appid),
                     app=item,
+                    date=item.date,
                     deal_type=item.deal_type,
                     market=item.market,
                     chart_type=item.chart_type,
@@ -157,26 +157,8 @@ def crawl_app_store_rank(term: str, market: str, price: str, game_or_app: str):
                     icon_url=item.app.icon_url,
                     market_appid=item.app.market_appid,
                     rank=item.rank,
-                    date_id=item.date_id,
                 )
                 tracking.save()
-
-
-def get_history(app: Ranked):
-    url = 'https://proxy-insight.mobileindex.com/chart/market_rank_history'  # "realtime_rank_v2", "global_rank_v2"
-    data = {
-        'appId': app.market_appid,
-        'market': app.market,
-        'appType': app.app_type,
-        'startDate': (timezone.now()-timedelta(days=3)).strftime("%Y%m%d%H%M"),
-        'endDate': timezone.now().strftime("%Y%m%d%H%M"),
-    }
-    req = requests.post(url, data=data, headers=headers)
-    response = req.json()
-    if response["status"]:
-        _date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
-        print(_date)
-    return response["data"]
 
 
 def following_one_crawl():
@@ -209,5 +191,4 @@ def daily():
 if __name__ == '__main__':
     # daily()
     following_one_crawl()
-    # following_one_crawl()
 

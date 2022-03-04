@@ -34,7 +34,7 @@ def follow_application(self, request: WSGIRequest, queryset: QuerySet):
 
 
 class AppAdmin(admin.ModelAdmin):
-    list_display = ['id', 'app_name', 'market_appid']
+    list_display = ['id', 'app_name', 'market', 'market_appid']
     search_fields = ["app_name", "market_appid"]
 
 

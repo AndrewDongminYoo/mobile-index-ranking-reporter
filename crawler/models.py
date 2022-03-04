@@ -33,6 +33,7 @@ class App(models.Model):
     icon_url = models.URLField(max_length=200, null=True, verbose_name="아이콘 이미지")
     market_appid = models.CharField(max_length=64, verbose_name="스토어 아이디")
     market = models.CharField(max_length=16, null=True, verbose_name="마켓명")
+    app_url = models.URLField(max_length=200, null=True, verbose_name="앱 주소")
 
 
 class AppInformation(models.Model):

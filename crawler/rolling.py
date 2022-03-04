@@ -1,4 +1,7 @@
 import sys
+from datetime import timedelta
+
+from django.utils import timezone
 
 sys.path.append('/home/ubuntu/app-rank/ranker')
 import os
@@ -12,11 +15,33 @@ if 'setup' in dir(django):
 
 import requests
 from logging import getLogger
-from crawler.models import Ranked, TrackingApps, App, OneStoreDL, AppInformation, Following
+from crawler.models import Ranked, TrackingApps, App, OneStoreDL, AppInformation, Following, TimeIndex
 
 logger = getLogger(__name__)
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36"
 headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
+GOOGLE_PREFIX = "https://play.google.com/store/apps/details?id="
+APPLE_PREFIX = "https://apps.apple.com/kr/app/id"
+ONE_PREFIX = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId="
+
+
+def get_app_url():
+    def correct_path(url):
+        response = requests.get(url, headers=headers)
+        print(response.status_code)
+        if response.headers:
+            return response.url
+        else:
+            return "None"
+
+    for app in App.objects.all().filter(app_url=None):
+        if app.market == "google":
+            app.app_url = correct_path(GOOGLE_PREFIX + app.market_appid)
+        elif app.market == "apple":
+            app.app_url = correct_path(APPLE_PREFIX + app.market_appid)
+        elif app.market == "one":
+            app.app_url = correct_path(ONE_PREFIX + app.market_appid)
+        app.save()
 
 
 def get_contact_number():
@@ -33,27 +58,46 @@ def get_contact_number():
                 data = response.get("data").get("market_info")
                 new_app = AppInformation(), True
                 if app.market == "google":
-                    google = data.get("google_url") if not data.get("google_url") == "https://play.google.com/store/apps/details?id=" else None
-                    new_app = AppInformation.objects.update_or_create(
-                        google_url=google
-                    )[0]
+                    google = data.get("google_url") if not data.get("google_url") == GOOGLE_PREFIX else None
+                    if google:
+                        new_app = AppInformation.objects.update_or_create(
+                            google_url=google
+                        )[0]
+                    else:
+                        new_app = AppInformation.objects.update_or_create(
+                            google_url=GOOGLE_PREFIX + app.market_appid
+                        )[0]
+                    print(new_app.google_url)
                 if app.market == "apple":
-                    apple = data.get("apple_url") if not data.get("apple_url") == "https://apps.apple.com/kr/app/id" else None
-                    new_app = AppInformation.objects.update_or_create(
-                        apple_url=apple,
-                    )[0]
+                    apple = data.get("apple_url") if not data.get("apple_url") == APPLE_PREFIX else None
+                    if apple:
+                        new_app = AppInformation.objects.update_or_create(
+                            apple_url=apple,
+                        )[0]
+                    else:
+                        new_app = AppInformation.objects.update_or_create(
+                            apple_url=APPLE_PREFIX + app.market_appid
+                        )[0]
+                    print(new_app.apple_url)
                 if app.market == "one":
-                    one = data.get("one_url") if not data.get("one_url") == "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" else None
-                    new_app = AppInformation.objects.update_or_create(
-                        one_url=one
-                    )[0]
+                    one = data.get("one_url") if not data.get("one_url") == ONE_PREFIX else None
+                    if one:
+                        new_app = AppInformation.objects.update_or_create(
+                            one_url=one
+                        )[0]
+                    else:
+                        new_app = AppInformation.objects.update_or_create(
+                            one_url=ONE_PREFIX + app.market_appid
+                        )[0]
+                    print(new_app.one_url)
+                logger.info(new_app)
                 if response["description"]:
                     phone = re.findall(r"([0-1][0-9]*[\- ]*[0-9]{3,4}[\- ][0-9]{4,}|\+82[0-9\-]+)",
                                        response.get("description"))
                     email = re.findall(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)",
                                        response.get("description"))
-                    new_app.contact = ", ".join(phone)
-                    new_app.description = ", ".join(email)
+                    new_app.contact = ", ".join(set(phone))
+                    new_app.description = ", ".join(set(email))
                     print(phone, email)
                 new_app.save()
             except KeyError:
@@ -112,21 +156,41 @@ def ive_korea_internal_api():
 
     if req.status_code == 200:
         response = req.json()
+        print(response)
         for advertisement in response["list"]:
-            if advertisement["ads_package"] and "." in advertisement["ads_package"]:
-                followings = Following.objects.filter(market_appid=advertisement["ads_package"])
+            package = advertisement["ads_package"]
+            if package and "." in package and not package.endswith("/"):
+                followings = Following.objects.filter(market_appid=package)
                 if followings.exists():
                     followings.first().is_active = True
                     followings.first().save()
                 else:
                     following = Following(
                         app_name=advertisement["ads_name"],
-                        market_appid=advertisement["ads_package"],
+                        market_appid=package,
                         is_active=True,
                         market="google",
                     )
                     following.save()
 
 
+def get_history(app: Ranked):
+    url = 'https://proxy-insight.mobileindex.com/chart/market_rank_history'  # "realtime_rank_v2", "global_rank_v2"
+    data = {
+        'appId': app.market_appid,
+        'market': app.market,
+        'appType': app.app_type,
+        'startDate': (timezone.now() - timedelta(days=3)).strftime("%Y%m%d%H%M"),
+        'endDate': timezone.now().strftime("%Y%m%d%H%M"),
+    }
+    req = requests.post(url, data=data, headers=headers)
+    response = req.json()
+    if response["status"]:
+        _date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
+        print(_date)
+    return response["data"]
+
+
 if __name__ == '__main__':
-    deduplicate()
+    ive_korea_internal_api()
+    get_app_url()
