@@ -68,7 +68,7 @@ class Ranked(Timestamped):
     app = models.ForeignKey(App, on_delete=models.CASCADE, verbose_name="애플리케이션")
     market_appid = models.CharField(max_length=64, verbose_name="스토어 ID")
     rank = models.IntegerField(verbose_name="순위")
-    icon_url = models.URLField(max_length=200, verbose_name="아이콘 이미지")
+    icon_url = models.URLField(max_length=255, verbose_name="아이콘 이미지")
 
 
 class Following(Timestamped):
@@ -94,7 +94,7 @@ class TrackingApps(Timestamped):
     market = models.CharField(max_length=16, verbose_name="마켓명")
     chart_type = models.CharField(max_length=16, verbose_name="차트 타입")
     app_name = models.CharField(max_length=64, verbose_name="앱 이름")
-    icon_url = models.URLField(max_length=200, verbose_name="아이콘 이미지")
+    icon_url = models.URLField(max_length=255, verbose_name="아이콘 이미지")
     market_appid = models.CharField(max_length=64, null=True, verbose_name="패키지명")
     rank = models.IntegerField(default=200, verbose_name="순위")
     date = models.ForeignKey(TimeIndex, on_delete=models.DO_NOTHING)
@@ -108,7 +108,7 @@ class OneStoreDL(Timestamped):
     app = models.ForeignKey(App, on_delete=models.CASCADE, verbose_name="애플리케이션")
     market_appid = models.CharField(max_length=32, verbose_name="스토어 ID")
     app_name = models.CharField(max_length=128, verbose_name="앱 이름")
-    icon_url = models.URLField(default=None, verbose_name="앱 아이콘")
+    icon_url = models.URLField(default=None, max_length=255, verbose_name="앱 아이콘")
     genre = models.CharField(max_length=128, verbose_name="장르")
     downloads = models.IntegerField(verbose_name="다운로드수", null=True)
     volume = models.CharField(max_length=128, verbose_name="용량")
