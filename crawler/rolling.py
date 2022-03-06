@@ -167,7 +167,8 @@ def ive_korea_internal_api():
                 else:
                     following = Following(
                         app_name=advertisement["ads_name"],
-                        market_appid=package,
+                        market_appid=package
+                        ,
                         is_active=True,
                         market="google",
                     )

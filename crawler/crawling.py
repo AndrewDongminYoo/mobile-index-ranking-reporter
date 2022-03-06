@@ -148,7 +148,7 @@ def crawl_app_store_rank(term: str, market: str, price: str, game_or_app: str):
             if _app.market_appid in following:
                 tracking = TrackingApps(
                     following=Following.objects.get(market_appid=_app.market_appid),
-                    app=item,
+                    app=_app,
                     date=item.date,
                     deal_type=item.deal_type,
                     market=item.market,
@@ -189,6 +189,6 @@ def daily():
 
 
 if __name__ == '__main__':
-    # daily()
-    following_one_crawl()
+    daily()
+    # following_one_crawl()
 
