@@ -1,5 +1,7 @@
 from datetime import timedelta
 
+from django.db import DataError
+
 from crawler.models import AppInformation
 from crawling import *
 
@@ -140,22 +142,37 @@ def ive_korea_internal_api():
     if req.status_code == 200:
         response = req.json()
         print(response)
-        for advertisement in response["list"]:
-            package = advertisement["ads_package"]
-            if package and "." in package and not package.endswith("/"):
+        for adv_info in response["list"]:
+            package = adv_info.get("ads_package")
+            market = "google"
+            if package.endswith("//"):
+                package = ""
+                pass
+            elif adv_info.get("ads_join_url").startswith("https://apps.apple.com/kr/app/id"):
+                market = "apple"
+                package = adv_info.get("ads_join_url")\
+                    .replace("https://apps.apple.com/kr/app/id", "")
+            elif adv_info.get("ads_os_type") == "3":
+                market = "one"
+                package = adv_info.get("ads_join_url")\
+                    .replace("https://onesto.re", "")\
+                    .replace("https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=", "")
+            if package:
                 followings = Following.objects.filter(market_appid=package)
                 if followings.exists():
                     followings.first().is_active = True
                     followings.first().save()
                 else:
-                    following = Following(
-                        app_name=advertisement["ads_name"],
-                        market_appid=package
-                        ,
-                        is_active=True,
-                        market="google",
-                    )
-                    following.save()
+                    try:
+                        following = Following(
+                            app_name=adv_info["ads_name"],
+                            market_appid=package,
+                            is_active=True,
+                            market=market,
+                        )
+                        following.save()
+                    except DataError:
+                        print(package)
 
 
 def get_history(app: Ranked):

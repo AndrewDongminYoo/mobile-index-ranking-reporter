@@ -1,11 +1,9 @@
 from django.contrib import admin
-from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import QuerySet
 from import_export.admin import ImportExportMixin
 
-from crawler.forms import AppChoiceField, FollowingChoiceField
-from crawler.models import Following
 from crawler.models import App
+from crawler.models import Following
 from crawler.models import OneStoreDL
 from crawler.models import Ranked
 from crawler.models import TrackingApps
@@ -13,7 +11,7 @@ from crawler.models import TrackingApps
 
 # Register your models here.
 @admin.action(description="선택된 애플리케이션 을/를 추적합니다!")
-def follow_application(self, request: WSGIRequest, queryset: QuerySet):
+def follow_application(self, request, queryset: QuerySet):
     for obj in queryset:
         if type(obj) == App:
             follow = Following(
@@ -22,7 +20,7 @@ def follow_application(self, request: WSGIRequest, queryset: QuerySet):
                 market_appid=obj.market_appid,
                 is_active=True,
             )
-            following.save()
+            follow.save()
         elif type(obj) is OneStoreDL:
             app = App.objects.filter(pk=obj.app_id).first()
             following = Following(
