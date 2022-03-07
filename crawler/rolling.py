@@ -1,25 +1,8 @@
-import sys
 from datetime import timedelta
 
-from django.utils import timezone
+from crawler.models import AppInformation
+from crawling import *
 
-sys.path.append('/home/ubuntu/app-rank/ranker')
-import os
-
-os.environ.setdefault("PYTHONUNBUFFERED;", "1")
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
-import django
-
-if 'setup' in dir(django):
-    django.setup()
-
-import requests
-from logging import getLogger
-from crawler.models import Ranked, TrackingApps, App, OneStoreDL, AppInformation, Following, TimeIndex
-
-logger = getLogger(__name__)
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36"
-headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
 GOOGLE_PREFIX = "https://play.google.com/store/apps/details?id="
 APPLE_PREFIX = "https://apps.apple.com/kr/app/id"
 ONE_PREFIX = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId="
