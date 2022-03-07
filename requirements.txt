@@ -8,6 +8,7 @@ defusedxml==0.7.1
 diff-match-patch==20200713
 Django==4.0.2
 django-crontab==0.7.1
+django-environ==0.8.1
 django-import-export==2.7.1
 django-ninja==0.17.0
 django-pandas==0.6.6
