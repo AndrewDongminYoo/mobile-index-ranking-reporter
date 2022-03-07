@@ -182,7 +182,7 @@ def hourly():
 def daily():
     for deal in ["global_rank_v2"]:
         for market in ["all"]:
-            for price in ["gross", "paid", "free"]:
+            for price in ["free"]:
                 for game in ["app", "game"]:
                     crawl_app_store_rank(deal, market, price, game)
     post_to_slack("일간 크롤링 완료")

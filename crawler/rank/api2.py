@@ -53,12 +53,25 @@ def show_all_tracking_apps_with_following(request):
 
 @api.get("/tracking/statistics", response=List[TrackingSchema], tags=["index"])
 @paginate(LimitOffsetPagination)
-def show_details_of_highest_ranks(request):
+def show_details_of_hourly_ranks(request):
     app_id = request.GET.get("app")
     d_day = timezone.now() - timedelta(days=3)
     return TrackingApps.objects \
         .filter(following_id=app_id,
+                deal_type="realtime_rank",
                 created_at__gte=d_day,
+                chart_type="free")
+
+
+@api.get("/tracking/daily", response=List[TrackingSchema], tags=["index"])
+@paginate(LimitOffsetPagination)
+def show_details_of_daily_ranks(request):
+    app_id = request.GET.get("app")
+    w_day = timezone.now() - timedelta(days=14)
+    return TrackingApps.objects \
+        .filter(following_id=app_id,
+                deal_type="market_rank",
+                created_at__gte=w_day,
                 chart_type="free")
 
 

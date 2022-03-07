@@ -30,9 +30,22 @@
                                 <th scope="col" style="width: 12%" class="center">마켓</th>
                                 <th scope="col" style="width: 12%" class="center">분야</th>
                                 <th scope="col" style="width: 12%" class="center">일자</th>
-                                <th scope="col" style="width: 12%" class="center">순위</th>
+                                <th scope="col" style="width: 12%" class="center">실시간 순위</th>
                             </thead>
                             <tbody id="trackingTable"></tbody>
+                        </table>
+                        <div id="canvas3"></div>
+                        <table class="flake-ui table second small rect use-selection bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col" style="width: 12%" class="center">아이콘</th>
+                                <th scope="col" style="width: 40%" class="center">앱이름</th>
+                                <th scope="col" style="width: 12%" class="center">마켓</th>
+                                <th scope="col" style="width: 12%" class="center">분야</th>
+                                <th scope="col" style="width: 12%" class="center">일자</th>
+                                <th scope="col" style="width: 12%" class="center">일간 순위</th>
+                            </thead>
+                            <tbody id="dailyRankTable"></tbody>
                         </table>
                     </div>
                 </div>
@@ -53,7 +66,7 @@
         let app_id = "{{ following.id }}"
         let pkg_id = "{{ package_name }}" || getParams("pkg")
 
-        $('#myChart1').remove()
+        $('#myChart2').remove()
         axios.get(`/v2/tracking/statistics?app=${app_id}`)
             .then((res) => {
                 if (!res.data.items.length) {
@@ -73,11 +86,11 @@
                         <td class="center">${rank} 위</td></tr>`
                     $("#myLarge #trackingTable").append(template)
                 })
-                $("#canvas1").append(`<canvas id="myChart1" class="bg-white table bordered" width="600" height="200"></canvas>`)
-                let ctx1 = document.getElementById('myChart1').getContext('2d');
-                let labels1 = _.map(res.data.items, item => moment(item['created_at']).format("DD일 HH시"))
-                let data1 = {
-                    labels: labels1,
+                $("#canvas2").append(`<canvas id="myChart2" class="bg-white table bordered" width="600" height="200"></canvas>`)
+                let ctx2 = document.getElementById('myChart2').getContext('2d');
+                let labels2 = _.map(res.data.items, item => moment(item['created_at']).format("DD일 HH시"))
+                let data2 = {
+                    labels: labels2,
                     datasets: [{
                         label: "실시간 랭킹",
                         backgroundColor: 'rgb(255, 99, 132)',
@@ -85,9 +98,9 @@
                         data: _.map(res.data.items, item => item["rank"])
                     }]
                 }
-                let config1 = {
+                let config2 = {
                     type: 'line',
-                    data: data1,
+                    data: data2,
                     options: {
                         responsive: true,
                         scales: {
@@ -99,15 +112,68 @@
                         }
                     }
                 }
-                let myChart1 = new Chart(
-                    ctx1,
-                    config1
+                let myChart2 = new Chart(
+                    ctx2,
+                    config2
                 )
-                myChart1.draw()
+                myChart2.draw()
+            })
+
+        $('#myChart3').remove()
+        axios.get(`/v2/tracking/daily?app=${app_id}`)
+            .then((res) => {
+                if (!res.data.items.length) {
+                    $("#myLarge #dailyRankTable")
+                        .append("<tr><td></td><td>데이터가 없어요</td><td>데이터가 없어요</td><td></td></tr>");
+                    return
+                }
+                _.forEachRight(res.data.items, (item, i) => {
+                    // if (i % 6 !== 4) return
+                    let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
+                    let template = `<tr>
+                        <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
+                        <td class="center">${app_name}</td>
+                        <td class="center">${market}</td>
+                        <td class="center">${chart_type}</td>
+                        <td class="center">${moment(created_at).format("MM.DD HH:mm")}</td>
+                        <td class="center">${rank} 위</td></tr>`
+                    $("#myLarge #dailyRankTable").append(template)
+                })
+                $("#canvas3").append(`<canvas id="myChart3" class="bg-white table bordered" width="600" height="200"></canvas>`)
+                let ctx3 = document.getElementById('myChart3').getContext('2d');
+                let labels3 = _.map(res.data.items, item => moment(item['created_at']).format("DD일 HH시"))
+                let data3 = {
+                    labels: labels3,
+                    datasets: [{
+                        label: "일간 랭킹",
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: _.map(res.data.items, item => item["rank"])
+                    }]
+                }
+                let config3 = {
+                    type: 'line',
+                    data: data3,
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                reverse: true,
+                                min: 0,
+                                max: 100,
+                            },
+                        }
+                    }
+                }
+                let myChart3 = new Chart(
+                    ctx3,
+                    config3
+                )
+                myChart3.draw()
             })
 
         $("#myLarge tbody").empty()
-        $('#myChart2').remove()
+        $('#myChart1').remove()
         axios.get(`/v2/downloads?app=${pkg_id}`)
             .then((res) => {
                 if (!res.data.items.length) {
@@ -126,11 +192,11 @@
                         </tr>`
                     $("#myLarge #downloadTable").append(template)
                 })
-                $("#canvas2").append(`<canvas id="myChart2" class="bg-white table bordered" width="600" height="200"></canvas>`)
-                let ctx2 = document.getElementById('myChart2').getContext('2d');
-                let labels2 = _.map(res.data.items, item => moment(item['created_at']).format("DD일 HH시"))
-                let data2 = {
-                    labels: labels2,
+                $("#canvas1").append(`<canvas id="myChart1" class="bg-white table bordered" width="600" height="200"></canvas>`)
+                let ctx1 = document.getElementById('myChart1').getContext('2d');
+                let labels1 = _.map(res.data.items, item => moment(item['created_at']).format("DD일 HH시"))
+                let data1 = {
+                    labels: labels1,
                     datasets: [{
                         label: "다운로드 수",
                         backgroundColor: 'rgb(255, 99, 132)',
@@ -138,9 +204,9 @@
                         data: _.map(res.data.items, item => item["downloads"])
                     }]
                 }
-                let config2 = {
+                let config1 = {
                     type: 'line',
-                    data: data2,
+                    data: data1,
                     options: {
                         responsive: true,
                         scales: {
@@ -150,11 +216,11 @@
                         }
                     }
                 }
-                let myChart2 = new Chart(
-                    ctx2,
-                    config2
+                let myChart1 = new Chart(
+                    ctx1,
+                    config1
                 )
-                myChart2.draw()
+                myChart1.draw()
             })
     </script>
 {% endblock %}
