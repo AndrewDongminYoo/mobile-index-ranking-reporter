@@ -78,7 +78,7 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
         ones_app.save()
         rank_diff = ones_app.downloads - last_one.downloads if last_one else 0
         if rank_diff > 2000:
-            post_to_slack(f"{app_name} 다운로드 수가 전일 대비 {rank_diff}건 증가했습니다.✈")
+            post_to_slack(f"{app_name} 앱 다운로드 수가 전일 대비 {rank_diff}건 증가했습니다.✈ {ones_app.downloads}건.")
         return ones_app
     except AttributeError:
         print("AttributeError")

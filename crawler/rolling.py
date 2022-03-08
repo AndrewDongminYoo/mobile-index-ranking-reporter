@@ -52,51 +52,54 @@ def get_contact_number():
             response = req.json()
             try:
                 data = response.get("data").get("market_info")
-                new_app = AppInformation(), True
+                new_app_info = AppInformation(), True
                 if app.market == "google":
                     google = data.get("google_url") if not data.get("google_url") == GOOGLE_PREFIX else None
                     if google:
-                        new_app = AppInformation.objects.update_or_create(
+                        new_app_info = AppInformation.objects.update_or_create(
                             google_url=google
                         )[0]
                     else:
-                        new_app = AppInformation.objects.update_or_create(
+                        new_app_info = AppInformation.objects.update_or_create(
                             google_url=GOOGLE_PREFIX + app.market_appid
                         )[0]
-                    print(new_app.google_url)
+                    print(new_app_info.google_url)
                 if app.market == "apple":
                     apple = data.get("apple_url") if not data.get("apple_url") == APPLE_PREFIX else None
                     if apple:
-                        new_app = AppInformation.objects.update_or_create(
+                        new_app_info = AppInformation.objects.update_or_create(
                             apple_url=apple,
                         )[0]
                     else:
-                        new_app = AppInformation.objects.update_or_create(
+                        new_app_info = AppInformation.objects.update_or_create(
                             apple_url=APPLE_PREFIX + app.market_appid
                         )[0]
-                    print(new_app.apple_url)
+                    print(new_app_info.apple_url)
                 if app.market == "one":
                     one = data.get("one_url") if not data.get("one_url") == ONE_PREFIX else None
                     if one:
-                        new_app = AppInformation.objects.update_or_create(
+                        new_app_info = AppInformation.objects.update_or_create(
                             one_url=one
                         )[0]
                     else:
-                        new_app = AppInformation.objects.update_or_create(
+                        new_app_info = AppInformation.objects.update_or_create(
                             one_url=ONE_PREFIX + app.market_appid
                         )[0]
-                    print(new_app.one_url)
-                logger.info(new_app)
+                    print(new_app_info.one_url)
+                logger.info(new_app_info)
                 if response["description"]:
                     phone = re.findall(r"([0-1][0-9]*[\- ]*[0-9]{3,4}[\- ][0-9]{4,}|\+82[0-9\-]+)",
                                        response.get("description"))
                     email = re.findall(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)",
                                        response.get("description"))
-                    new_app.contact = ", ".join(set(phone))
-                    new_app.description = ", ".join(set(email))
+                    new_app_info.phone = ", ".join(set(phone))
+                    new_app_info.email = ", ".join(set(email))
                     print(phone, email)
-                new_app.save()
-                app.app_info = new_app
+                    if new_app_info.phone and new_app_info.email:
+                        post_to_slack(
+                            f"{app.market} {app.app_name} 앱의 연락처는 {new_app_info.phone}, 이메일은 {new_app_info.email} 입니다.")
+                new_app_info.save()
+                app.app_info = new_app_info
                 app.save()
             except KeyError:
                 print(app.id, "key")
@@ -184,6 +187,7 @@ def ive_korea_internal_api():
                             market=market,
                         )
                         following.save()
+                        post_to_slack(f"{package} 스토어 {following.app_name} 앱 추적이 정기 등록 됐습니다.")
                     except DataError:
                         print(package)
 
