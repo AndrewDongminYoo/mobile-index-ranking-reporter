@@ -98,7 +98,7 @@
             axios.post(`/v1/ranking?query=${query}`)
                 .then((res) => {
                     $("#staticBackdrop")?.modal("show")
-                    _.forEach(res.data.items, (item) => {
+                    _.forEach(res.data.items, (item, i) => {
                         let {id, app_name, icon_url, market_appid} = item
                         let link
                         if (icon_url.includes("onestore")) {
@@ -129,7 +129,7 @@
                         return
                     }
                     _.forEachRight(res.data.items, (item, i) => {
-                        // if (i % 6 !== 0) return
+                        if (i % 3 !== 0) return
                         let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
                         let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
@@ -185,6 +185,7 @@
                         return
                     }
                     _.forEachRight(res.data.items, (item, i) => {
+                        if (i % 3 !== 0) return
                         let {app, app_name, created_at, downloads, icon_url,} = item
                         let template = `<tr>
                         <td class=""><img src="${icon_url}" alt=${app} width="24"></td>
@@ -271,7 +272,7 @@
                             <img alt="app-icon" title="${following}"
                              class="app-icon" width="30" height=30" src="${icon_url}"></td>
                             <td class="center" id=""><span onclick="showStatistic('${market}', '${market_appid}', '${following}', '${deal_type}')">${app_name}</span></td>
-                            <td class="center" id=""><a href="/rank/?follow=${following}">${moment(updated_at).fromNow()} 등록</a></td>
+                            <td class="center" id=""><a href="/rank?mkt=${market}&pkg=${market_appid}">${moment(updated_at).fromNow()} 등록</a></td>
                             <td class="center" id=""><a href="${getLink(market_appid, market)}">${getStoreIcon(market)}</a></td>
                             <td class="center" id="">${deal_type === "market_rank" ? "일간" : "실시간"}</td>
                             <td class="center" id="">${rankType(chart_type)}</td>

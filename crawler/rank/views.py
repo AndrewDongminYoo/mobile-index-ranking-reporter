@@ -1,28 +1,33 @@
 from datetime import timedelta
-
+from django.contrib.auth.decorators import user_passes_test
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Min
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
-
 from crawler.models import TrackingApps, Ranked, OneStoreDL, TimeIndex, Following
 
 
+def check_admin(user):
+    return user.is_superuser
+
+
+@user_passes_test(check_admin)
 def index(request: WSGIRequest):
     return render(request, "index.html")
 
 
-def rank(request: WSGIRequest):
+def rank(request: WSGIRequest, following_id: int):
+    following = Following.objects.get(id=following_id)
+    package_name = following.market_appid
+    return render(request, "rank.html", {"following": following, "package_name": package_name})
+
+
+def redirect_to_rank(request: WSGIRequest):
     package_name: str = request.GET.get('pkg')
     market_name: str = request.GET.get('mkt')
-    following_id: str = request.GET.get('follow')
-    following = Following.objects.last()
     if package_name and market_name:
         following = Following.objects.filter(market_appid=package_name, market=market_name).first()
-    elif following_id:
-        following = Following.objects.filter(id=following_id).first()
-        package_name = following.market_appid
-    return render(request, "rank.html", {"following": following, "package_name": package_name})
+        return redirect("/statistic/{}".format(following.id))
 
 
 def statistic(request: WSGIRequest, market=None, deal=None, app=None):
