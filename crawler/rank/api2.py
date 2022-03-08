@@ -55,7 +55,7 @@ def show_all_tracking_apps_with_following(request):
 @paginate(LimitOffsetPagination)
 def show_details_of_hourly_ranks(request):
     app_id = request.GET.get("app")
-    deal_type = request.GET.get("deal_type")
+    deal_type = request.GET.get("deal_type") or "realtime_rank"
     d_day = timezone.now() - timedelta(days=3)
     return TrackingApps.objects \
         .filter(following_id=app_id,

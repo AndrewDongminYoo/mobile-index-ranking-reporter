@@ -7,7 +7,7 @@
             <div class="content">
                 <div class="content">
                     <div class="header">
-                        <h5 class="title" id="myLargeModalLabel">{{ following.app_name }} | {{ following.market_appid }} 앱 상세보기</h5>
+                        <h3 class="title" id="myLargeModalLabel">{{ following.app_name }} | {{ following.market_appid }} 앱 상세보기({{ following.market }})</h3>
                     </div>
                     <div class="body">
                         <div id="canvas1"></div>
@@ -67,7 +67,7 @@
         let pkg_id = "{{ package_name }}" || getParams("pkg")
 
         $('#myChart2').remove()
-        axios.get(`/v2/tracking/statistics?app=${app_id}&deal_type=realtime_rank`)
+        axios.get(`/v2/tracking/statistics?app=${app_id}`)
             .then((res) => {
                 if (!res.data.items.length) {
                     $("#myLarge #trackingTable")

@@ -13,25 +13,35 @@ ONE_PREFIX = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId="
 def get_app_url():
     def correct_path(url):
         response = requests.get(url, headers=headers)
-        print(response.status_code)
-        if response.headers:
+        if response.status_code == 200:
             return response.url
-        else:
-            return "None"
 
-    for app in App.objects.all().filter(app_url=None):
+    for app in App.objects.all().filter(app_info=None):
+        app_info = None
         if app.market == "google":
-            app.app_url = correct_path(GOOGLE_PREFIX + app.market_appid)
+            # app_url = correct_path(GOOGLE_PREFIX + app.market_appid)
+            app_info = AppInformation.objects.filter(google_url=app.app_url)
+            if app_info.exists():
+                app_info = app_info.first()
         elif app.market == "apple":
-            app.app_url = correct_path(APPLE_PREFIX + app.market_appid)
+            # app_url = correct_path(APPLE_PREFIX + app.market_appid)
+            app_info = AppInformation.objects.filter(apple_url=app.app_url)
+            if app_info.exists():
+                app_info = app_info.first()
         elif app.market == "one":
-            app.app_url = correct_path(ONE_PREFIX + app.market_appid)
+            # app_url = correct_path(ONE_PREFIX + app.market_appid)
+            app_info = AppInformation.objects.filter(one_url=app.app_url)
+            if app_info.exists():
+                app_info = app_info.first()
+        print(app_info)
+        if app_info:
+            app.app_info = app_info
         app.save()
 
 
 def get_contact_number():
     import re
-    for app in App.objects.all():
+    for app in App.objects.filter(app_info=None).all():
         url = 'https://proxy-insight.mobileindex.com/app/market_info'
         body = {
             "packageName": app.market_appid,
@@ -85,6 +95,8 @@ def get_contact_number():
                     new_app.description = ", ".join(set(email))
                     print(phone, email)
                 new_app.save()
+                app.app_info = new_app
+                app.save()
             except KeyError:
                 print(app.id, "key")
             except AttributeError:
@@ -193,5 +205,6 @@ def get_history(app: Ranked):
 
 
 if __name__ == '__main__':
-    ive_korea_internal_api()
+    # ive_korea_internal_api()
     get_app_url()
+    # get_contact_number()
