@@ -19,17 +19,20 @@ def get_app_url():
     for app in App.objects.all().filter(app_info=None):
         app_info = None
         if app.market == "google":
-            # app_url = correct_path(GOOGLE_PREFIX + app.market_appid)
+            if not app.app_url:
+                app.app_url = correct_path(GOOGLE_PREFIX + app.market_appid)
             app_info = AppInformation.objects.filter(google_url=app.app_url)
             if app_info.exists():
                 app_info = app_info.first()
         elif app.market == "apple":
-            # app_url = correct_path(APPLE_PREFIX + app.market_appid)
+            if not app.app_url:
+                app.app_url = correct_path(APPLE_PREFIX + app.market_appid)
             app_info = AppInformation.objects.filter(apple_url=app.app_url)
             if app_info.exists():
                 app_info = app_info.first()
         elif app.market == "one":
-            # app_url = correct_path(ONE_PREFIX + app.market_appid)
+            if not app.app_url:
+                app.app_url = correct_path(ONE_PREFIX + app.market_appid)
             app_info = AppInformation.objects.filter(one_url=app.app_url)
             if app_info.exists():
                 app_info = app_info.first()
