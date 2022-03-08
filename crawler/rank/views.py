@@ -1,5 +1,5 @@
 from datetime import timedelta
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Min
 from django.shortcuts import render, redirect
@@ -7,11 +7,7 @@ from django.utils import timezone
 from crawler.models import TrackingApps, Ranked, OneStoreDL, TimeIndex, Following
 
 
-def check_admin(user):
-    return user.is_superuser
-
-
-@user_passes_test(check_admin)
+@login_required
 def index(request: WSGIRequest):
     return render(request, "index.html")
 
