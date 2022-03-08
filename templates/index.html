@@ -129,7 +129,7 @@
                         return
                     }
                     _.forEach(res.data.items, (item, i) => {
-                        if (i % 3 !== 0) return
+                        if (i % 6 !== 0) return
                         let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
                         let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
@@ -185,7 +185,7 @@
                         return
                     }
                     _.forEach(res.data.items, (item, i) => {
-                        if (i % 3 !== 0) return
+                        if (i % 6 !== 0) return
                         let {app, app_name, created_at, downloads, icon_url,} = item
                         let template = `<tr>
                         <td class=""><img src="${icon_url}" alt=${app} width="24"></td>
