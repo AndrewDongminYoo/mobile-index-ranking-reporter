@@ -167,8 +167,8 @@ def ive_korea_internal_api():
                     .replace("https://apps.apple.com/kr/app/id", "")
             elif adv_info.get("ads_os_type") == "3":
                 market = "one"
-                package = adv_info.get("ads_join_url")\
-                    .replace("https://onesto.re", "")\
+                package = adv_info.get("ads_join_url") \
+                    .replace("https://onesto.re/", "") \
                     .replace("https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=", "")
             if package:
                 followings = Following.objects.filter(market_appid=package)
