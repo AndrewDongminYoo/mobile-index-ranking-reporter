@@ -26,7 +26,7 @@ headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
 def post_to_slack(text=None):
     import requests
     import json
-    url = 'https://hooks.slack.com/services/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'
+    url = 'https://hooks.slack.com/services/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'
     _headers = {'Content-type': 'application/json'}
     body = json.dumps({"text": text})
     req = requests.post(url, headers=_headers, data=body)
