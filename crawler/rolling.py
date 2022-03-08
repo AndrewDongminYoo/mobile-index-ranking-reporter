@@ -1,9 +1,7 @@
-from datetime import timedelta
-
-from django.db import DataError
-
-from crawler.models import AppInformation
 from crawling import *
+from datetime import timedelta
+from django.db import DataError
+from crawler.models import AppInformation
 
 GOOGLE_PREFIX = "https://play.google.com/store/apps/details?id="
 APPLE_PREFIX = "https://apps.apple.com/kr/app/id"
