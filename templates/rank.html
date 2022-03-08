@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}STATISTIC{% endblock %}
+{% block title %}{{ following.app_name }} | {{ following.market_appid }}{% endblock %}
 {% block content %}
     <div id="myLarge">
         <div class="dialog container-lg">
             <div class="content">
                 <div class="content">
                     <div class="header">
-                        <h5 class="title" id="myLargeModalLabel">앱 상세보기</h5>
+                        <h5 class="title" id="myLargeModalLabel">{{ following.app_name }} | {{ following.market_appid }} 앱 상세보기</h5>
                     </div>
                     <div class="body">
                         <div id="canvas1"></div>
@@ -67,7 +67,7 @@
         let pkg_id = "{{ package_name }}" || getParams("pkg")
 
         $('#myChart2').remove()
-        axios.get(`/v2/tracking/statistics?app=${app_id}`)
+        axios.get(`/v2/tracking/statistics?app=${app_id}&deal_type=realtime_rank`)
             .then((res) => {
                 if (!res.data.items.length) {
                     $("#myLarge #trackingTable")
@@ -172,7 +172,6 @@
                 myChart3.draw()
             })
 
-        $("#myLarge tbody").empty()
         $('#myChart1').remove()
         axios.get(`/v2/downloads?app=${pkg_id}`)
             .then((res) => {

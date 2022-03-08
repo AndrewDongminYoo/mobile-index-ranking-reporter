@@ -185,7 +185,6 @@
                         return
                     }
                     _.forEachRight(res.data.items, (item, i) => {
-                        // if (i % 6 !== 4) return
                         let {app, app_name, created_at, downloads, icon_url,} = item
                         let template = `<tr>
                         <td class=""><img src="${icon_url}" alt=${app} width="24"></td>

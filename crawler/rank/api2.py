@@ -55,10 +55,11 @@ def show_all_tracking_apps_with_following(request):
 @paginate(LimitOffsetPagination)
 def show_details_of_hourly_ranks(request):
     app_id = request.GET.get("app")
+    deal_type = request.GET.get("deal_type")
     d_day = timezone.now() - timedelta(days=3)
     return TrackingApps.objects \
         .filter(following_id=app_id,
-                deal_type="realtime_rank",
+                deal_type=deal_type,
                 created_at__gte=d_day,
                 chart_type="free")
 
