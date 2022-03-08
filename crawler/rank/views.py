@@ -7,6 +7,8 @@ from crawler.models import TrackingApps, Ranked, OneStoreDL, TimeIndex, Followin
 
 
 def index(request: WSGIRequest):
+    if not request.user.is_superuser:
+        return redirect("/admin")
     return render(request, "index.html")
 
 
