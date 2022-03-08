@@ -2,7 +2,7 @@
 <project version="4">
   <component name="SshConfigs">
     <configs>
-      <sshConfig host="13.125.52.130" id="3bc459ea-33af-4c90-a4eb-b6647168902f" keyPath="C:\Users\User\Desktop\newbee\ive-aws-keypair.pem" port="22" nameFormat="DESCRIPTIVE" username="ubuntu" useOpenSSHConfig="true" />
+      <sshConfig host="13.125.164.253" id="3bc459ea-33af-4c90-a4eb-b6647168902f" keyPath="C:\Users\User\Desktop\newbee\ive-aws-keypair.pem" port="22" nameFormat="DESCRIPTIVE" username="ubuntu" useOpenSSHConfig="true" />
     </configs>
   </component>
 </project>

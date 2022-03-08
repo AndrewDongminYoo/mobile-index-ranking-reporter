@@ -70,11 +70,11 @@
         axios.get(`/v2/tracking/statistics?app=${app_id}`)
             .then((res) => {
                 if (!res.data.items.length) {
-                    $("#myLarge #trackingTable")
-                        .append("<tr><td></td><td>데이터가 없어요</td><td>데이터가 없어요</td><td></td></tr>");
+                    $("#myLarge > div > div > div > div.body > table:nth-child(4)")
+                        .empty();
                     return
                 }
-                _.forEachRight(res.data.items, (item, i) => {
+                _.forEach(res.data.items, (item, i) => {
                     if (i % 5 !== 0) return
                     let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
                     let template = `<tr>
@@ -84,7 +84,7 @@
                         <td class="center">${chart_type}</td>
                         <td class="center">${moment(created_at).format("MM.DD HH:mm")}</td>
                         <td class="center">${rank} 위</td></tr>`
-                    $("#myLarge #trackingTable").append(template)
+                    $("#myLarge #trackingTable").prepend(template)
                 })
                 $("#canvas2").append(`<canvas id="myChart2" class="bg-white table bordered" width="600" height="200"></canvas>`)
                 let ctx2 = document.getElementById('myChart2').getContext('2d');
@@ -123,11 +123,11 @@
         axios.get(`/v2/tracking/daily?app=${app_id}`)
             .then((res) => {
                 if (!res.data.items.length) {
-                    $("#myLarge #dailyRankTable")
-                        .append("<tr><td></td><td>데이터가 없어요</td><td>데이터가 없어요</td><td></td></tr>");
+                    $("#myLarge > div > div > div > div.body > table:nth-child(6)")
+                        .empty();
                     return
                 }
-                _.forEachRight(res.data.items, (item, i) => {
+                _.forEach(res.data.items, (item, i) => {
                     if (i % 5 !== 0) return
                     let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
                     let template = `<tr>
@@ -137,7 +137,7 @@
                         <td class="center">${chart_type}</td>
                         <td class="center">${moment(created_at).format("MM.DD HH:mm")}</td>
                         <td class="center">${rank} 위</td></tr>`
-                    $("#myLarge #dailyRankTable").append(template)
+                    $("#myLarge #dailyRankTable").prepend(template)
                 })
                 $("#canvas3").append(`<canvas id="myChart3" class="bg-white table bordered" width="600" height="200"></canvas>`)
                 let ctx3 = document.getElementById('myChart3').getContext('2d');
@@ -176,11 +176,11 @@
         axios.get(`/v2/downloads?app=${pkg_id}`)
             .then((res) => {
                 if (!res.data.items.length) {
-                    $("#myLarge #downloadTable")
-                        .append("<tr><td></td><td>데이터가 없어요</td><td>데이터가 없어요</td><td></td></tr>");
+                    $("#myLarge > div > div > div > div.body > table:nth-child(2)")
+                        .empty();
                     return
                 }
-                _.forEachRight(res.data.items, (item, i) => {
+                _.forEach(res.data.items, (item, i) => {
                     if (i % 5 !== 0) return
                     let {app, app_name, created_at, downloads, icon_url,} = item
                     let template = `<tr>
@@ -189,7 +189,7 @@
                         <td class="">${moment(created_at).format("YY.MM.DD. HH:mm")}</td>
                         <td class="">${downloads}</td>
                         </tr>`
-                    $("#myLarge #downloadTable").append(template)
+                    $("#myLarge #downloadTable").prepend(template)
                 })
                 $("#canvas1").append(`<canvas id="myChart1" class="bg-white table bordered" width="600" height="200"></canvas>`)
                 let ctx1 = document.getElementById('myChart1').getContext('2d');

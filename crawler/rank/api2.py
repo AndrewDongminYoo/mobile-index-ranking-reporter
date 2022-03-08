@@ -61,6 +61,7 @@ def show_details_of_hourly_ranks(request):
         .filter(following_id=app_id,
                 deal_type=deal_type,
                 created_at__gte=d_day,
+                created_at__minute=0,
                 chart_type="free")
 
 
