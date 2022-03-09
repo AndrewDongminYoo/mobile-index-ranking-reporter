@@ -210,6 +210,6 @@ def get_history(app: Ranked):
 
 
 if __name__ == '__main__':
-    # ive_korea_internal_api()
-    get_app_url()
+    ive_korea_internal_api()
+    # get_app_url()
     # get_contact_number()

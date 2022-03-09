@@ -150,7 +150,13 @@ def crawl_app_store_rank(term: str, market: str, price: str, game_or_app: str):
             )
             item.save()
             if _app.market_appid in following:
-                last_one = TrackingApps.objects.filter(market_appid=_app.market_appid).last()
+                last_one = TrackingApps.objects.filter(
+                    market_appid=item.market_appid,
+                    deal_type=item.deal_type,
+                    market=item.market,
+                    chart_type=item.chart_type,
+                    app_name=item.app_name,
+                ).last()
                 tracking = TrackingApps(
                     following=Following.objects.get(market_appid=_app.market_appid),
                     app=_app,
