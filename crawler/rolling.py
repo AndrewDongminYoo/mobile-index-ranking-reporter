@@ -34,9 +34,9 @@ def get_app_url():
             app_info = AppInformation.objects.filter(one_url=app.app_url)
             if app_info.exists():
                 app_info = app_info.first()
-        print(app_info)
         if app_info:
             app.app_info = app_info
+            print(app_info)
         app.save()
 
 
@@ -210,6 +210,6 @@ def get_history(app: Ranked):
 
 
 if __name__ == '__main__':
-    ive_korea_internal_api()
+    # ive_korea_internal_api()
     # get_app_url()
-    # get_contact_number()
+    get_contact_number()
