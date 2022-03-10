@@ -1,5 +1,4 @@
 from django.db.models import Q
-
 from crawling import *
 from datetime import timedelta
 from django.db import DataError
@@ -10,7 +9,12 @@ APPLE_PREFIX = "https://apps.apple.com/kr/app/id"
 ONE_PREFIX = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId="
 
 
-def get_app_url():
+def set_apps_url_for_all():
+    """
+    등록되어 있는 모든 애플리케이션의 url을 설정한다.
+    :return: None
+    """
+
     def correct_path(url):
         response = requests.get(url, headers=headers)
         if response.status_code == 200:
@@ -42,7 +46,11 @@ def get_app_url():
         app.save()
 
 
-def get_contact_number():
+def get_developers_contact_number():
+    """
+    앱 개발자의 이메일과 연락처를 추출한다.
+    :return: None
+    """
     import re
     for app in App.objects.filter(app_info=None).all():
         url = 'https://proxy-insight.mobileindex.com/app/market_info'
@@ -113,7 +121,11 @@ def get_contact_number():
                 pass
 
 
-def deduplicate():
+def application_deduplicate():
+    """
+    마켓 아이디가 중복된 앱은 모두 제거한다.
+    :return: None
+    """
     array = dict()
     for app in App.objects.all().order_by("id"):
         if app.market_appid not in array.keys():
@@ -132,7 +144,11 @@ def deduplicate():
             app.delete()
 
 
-def app_market():
+def edit_apps_market():
+    """
+    마켓 아이디를 보고 앱의 마켓을 추측 및 수정한다.
+    :return: None
+    """
     for app in App.objects.all().filter(market=""):
         if app.market_appid.startswith("0000"):
             app.market = "one"
@@ -143,7 +159,11 @@ def app_market():
         app.save()
 
 
-def ranked_dedupe():
+def tracked_app_dedupe():
+    """
+    추적 결과 중 중복된 앱을 제거한다.
+    :return: None
+    """
     app_list = []
     for ranked in TrackingApps.objects.all():
         reg = ranked.created_at.strftime("%Y%m%d%H%M")
@@ -157,48 +177,74 @@ def ranked_dedupe():
 
 
 def ive_korea_internal_api():
+    """
+    아이브코리아 내부 API를 호출해 앱 정보를 등록한다.
+    :return: None
+    """
     API_KEY = 'wkoo4ko0g808s0kkossoo4o8ow0kwwg88gw004sg'
     url = f'http://dev.i-screen.kr/channel/rank_ads_list?apikey={API_KEY}'
     req = requests.get(url)
 
     if req.status_code == 200:
         response = req.json()
-        print(response)
         for adv_info in response["list"]:
-            package = adv_info.get("ads_package")
-            market = "google"
-            if package.endswith("//"):
-                package = ""
-                pass
-            elif adv_info.get("ads_join_url").startswith("https://apps.apple.com/kr/app/id"):
-                market = "apple"
-                package = adv_info.get("ads_join_url")\
-                    .replace("https://apps.apple.com/kr/app/id", "")
-            elif adv_info.get("ads_os_type") == "3":
+            market = None
+            market_appid = adv_info.get("ads_package")
+            address = adv_info.get("ads_join_url")
+            appname = adv_info.get("ads_name")
+            import re
+            google = re.compile(r'^\w+(\.\w+)+$')
+            apple = re.compile(r'^\d{9,11}$')
+            one = re.compile(r'^0000\d{5,6}$')
+            if google.fullmatch(market_appid):
+                market = "google"
+            elif one.fullmatch(market_appid):
                 market = "one"
-                package = adv_info.get("ads_join_url") \
-                    .replace("https://onesto.re/", "") \
-                    .replace("https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=", "")
-            if package:
-                followings = Following.objects.filter(market_appid=package)
-                if followings.exists():
-                    followings.first().is_active = True
-                    followings.first().save()
+            elif apple.fullmatch(market_appid):
+                market = "apple"
+            elif not market_appid or market_appid.endswith("://"):
+                market_appID = re.findall(r'\d{9,11}$', address)
+                if market_appID:
+                    market_appid = market_appID[0]
+                    market = "one" if market_appid.startswith("0000") else "apple"
+                    print(market_appid)
+                elif re.search('[a-z]+(\.\w+)+$', address):
+                    market_appid = re.compile('[a-z]+(\.\w+)+$').search(address)[0]
+                    market = "google"
+                    print(market_appid)
                 else:
-                    try:
-                        following = Following(
-                            app_name=adv_info["ads_name"],
-                            market_appid=package,
-                            is_active=True,
-                            market=market,
-                        )
-                        following.save()
-                        post_to_slack(f"{market} 스토어 {following.app_name} 앱 추적이 정기 등록 됐습니다.")
-                    except DataError:
-                        print(package)
+                    continue
+            followings = Following.objects.filter(market=market, market_appid=market_appid)
+            if followings.exists():
+                following = followings.first()
+                following.is_active = True
+                following.expire_date = timezone.now() + timedelta(days=7)
+                following.save()
+            else:
+                try:
+                    following = Following(
+                        app_name=appname,
+                        market_appid=market_appid,
+                        market=market,
+                        is_active=True,
+                        expire_date=timezone.now() + timedelta(days=7)
+                    )
+                    following.save()
+                    post_to_slack(f"{market} 스토어 {following.app_name} 앱 추적이 정기 등록 됐습니다.")
+                except DataError:
+                    print(market_appid)
+    for app in Following.objects.filter(expire_date__lt=timezone.now()):
+        post_to_slack(f"{app.get_market_display()} {app.app_name} 추적기한종료🪂")
+        app.is_active = False
+        app.save()
 
 
 def get_app_history(app: Ranked):
+    """
+    특정 앱의 추적 결과 히스토리를 가져온다.(내부결과아님. 모바일인덱스)
+    :param app: 랭킹에 추적된 앱
+    :return: 해당 앱의 추적 결과 히스토리
+    """
     url = 'https://proxy-insight.mobileindex.com/chart/market_rank_history'  # "realtime_rank_v2", "global_rank_v2"
     data = {
         'appId': app.market_appid,
@@ -216,6 +262,10 @@ def get_app_history(app: Ranked):
 
 
 def get_app_category():
+    """
+    앱 카테고리를 가져와 세팅한다.
+    :return: None
+    """
     url = "https://proxy-insight.mobileindex.com/app/data_summary"
     for app in App.objects.all().filter(Q(category_main=None) | Q(category_sub=None)):
         data = {
@@ -236,6 +286,10 @@ def get_app_category():
 
 
 def get_app_publisher_name():
+    """
+    앱의 퍼블리셔를 가져와 세팅한다.
+    :return: None
+    """
     url = 'https://proxy-insight.mobileindex.com/common/app_info'
     for app in App.objects.all().filter(publisher_name=None):
         data = {
@@ -278,7 +332,9 @@ def get_app_publisher_name():
 
 
 if __name__ == '__main__':
-    get_app_publisher_name()
-    # get_app_url()
-    # get_contact_number()
+    ive_korea_internal_api()
+    # edit_apps_market()
+    # set_apps_url_for_all()
+    # get_developers_contact_number()
     # get_app_category()
+    # get_app_publisher_name()
