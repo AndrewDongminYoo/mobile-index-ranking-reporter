@@ -49,6 +49,9 @@ class App(models.Model):
     market = models.CharField(max_length=16, null=True, verbose_name="마켓명")
     app_url = models.URLField(max_length=200, null=True, verbose_name="앱 주소")
     app_info = models.ForeignKey(AppInformation, null=True, on_delete=models.SET_NULL, verbose_name="앱 정보")
+    publisher_name = models.CharField(max_length=80, null=True, verbose_name="제작사명")
+    category_main = models.CharField(max_length=40, null=True, verbose_name="메인 카테고리")
+    category_sub = models.CharField(max_length=40, null=True, verbose_name="서브 카테고리")
 
 
 class Ranked(Timestamped):

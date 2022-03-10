@@ -100,6 +100,7 @@ def create_app(app_data: dict):
             app_name=app_data.get("app_name"),
             market_appid=app_data.get("market_appid"),
             icon_url=app_data.get('icon_url'),
+            publisher_name=app_data.get("publisher_name"),
         )
         app.save()
     if app.market_appid.startswith("0000"):

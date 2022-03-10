@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from crawling import *
 from datetime import timedelta
 from django.db import DataError
@@ -98,13 +100,17 @@ def get_contact_number():
                     if new_app_info.phone and new_app_info.email:
                         post_to_slack(
                             f"{app.market} {app.app_name} 앱의 연락처는 {new_app_info.phone}, 이메일은 {new_app_info.email} 입니다.")
+                    elif new_app_info.phone:
+                        post_to_slack(f"{app.market} {app.app_name} 앱의 연락처는 {new_app_info.phone}입니다.")
+                    elif new_app_info.email:
+                        post_to_slack(f"{app.market} {app.app_name} 앱의 이메일은 {new_app_info.email} 입니다.")
                 new_app_info.save()
                 app.app_info = new_app_info
                 app.save()
             except KeyError:
                 print(app.id, "key")
             except AttributeError:
-                print(app.id, "attr")
+                pass
 
 
 def deduplicate():
@@ -192,7 +198,7 @@ def ive_korea_internal_api():
                         print(package)
 
 
-def get_history(app: Ranked):
+def get_app_history(app: Ranked):
     url = 'https://proxy-insight.mobileindex.com/chart/market_rank_history'  # "realtime_rank_v2", "global_rank_v2"
     data = {
         'appId': app.market_appid,
@@ -204,12 +210,75 @@ def get_history(app: Ranked):
     req = requests.post(url, data=data, headers=headers)
     response = req.json()
     if response["status"]:
-        _date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
-        print(_date)
-    return response["data"]
+        # _date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
+        # print(_date)
+        return response["data"]
+
+
+def get_app_category():
+    url = "https://proxy-insight.mobileindex.com/app/data_summary"
+    for app in App.objects.all().filter(Q(category_main=None) | Q(category_sub=None)):
+        data = {
+            'packageName': app.market_appid,
+        }
+        req = requests.post(url, data=data, headers=headers)
+        response = req.json()
+        if response["status"]:
+            main_category = response["data"]['biz_category_main']
+            sub_category = response["data"]['biz_category_sub']
+            if main_category and sub_category:
+                app.category_main = main_category if main_category != "null" else None
+                app.category_sub = sub_category if sub_category != "null" else None
+                app.save()
+                print(app.app_name, app.category_main, app.category_sub)
+            else:
+                print(app.app_name, main_category, sub_category)
+
+
+def get_app_publisher_name():
+    url = 'https://proxy-insight.mobileindex.com/common/app_info'
+    for app in App.objects.all().filter(publisher_name=None):
+        data = {
+            'packageName': app.market_appid,
+        }
+        req = requests.post(url, data=data, headers=headers)
+        response = req.json()
+        if response["status"]:
+            data = response["data"]
+            app.publisher_name = data['publisher_name']
+            if app.market == "google":
+                info = AppInformation.objects.filter(google_url__contains=data.get("package_name"))
+                if info.exists():
+                    app.app_info = info.first()
+                    for a in App.objects.filter(app_info=info.first()):
+                        a.publisher_name = app.publisher_name
+                        a.category_main = app.category_main
+                        a.category_sub = app.category_sub
+                        a.save()
+            if app.market == "one":
+                info = AppInformation.objects.filter(one_url__contains=data.get("one_id"))
+                if info.exists():
+                    app.app_info = info.first()
+                    for a in App.objects.filter(app_info=info.first()):
+                        a.publisher_name = app.publisher_name
+                        a.category_main = app.category_main
+                        a.category_sub = app.category_sub
+                        a.save()
+            if app.market == "apple":
+                info = AppInformation.objects.filter(apple_url__contains=data.get("apple_id"))
+                if info.exists():
+                    app.app_info = info.first()
+                    for a in App.objects.filter(app_info=info.first()):
+                        a.publisher_name = app.publisher_name
+                        a.category_main = app.category_main
+                        a.category_sub = app.category_sub
+                        a.save()
+            print(app.market, app.publisher_name, app.category_main, app.category_sub)
+            app.save()
 
 
 if __name__ == '__main__':
-    # ive_korea_internal_api()
+    get_app_publisher_name()
     # get_app_url()
-    get_contact_number()
+    # get_contact_number()
+    # get_app_category()
