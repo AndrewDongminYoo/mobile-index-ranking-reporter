@@ -187,7 +187,7 @@ def ive_korea_internal_api():
                             market=market,
                         )
                         following.save()
-                        post_to_slack(f"{package} 스토어 {following.app_name} 앱 추적이 정기 등록 됐습니다.")
+                        post_to_slack(f"{market} 스토어 {following.app_name} 앱 추적이 정기 등록 됐습니다.")
                     except DataError:
                         print(package)
 

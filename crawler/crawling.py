@@ -63,7 +63,10 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
         array = [i for i in map(int, d_string.split("."))]
         released = datetime.date(year=array[0], month=array[1], day=array[2])
         download = int(d_counts.replace(",", ""))
-        last_one = OneStoreDL.objects.filter(app=app, created_at__day=timezone.now() - timedelta(days=1)).last()
+        last_one = OneStoreDL.objects.filter(
+            app=app,
+            market_appid=app.market_appid,
+        ).last()
         ones_app = OneStoreDL(
             date=date,
             app=app,
@@ -78,7 +81,8 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
         ones_app.save()
         rank_diff = ones_app.downloads - last_one.downloads if last_one else 0
         if rank_diff > 2000:
-            post_to_slack(f"{app_name} 앱 다운로드 수가 전일 대비 {rank_diff}건 증가했습니다.✈ {ones_app.downloads}건.")
+            post_to_slack(
+                f"{app_name} 앱 다운로드가 전일 대비 {rank_diff}건 증가했습니다.✈ {last_one.downloads}건 -> {ones_app.downloads}건.")
         return ones_app
     except AttributeError:
         print("AttributeError")
@@ -172,9 +176,11 @@ def crawl_app_store_rank(term: str, market: str, price: str, game_or_app: str):
                 tracking.save()
                 rank_diff = item.rank - last_one.rank if last_one else 0
                 if rank_diff < -2:
-                    post_to_slack(f"순위 상승: {item.app_name} 🚀 {last_one.rank}위 -> {item.rank}위")
+                    post_to_slack(
+                        f"순위 상승: {item.app_name} 🚀 {item.get_market_display()} {last_one.rank}위 -> {item.rank}위")
                 if rank_diff > 2:
-                    post_to_slack(f"순위 하락: {item.app_name} 🚑 {last_one.rank}위 -> {item.rank}위")
+                    post_to_slack(
+                        f"순위 하락: {item.app_name} 🚑 {item.get_market_display()} {last_one.rank}위 -> {item.rank}위")
 
 
 def following_one_crawl():
