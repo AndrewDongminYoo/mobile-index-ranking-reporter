@@ -188,22 +188,24 @@ def ive_korea_internal_api():
     if req.status_code == 200:
         response = req.json()
         for adv_info in response["list"]:
-            print(adv_info["ads_name"], adv_info["ads_package"], adv_info["ads_join_url"])
+            print(adv_info)
+            # print(adv_info["ads_name"], adv_info["ads_package"], adv_info["ads_join_url"])
             market = None
             market_appid = adv_info.get("ads_package")
             address = adv_info.get("ads_join_url")
             appname = adv_info.get("ads_name")
+            os_type = adv_info.get("ads_os_type")
             import re
             google = re.compile(r'^\w+(\.\w+)+$')
             apple = re.compile(r'^\d{9,11}$')
             one = re.compile(r'^0000\d{5,6}$')
-            if google.fullmatch(market_appid):
+            if google.fullmatch(market_appid) and os_type == "2":
                 market = "google"
-            elif one.fullmatch(market_appid):
+            elif one.fullmatch(market_appid) and os_type == "3":
                 market = "one"
-            elif apple.fullmatch(market_appid):
+            elif apple.fullmatch(market_appid) and os_type == "1":
                 market = "apple"
-            elif not market_appid or market_appid.endswith("://"):
+            else:
                 market_appID = re.findall(r'\d{9,11}$', address)
                 if market_appID:
                     market_appid = market_appID[0]
@@ -336,7 +338,7 @@ def get_app_publisher_name():
 
 if __name__ == '__main__':
     ive_korea_internal_api()
-    edit_apps_market()
+    # edit_apps_market()
     # set_apps_url_for_all()
     # get_developers_contact_number()
     # get_app_category()
