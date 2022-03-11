@@ -1,7 +1,7 @@
 from django.db.models import Q
 from crawling import *
 from datetime import timedelta
-from django.db import DataError
+from django.db import DataError, IntegrityError
 from crawler.models import AppInformation
 
 GOOGLE_PREFIX = "https://play.google.com/store/apps/details?id="
@@ -188,6 +188,7 @@ def ive_korea_internal_api():
     if req.status_code == 200:
         response = req.json()
         for adv_info in response["list"]:
+            print(adv_info)
             market = None
             market_appid = adv_info.get("ads_package")
             address = adv_info.get("ads_join_url")
@@ -232,6 +233,8 @@ def ive_korea_internal_api():
                     following.save()
                     post_to_slack(f"{market} 스토어 {following.app_name} 앱 추적이 정기 등록 됐습니다.")
                 except DataError:
+                    print(market_appid)
+                except IntegrityError:
                     print(market_appid)
     for app in Following.objects.filter(expire_date__lt=timezone.now()):
         post_to_slack(f"{app.get_market_display()} {app.app_name} 추적기한종료🪂")
