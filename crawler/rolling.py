@@ -188,7 +188,7 @@ def ive_korea_internal_api():
     if req.status_code == 200:
         response = req.json()
         for adv_info in response["list"]:
-            print(adv_info)
+            print(adv_info["ads_name"], adv_info["ads_package"], adv_info["ads_join_url"])
             market = None
             market_appid = adv_info.get("ads_package")
             address = adv_info.get("ads_join_url")
@@ -209,8 +209,8 @@ def ive_korea_internal_api():
                     market_appid = market_appID[0]
                     market = "one" if market_appid.startswith("0000") else "apple"
                     print(market_appid)
-                elif re.search('[a-z]+(\.\w+)+$', address):
-                    market_appid = re.compile('[a-z]+(\.\w+)+$').search(address)[0]
+                elif re.search(r'[a-z]+(\.\w+)+$', address):
+                    market_appid = re.compile(r'[a-z]+(\.\w+)+$').search(address)[0]
                     market = "google"
                     print(market_appid)
                 else:
@@ -231,7 +231,7 @@ def ive_korea_internal_api():
                         expire_date=timezone.now() + timedelta(days=7)
                     )
                     following.save()
-                    post_to_slack(f"{market} 스토어 {following.app_name} 앱 추적이 정기 등록 됐습니다.")
+                    post_to_slack(f"{following.get_market_display()} {following.app_name} 앱 추적이 정기 등록 됐습니다.")
                 except DataError:
                     print(market_appid)
                 except IntegrityError:
@@ -285,7 +285,7 @@ def get_app_category():
                 app.save()
                 print(app.app_name, app.category_main, app.category_sub)
             else:
-                print(app.app_name, main_category, sub_category)
+                print(app.app_name, "카테고리 없음")
 
 
 def get_app_publisher_name():
@@ -336,7 +336,7 @@ def get_app_publisher_name():
 
 if __name__ == '__main__':
     ive_korea_internal_api()
-    # edit_apps_market()
+    edit_apps_market()
     # set_apps_url_for_all()
     # get_developers_contact_number()
     # get_app_category()
