@@ -9,6 +9,9 @@ class Timestamped(models.Model):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+
 
 class TimeIndex(models.Model):
     class Meta:
@@ -16,16 +19,18 @@ class TimeIndex(models.Model):
         verbose_name_plural = "스크랩한 시간"
 
     def __str__(self):
-        return self.date
+        return self.date if self.date else "전체"
 
     date = models.CharField(max_length=16, verbose_name="날짜", db_index=True)
 
 
 class AppInformation(models.Model):
-
     class Meta:
         verbose_name = "애플리케이션 정보"
         verbose_name_plural = "어플 정보"
+
+    def __str__(self):
+        return self.email if self.email else "전체"
 
     google_url = models.URLField(max_length=200, null=True, verbose_name="구글 주소")
     apple_url = models.URLField(max_length=200, null=True, verbose_name="애플 주소")
@@ -41,7 +46,7 @@ class App(models.Model):
         verbose_name = "애플리케이션"
 
     def __str__(self):
-        return self.app_name
+        return self.app_name if self.app_name else "-"
 
     app_name = models.CharField(max_length=80, null=True, verbose_name="앱 이름")
     icon_url = models.URLField(max_length=200, null=True, verbose_name="아이콘 이미지")
@@ -55,10 +60,12 @@ class App(models.Model):
 
 
 class Ranked(Timestamped):
-
     class Meta:
         verbose_name_plural = "랭킹"
         verbose_name = "랭킹"
+
+    def __str__(self):
+        return self.app_name
 
     DEAL_TYPE = (("realtime_rank", "실시간"), ("market_rank", "일간"))
     MARKET = (("google", "구글 플레이"), ("apple", "앱 스토어"), ("one", "원 스토어"))
@@ -79,6 +86,9 @@ class Ranked(Timestamped):
 
 
 class Following(Timestamped):
+    def __str__(self):
+        return self.app_name
+
     class Meta:
         verbose_name_plural = "순위 추적"
         verbose_name = "순위 추적"
@@ -91,10 +101,12 @@ class Following(Timestamped):
 
 
 class TrackingApps(Timestamped):
-
     class Meta:
         verbose_name_plural = "추적 결과"
         verbose_name = "추적 결과"
+
+    def __str__(self):
+        return f"{self.rank} {self.app_name}"
 
     app = models.ForeignKey(App, on_delete=models.CASCADE, verbose_name="애플리케이션")
     following = models.ForeignKey(Following, verbose_name="추적 ID", on_delete=models.CASCADE)
@@ -111,9 +123,12 @@ class TrackingApps(Timestamped):
 
 class OneStoreDL(Timestamped):
 
+    def __str__(self):
+        return self.app_name
+
     class Meta:
-        verbose_name_plural = "원스토어 순위"
-        verbose_name = "원스토어 순위"
+        verbose_name_plural = "원스토어 다운로드 수"
+        verbose_name = "원스토어 다운로드 수"
 
     app = models.ForeignKey(App, on_delete=models.CASCADE, verbose_name="애플리케이션")
     market_appid = models.CharField(max_length=32, verbose_name="스토어 ID")

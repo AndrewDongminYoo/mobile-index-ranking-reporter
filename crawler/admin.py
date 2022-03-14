@@ -3,6 +3,7 @@ from django.db.models import QuerySet
 from import_export.admin import ImportExportMixin
 
 from crawler.models import App
+from crawler.models import AppInformation
 from crawler.models import Following
 from crawler.models import OneStoreDL
 from crawler.models import Ranked
@@ -30,27 +31,61 @@ def follow_application(self, request, queryset: QuerySet):
                 market="one",
             )
             following.save()
+        elif type(obj) is Following:
+            obj.is_active = True
+            obj.save()
+
+
+def email_callable(app):
+    if app.app_info:
+        return app.app_info.email
+
+
+def phone_callable(app):
+    if app.app_info:
+        return app.app_info.phone
 
 
 class AppAdmin(admin.ModelAdmin):
-    list_display = ['id', 'app_name', 'market', 'market_appid']
-    search_fields = ["app_name", "market_appid"]
+    list_display = ['id', 'app_name', 'market', 'market_appid', email_callable, phone_callable]
+    readonly_fields = [email_callable, phone_callable]
+    search_fields = ["app_name", "app_url"]
+    filter_fields = ["market"]
+
+    def has_add_permission(self, request):
+        return False
+
+
+class AppInformationAdmin(admin.ModelAdmin):
+    list_display = ['email', 'phone', 'google_url', 'apple_url', 'one_url']
+    search_fields = ['google_url', 'apple_url', 'one_url']
+
+    def has_add_permission(self, request):
+        return False
 
 
 class RankedAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ['rank', 'app', 'market', 'deal_type', 'app_type', 'chart_type', 'app_name', 'date', 'market_appid']
+    list_display = ['rank', 'app', 'market', 'deal_type', 'app_type', 'chart_type', 'market_appid']
     search_fields = ["app_name", "market_appid"]
     actions = [follow_application]
+    filter_fields = ["market", "deal_type", "app_type", "chart_type"]
+
+    def has_add_permission(self, request):
+        return False
 
 
 class FollowingAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ['id', 'app_name', 'market_appid', 'market', 'is_active']
     search_fields = ["app_name", "market_appid"]
+    actions = [follow_application]
 
 
 class TrackingAppsAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ['app', 'following', 'market', 'deal_type', 'chart_type', 'rank', 'date']
     search_fields = ["app_name", "market_appid"]
+
+    def has_add_permission(self, request):
+        return False
 
 
 class OneStoreDLAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -58,8 +93,12 @@ class OneStoreDLAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ["app_name", "market_appid"]
     actions = [follow_application, ]
 
+    def has_add_permission(self, request):
+        return False
+
 
 admin.site.register(App, AppAdmin)
+admin.site.register(AppInformation, AppInformationAdmin)
 admin.site.register(Ranked, RankedAdmin)
 admin.site.register(Following, FollowingAdmin)
 admin.site.register(TrackingApps, TrackingAppsAdmin)

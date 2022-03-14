@@ -36,12 +36,6 @@ class Test(TestCase):
         except ValueError:
             self.fail()
 
-    def test_tracking_rank_flushing(self):
-        try:
-            tracking_rank_flushing()
-        except AttributeError:
-            self.fail()
-
     def test_following_crawl(self):
         try:
             following_one_crawl()
