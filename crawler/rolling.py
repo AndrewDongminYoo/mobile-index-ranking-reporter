@@ -395,58 +395,73 @@ def read_information_of_google_app():
         p = publisher.text if publisher else None
         first = s.select_one("a[href*='store/apps/category']")
         c = first.get("href")[21:] if first else None
-        return t, p, c, s
+        e = None
+        if s.select_one("a[href*='mailto:']"):
+            e = s.select_one("a[href*='mailto:']").text.replace("email이메일", "")
+        return t, p, c, e
 
     def get_category(application: App, categories: tuple):
         application.category_main = categories[0]
         application.category_sub = categories[1]
         application.save()
 
-    for app_info in AppInformation.objects.filter(google_url__isnull=False, email=None):
-        url = app_info.google_url
-        title, publisher_name, category, soup = get_data_from_soup(url)
-        apps = App.objects.filter(app_info=app_info)
-        if apps.exists():
-            for app in apps:
-                app.app_name = title
-                app.publisher_name = publisher_name
-                if category in category_map.keys():
-                    get_category(app, category_map[category])
-                else:
-                    print(category)
-        try:
-            app_info.email = soup.select_one("a[href*='mailto:']").text.replace("email이메일", "")
-            print(app_info.email)
-        except AttributeError:
-            app_info.google_url = ""
-        finally:
-            app_info.save()
     for app in App.objects.filter(app_url__isnull=False, market="google", category_main=None):
         url: str = app.app_url
         print(url)
-        title, publisher_name, category, soup = get_data_from_soup(url)
-        info = app.app_info
-        if not info: continue
-        for a in App.objects.filter(app_info=info):
-            a.app_name = title
-            a.publisher_name = publisher_name
-            if category in category_map.keys():
-                get_category(a, category_map[category])
-            else:
-                print(category)
+        title, publisher_name, category, email = get_data_from_soup(url)
+        if app.app_info:
+            app.app_info.email = email
+            app.app_info.google_url = url
+            app.app_info.save()
+            for a in App.objects.filter(app_info=app.app_info):
+                a.app_name = title
+                a.publisher_name = publisher_name
+                if category in category_map.keys():
+                    get_category(a, category_map[category])
+                else:
+                    print(category)
 
 
 def read_information_of_one_store_app():
-    for app in App.objects.filter(app_name=None, market="one", app_url__isnull=False):
+    for app in App.objects.filter(market="one", app_url__isnull=False):
         url = app.app_url
         req = requests.get(url)
         soup = BeautifulSoup(req.text, "html.parser")
-        title = soup.select_one("title").get_text().replace(" - 원스토어", "")
-        publisher_name = soup.select_one("p.detailapptop-co-seller").get_text()
-        app.app_name = title
-        app.publisher_name = publisher_name
-        print(app.app_name, app.publisher_name)
-        app.save()
+        try:
+            title = soup.select_one("title").get_text().replace(" - 원스토어", "")
+            publisher_name = soup.select_one("p.detailapptop-co-seller").get_text()
+            app.app_name = title
+            app.publisher_name = publisher_name
+            print(app.app_name, app.publisher_name)
+            if app.app_info:
+                app.app_info.apple_url = url
+                app.app_info.save()
+            app.save()
+        except AttributeError:
+            app.app_url = ""
+            app.save()
+
+
+def read_information_of_apple_store_app():
+    for app in App.objects.filter(market="apple", app_url__isnull=False):
+        url = app.app_url
+        req = requests.get(url)
+        soup = BeautifulSoup(req.text, "html.parser")
+        try:
+            title = soup.select_one("title").get_text().replace("App Store에서 제공하는 ", "").strip()
+            publisher_name = soup.select_one("a[href*='apps.apple.com/kr/developer']").get_text().strip()
+            genre_name = soup.select_one("a[href*='itunes.apple.com/kr/genre']").get_text().strip()
+            app.app_name = title
+            app.publisher_name = publisher_name
+            app.category_main = genre_name
+            print(app.app_name, app.publisher_name, genre_name)
+            if app.app_info:
+                app.app_info.apple_url = url
+                app.app_info.save()
+            app.save()
+        except AttributeError:
+            app.app_url = ""
+            app.save()
 
 
 if __name__ == '__main__':
@@ -456,5 +471,6 @@ if __name__ == '__main__':
     # get_developers_contact_number()
     # get_app_category()
     # get_app_publisher_name()
-    # read_information_of_google_app()
+    read_information_of_google_app()
     read_information_of_one_store_app()
+    read_information_of_apple_store_app()

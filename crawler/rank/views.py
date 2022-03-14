@@ -15,7 +15,12 @@ def index(request: WSGIRequest):
 def rank(request: WSGIRequest, following_id: int):
     following = Following.objects.get(id=following_id)
     package_name = following.market_appid
-    return render(request, "rank.html", {"following": following, "package_name": package_name})
+    tracked = TrackingApps.objects.filter(following=following).order_by("-created_at")
+    if request.user.is_superuser and tracked.exists():
+        app = tracked.last().app
+    else:
+        app = tracked.last()
+    return render(request, "rank.html", {"following": following, "app": app, "package_name": package_name})
 
 
 def redirect_to_rank(request: WSGIRequest):

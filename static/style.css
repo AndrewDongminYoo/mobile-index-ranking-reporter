@@ -5803,3 +5803,11 @@ a, a:visited {
     text-decoration: none;
     color: inherit;
 }
+
+img.product-hero__media-image-img {
+    width: 200px;
+    height: 200px;
+    border-radius: 22.5%;
+    float: left;
+    margin-right: 10px;
+}

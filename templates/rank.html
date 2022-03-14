@@ -7,7 +7,12 @@
             <div class="content">
                 <div class="content">
                     <div class="header">
-                        <h3 class="title" id="myLargeModalLabel">{{ following.app_name }} | {{ following.market_appid }} 앱 상세보기({{ following.market }})</h3>
+                        <img src="{{ app.icon_url }}" alt="{{ app.app_name }}" class="product-hero__media-image-img">
+                        <h3 class="title" id="myLargeModalLabel">{{ following.app_name }}</h3>
+                        <h3>{{ following.market_appid }}</h3>
+                        <a href="{{ app.app_url }}">{{ following.market }}</a>
+                        <h3>{{ app.app_info__email }}</h3>
+                        <h3>{{ app.app_info__phone }}</h3>
                     </div>
                     <div class="body">
                         <div id="canvas1"></div>
