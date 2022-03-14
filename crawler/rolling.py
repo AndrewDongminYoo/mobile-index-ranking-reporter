@@ -1,7 +1,8 @@
-from django.db.models import Q
 from crawling import *
-from datetime import timedelta
+from bs4 import BeautifulSoup
 from django.db import DataError, IntegrityError
+from django.db.models import Q
+
 from crawler.models import AppInformation
 
 GOOGLE_PREFIX = "https://play.google.com/store/apps/details?id="
@@ -188,8 +189,8 @@ def ive_korea_internal_api():
     if req.status_code == 200:
         response = req.json()
         for adv_info in response["list"]:
-            print(adv_info)
-            # print(adv_info["ads_name"], adv_info["ads_package"], adv_info["ads_join_url"])
+            # print(adv_info)
+            print(adv_info["ads_name"], adv_info["ads_package"], adv_info["ads_join_url"])
             market = None
             market_appid = adv_info.get("ads_package")
             address = adv_info.get("ads_join_url")
@@ -282,10 +283,11 @@ def get_app_category():
             main_category = response["data"]['biz_category_main']
             sub_category = response["data"]['biz_category_sub']
             if main_category and sub_category:
-                app.category_main = main_category if main_category != "null" else None
-                app.category_sub = sub_category if sub_category != "null" else None
-                app.save()
-                print(app.app_name, app.category_main, app.category_sub)
+                if main_category != "null" and sub_category != "null":
+                    app.category_main = main_category
+                    app.category_sub = sub_category
+                    app.save()
+                    print(app.app_name, app.category_main, app.category_sub)
             else:
                 print(app.app_name, "카테고리 없음")
 
@@ -336,10 +338,123 @@ def get_app_publisher_name():
             app.save()
 
 
+def read_information_of_google_app():
+    category_map = {
+        "BOOKS_AND_REFERENCE": ("도서/참고자료", "도서/전자도서"),
+        "BUSINESS": ("비즈니스/산업", "비즈니스툴"),
+        "COMICS": ("도서/참고자료", "만화/웹소설"),
+        "COMMUNICATION": ("소셜네트워크", "메신저/전화/영상통화"),
+        "DATING": ("소셜네트워크", "소개팅/채팅"),
+        "EDUCATION": ("교육", "기타교육"),
+        "PARENTING": ("교육", "임신/출산"),
+        "ENTERTAINMENT": ("엔터테인먼트", "동영상스트리밍"),
+        "EVENTS": ("엔터테인먼트", "유머/재미"),
+        "FINANCE": ("금융", "송금/결제"),
+        "FOOD_AND_DRINK": ("식음료", "식음료브랜드/멤버십"),
+        "GAME_ACTION": ("게임", "액션게임"),
+        "GAME_ADVENTURE": ("게임", "어드벤처게임"),
+        "GAME_ARCADE": ("게임", "아케이드게임"),
+        "GAME_BOARD": ("게임", "보드게임"),
+        "GAME_CARD": ("게임", "카드게임"),
+        "GAME_WORD": ("게임", "단어게임"),
+        "GAME_CASINO": ("게임", "카지노게임"),
+        "GAME_CASUAL": ("게임", "캐주얼게임"),
+        "GAME_MUSIC": ("게임", "리듬/타일게임"),
+        "GAME_PUZZLE": ("게임", "퍼즐게임"),
+        "GAME_RACING": ("게임", "레이싱게임"),
+        "GAME_ROLE_PLAYING": ("게임", "롤플레잉게임"),
+        "GAME_SIMULATION": ("게임", "시뮬레이션게임"),
+        "GAME_SPORTS": ("게임", "스포츠게임"),
+        "GAME_STRATEGY": ("게임", "전략게임"),
+        "GAME_TRIVIA": ("게임", "퀴즈게임"),
+        "HEALTH_AND_FITNESS": ("건강/의료", "건강정보"),
+        "LIFESTYLE": ("라이프스타일", "라이프스타일"),
+        "MAPS_AND_NAVIGATION": ("여행/교통", "지도/네비게이션"),
+        "MEDICAL": ("건강/의료", "기타병의원"),
+        "HOUSE_AND_HOME": ("가정/생활", "가구/인테리어"),
+        "MUSIC_AND_AUDIO": ("엔터테인먼트", "음악"),
+        "PERSONALIZATION": ("퍼스널", "테마/폰트/알림음"),
+        "PHOTOGRAPHY": ("사진", "카메라"),
+        "PRODUCTIVITY": ("생산성", "기록/일정관리"),
+        "SHOPPING": ("패션/의류", "종합패션몰"),
+        "SOCIAL": ("소셜네트워크", "SNS/커뮤니티"),
+        "SPORTS": ("스포츠/레저", "기타스포츠"),
+        "TOOLS": ("유틸리티", "폰관리"),
+        "VIDEO_PLAYERS": ("엔터테인먼트", "동영상스트리밍"),
+        "TRAVEL_AND_LOCAL": ("여행/교통", "국내숙박"),
+    }
+
+    def get_data_from_soup(google_url: str):
+        headers["accept-language"] = "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
+        req = requests.get(google_url, headers=headers)
+        s = BeautifulSoup(req.text, 'html.parser')
+        t = s.find("title").text.replace(" - Google Play 앱", "").replace(" - Apps on Google Play", "")
+        if t == "찾을 수 없음":
+            t = None
+        publisher = s.select_one("a[href*='/store/apps/dev']")
+        p = publisher.text if publisher else None
+        first = s.select_one("a[href*='store/apps/category']")
+        c = first.get("href")[21:] if first else None
+        return t, p, c, s
+
+    def get_category(application: App, categories: tuple):
+        application.category_main = categories[0]
+        application.category_sub = categories[1]
+        application.save()
+
+    for app_info in AppInformation.objects.filter(google_url__isnull=False, email=None):
+        url = app_info.google_url
+        title, publisher_name, category, soup = get_data_from_soup(url)
+        apps = App.objects.filter(app_info=app_info)
+        if apps.exists():
+            for app in apps:
+                app.app_name = title
+                app.publisher_name = publisher_name
+                if category in category_map.keys():
+                    get_category(app, category_map[category])
+                else:
+                    print(category)
+        try:
+            app_info.email = soup.select_one("a[href*='mailto:']").text.replace("email이메일", "")
+            print(app_info.email)
+        except AttributeError:
+            app_info.google_url = ""
+        finally:
+            app_info.save()
+    for app in App.objects.filter(app_url__isnull=False, market="google", category_main=None):
+        url: str = app.app_url
+        print(url)
+        title, publisher_name, category, soup = get_data_from_soup(url)
+        info = app.app_info
+        if not info: continue
+        for a in App.objects.filter(app_info=info):
+            a.app_name = title
+            a.publisher_name = publisher_name
+            if category in category_map.keys():
+                get_category(a, category_map[category])
+            else:
+                print(category)
+
+
+def read_information_of_one_store_app():
+    for app in App.objects.filter(app_name=None, market="one", app_url__isnull=False):
+        url = app.app_url
+        req = requests.get(url)
+        soup = BeautifulSoup(req.text, "html.parser")
+        title = soup.select_one("title").get_text().replace(" - 원스토어", "")
+        publisher_name = soup.select_one("p.detailapptop-co-seller").get_text()
+        app.app_name = title
+        app.publisher_name = publisher_name
+        print(app.app_name, app.publisher_name)
+        app.save()
+
+
 if __name__ == '__main__':
-    ive_korea_internal_api()
+    # ive_korea_internal_api()
     # edit_apps_market()
     # set_apps_url_for_all()
     # get_developers_contact_number()
     # get_app_category()
     # get_app_publisher_name()
+    # read_information_of_google_app()
+    read_information_of_one_store_app()

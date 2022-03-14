@@ -124,8 +124,7 @@
             axios.get(`/v2/tracking/statistics?app=${followID}&deal_type=${dealType}&market=${market}`)
                 .then((res) => {
                     if (!res.data.items.length) {
-                        $("#myLarge > div > div > div > div.modal-body > table:nth-child(2)")
-                            .empty();
+                        $("#trackingTable").hide();
                         return
                     }
                     _.forEach(res.data.items, (item, i) => {
@@ -138,7 +137,7 @@
                         <td class="center">${chart_type}</td>
                         <td class="center">${moment(created_at).format("MM.DD HH:mm")}</td>
                         <td class="center">${rank} 위</td></tr>`
-                        $("#myLarge #trackingTable").prepend(template)
+                        $("#myLarge #trackingTbody").prepend(template)
                     })
                     $("#canvas1").append(`<canvas id="myChart1" width="600" height="200"></canvas>`)
                     let ctx1 = document.getElementById('myChart1').getContext('2d');
@@ -181,7 +180,7 @@
                 .then((res) => {
                     if (!res.data.items.length) {
                         $("#myLarge > div > div > div > div.modal-body > table:nth-child(4)")
-                            .empty();
+                            .hide();
                         return
                     }
                     _.forEach(res.data.items, (item, i) => {
