@@ -245,6 +245,7 @@ def ive_korea_internal_api():
                         expire_date=timezone.now() + timedelta(days=7)
                     )
                     following.save()
+                    print(following)
                 except DataError:
                     print(market_appid)
                 except IntegrityError:
@@ -281,8 +282,8 @@ def get_app_category():
     앱 카테고리를 가져와 세팅한다.
     :return: None
     """
-    url = "https://proxy-insight.mobileindex.com/app/data_summary"
-    for app in App.objects.all().filter(Q(category_main=None) | Q(category_sub=None)):
+    url = "https://proxy-insight.mobileindex.com/common/app_info"
+    for app in App.objects.all().filter(Q(category_main=None) | Q(category_sub=None)).filter(market="google"):
         data = {
             'packageName': app.market_appid,
         }
@@ -291,14 +292,39 @@ def get_app_category():
         if response["status"]:
             main_category = response["data"]['biz_category_main']
             sub_category = response["data"]['biz_category_sub']
+            app_name = response["data"]['app_name']
+            icon_url = response["data"]['icon_url']
+            publisher_name = response["data"]['publisher_name']
+            apple_id = response["data"]['apple_id']
+            one_id = response["data"]['one_id']
             if main_category and sub_category:
                 if main_category != "null" and sub_category != "null":
                     app.category_main = main_category
                     app.category_sub = sub_category
                     app.save()
                     print(app.app_name, app.category_main, app.category_sub)
-            else:
-                print(app.app_name, "카테고리 없음")
+            if app_name and publisher_name and icon_url:
+                app.app_name = app_name
+                app.publisher_name = publisher_name
+                app.icon_url = icon_url
+                app.save()
+                print(app_name, publisher_name, icon_url)
+            if apple_id and one_id and app.app_info:
+                info = app.app_info
+                info.apple_url = APPLE_PREFIX + apple_id
+                info.one_url = ONE_PREFIX + one_id
+                info.save()
+                print(apple_id, one_id, app.app_info)
+            elif apple_id and one_id:
+                app_info = AppInformation.objects.filter(google_url=GOOGLE_PREFIX + app.market_appid)
+                if app_info:
+                    app.app_info = app_info.first()
+                    app.save()
+                    info = app_info.first()
+                    info.apple_url = APPLE_PREFIX + apple_id
+                    info.one_url = ONE_PREFIX + one_id
+                    info.save()
+                    print(apple_id, one_id, app.app_info)
 
 
 def get_app_publisher_name():
@@ -528,11 +554,11 @@ def upto_400th_google_play_apps_contact():
 if __name__ == '__main__':
     # application_deduplicate()
     # upto_400th_google_play_apps_contact()
-    ive_korea_internal_api()
+    # ive_korea_internal_api()
     # edit_apps_market()
     # set_apps_url_for_all()
     # get_developers_contact_number()
-    # get_app_category()
+    get_app_category()
     # get_app_publisher_name()
     # read_information_of_google_app()
     # read_information_of_one_store_app()
