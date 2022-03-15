@@ -65,7 +65,7 @@ def get_developers_contact_number():
                 data = response.get("data").get("market_info")
                 new_app_info = AppInformation(), True
                 if app.market == "google":
-                    google = data.get("google_url") if not data.get("google_url") == GOOGLE_PREFIX else None
+                    google = data.get("google_url") if data.get("google_url") != GOOGLE_PREFIX else None
                     if google:
                         new_app_info = AppInformation.objects.update_or_create(
                             google_url=google
@@ -76,7 +76,7 @@ def get_developers_contact_number():
                         )[0]
                     print(new_app_info.google_url)
                 if app.market == "apple":
-                    apple = data.get("apple_url") if not data.get("apple_url") == APPLE_PREFIX else None
+                    apple = data.get("apple_url") if data.get("apple_url") != APPLE_PREFIX else None
                     if apple:
                         new_app_info = AppInformation.objects.update_or_create(
                             apple_url=apple,
@@ -87,7 +87,7 @@ def get_developers_contact_number():
                         )[0]
                     print(new_app_info.apple_url)
                 if app.market == "one":
-                    one = data.get("one_url") if not data.get("one_url") == ONE_PREFIX else None
+                    one = data.get("one_url") if data.get("one_url") != ONE_PREFIX else None
                     if one:
                         new_app_info = AppInformation.objects.update_or_create(
                             one_url=one
@@ -143,6 +143,25 @@ def application_deduplicate():
                 c.app = array[app.market_appid]
                 c.save()
             app.delete()
+
+
+def application_information_deduplicate():
+    """
+    마켓 아이디가 중복된 앱은 모두 제거한다.
+    :return: None
+    """
+    dicto = dict()
+    for app_info in AppInformation.objects.all().order_by("-id"):
+        if app_info.google_url not in dicto.keys():
+            dicto[app_info.google_url] = app_info
+        else:
+            for a in App.objects.filter(app_info=app_info):
+                a.app_info = dicto[app_info.google_url]
+            dicto[app_info.google_url].apple_url = app_info.apple_url
+            dicto[app_info.google_url].one_url = app_info.one_url
+            dicto[app_info.google_url].email = app_info.email
+            dicto[app_info.google_url].phone = app_info.phone
+            app_info.delete()
 
 
 def edit_apps_market():
@@ -338,6 +357,24 @@ def get_app_publisher_name():
             app.save()
 
 
+def get_google_apps_data_from_soup(google_url: str):
+    headers["accept-language"] = "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
+    req = requests.get(google_url, headers=headers)
+    s = BeautifulSoup(req.text, 'html.parser')
+    t = s.find("title").text.replace(" - Google Play 앱", "").replace(" - Apps on Google Play", "")
+    if t == "찾을 수 없음":
+        t = None
+    publisher = s.select_one("a[href*='/store/apps/dev']")
+    p = publisher.text if publisher else None
+    first = s.select_one("a[href*='store/apps/category']")
+    c = first.get("href")[21:] if first else None
+    if s.select_one("a[href*='mailto:']"):
+        e = s.select_one("a[href*='mailto:']").text.replace("email이메일", "")
+    else:
+        e = None
+    return t, p, c, e
+
+
 def read_information_of_google_app():
     category_map = {
         "BOOKS_AND_REFERENCE": ("도서/참고자료", "도서/전자도서"),
@@ -384,22 +421,6 @@ def read_information_of_google_app():
         "TRAVEL_AND_LOCAL": ("여행/교통", "국내숙박"),
     }
 
-    def get_data_from_soup(google_url: str):
-        headers["accept-language"] = "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
-        req = requests.get(google_url, headers=headers)
-        s = BeautifulSoup(req.text, 'html.parser')
-        t = s.find("title").text.replace(" - Google Play 앱", "").replace(" - Apps on Google Play", "")
-        if t == "찾을 수 없음":
-            t = None
-        publisher = s.select_one("a[href*='/store/apps/dev']")
-        p = publisher.text if publisher else None
-        first = s.select_one("a[href*='store/apps/category']")
-        c = first.get("href")[21:] if first else None
-        e = None
-        if s.select_one("a[href*='mailto:']"):
-            e = s.select_one("a[href*='mailto:']").text.replace("email이메일", "")
-        return t, p, c, e
-
     def get_category(application: App, categories: tuple):
         application.category_main = categories[0]
         application.category_sub = categories[1]
@@ -408,7 +429,7 @@ def read_information_of_google_app():
     for app in App.objects.filter(app_url__isnull=False, market="google", category_main=None):
         url: str = app.app_url
         if url:
-            title, publisher_name, category, email = get_data_from_soup(url)
+            title, publisher_name, category, email = get_google_apps_data_from_soup(url)
             if app.app_info:
                 app.app_info.email = email
                 app.app_info.google_url = url
@@ -466,13 +487,63 @@ def read_information_of_apple_store_app():
                 app.save()
 
 
+def upto_400th_google_play_apps_contact():
+    url = "https://proxy-insight.mobileindex.com/chart/global_rank_v2"
+    body = {
+        "market": "all",
+        "country": "kr",
+        "rankType": "gross",
+        "appType": "game",
+        "date": (timezone.now() - timedelta(days=1)).strftime("%Y%m%d"),
+        "startRank": 101,
+        "endRank": 400,
+    }
+    req = requests.post(url, headers=headers, data=body)
+    res = req.json()
+    for data in res["data"]:
+        market = data['market_name']
+        app_name = data['app_name']
+        icon_url = data['icon_url']
+        market_appid = data['market_appid']
+        if market == "google":
+            app_url = GOOGLE_PREFIX + market_appid
+            title, publisher_name, category, email = get_google_apps_data_from_soup(app_url)
+            app_info = AppInformation.objects.update_or_create(
+                google_url=app_url,
+            )[0]
+            app_info.email = email
+            app_info.save()
+            app = App.objects.update_or_create(
+                market_appid=market_appid,
+            )[0]
+            app.app_name = app_name
+            app.icon_url = icon_url
+            app.market = market
+            app.app_url = app_url
+            app.app_info = app_info
+            app.save()
+            mobile_index_app = "https://proxy-insight.mobileindex.com/app/market_info"
+            req = requests.post(mobile_index_app, headers=headers, data={"packageName": market_appid})
+            if req.status_code == 200:
+                response = req.json()
+                data = response.get("data")
+                if type(data) == dict:
+                    data = data.get("market_info")
+                    app_info.apple_url = data.get("apple_url") if data.get("apple_url") != APPLE_PREFIX else None
+                    app_info.one_url = data.get("one_url") if data.get("one_url") != ONE_PREFIX else None
+                    app_info.save()
+                    print(app_info)
+
+
 if __name__ == '__main__':
+    # application_deduplicate()
+    # upto_400th_google_play_apps_contact()
     # ive_korea_internal_api()
     # edit_apps_market()
     # set_apps_url_for_all()
-    # get_developers_contact_number()
+    get_developers_contact_number()
     # get_app_category()
     # get_app_publisher_name()
     # read_information_of_google_app()
-    read_information_of_one_store_app()
-    read_information_of_apple_store_app()
+    # read_information_of_one_store_app()
+    # read_information_of_apple_store_app()
