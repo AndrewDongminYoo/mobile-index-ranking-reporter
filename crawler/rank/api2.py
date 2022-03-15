@@ -72,7 +72,7 @@ def show_details_of_daily_ranks(request):
     w_day = timezone.now() - timedelta(days=14)
     return TrackingApps.objects \
         .filter(following_id=app_id,
-                deal_type="realtime_rank",
+                deal_type="market_rank",
                 created_at__gte=w_day,
                 chart_type="free")
 
