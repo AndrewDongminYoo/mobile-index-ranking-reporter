@@ -434,7 +434,7 @@ def read_information_of_one_store_app():
             app.publisher_name = publisher_name
             print(app.app_name, app.publisher_name)
             if app.app_info:
-                app.app_info.apple_url = url
+                app.app_info.one_url = url
                 app.app_info.save()
             app.save()
         except AttributeError:

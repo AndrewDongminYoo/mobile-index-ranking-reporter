@@ -19,7 +19,7 @@ class TimeIndex(models.Model):
         verbose_name_plural = "스크랩한 시간"
 
     def __str__(self):
-        return self.date if self.date else "전체"
+        return self.date if self.date else "-"
 
     date = models.CharField(max_length=16, verbose_name="날짜", db_index=True)
 
@@ -30,7 +30,7 @@ class AppInformation(models.Model):
         verbose_name_plural = "어플 정보"
 
     def __str__(self):
-        return self.email if self.email else "전체"
+        return self.email if self.email else "-"
 
     google_url = models.URLField(max_length=200, null=True, verbose_name="구글 주소")
     apple_url = models.URLField(max_length=200, null=True, verbose_name="애플 주소")

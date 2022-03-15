@@ -65,7 +65,7 @@ class AppInformationAdmin(admin.ModelAdmin):
 
 
 class RankedAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ['rank', 'app', 'market', 'deal_type', 'app_type', 'chart_type', 'market_appid']
+    list_display = ['rank', 'app', 'market', 'deal_type', 'app_type', 'chart_type', 'market_appid', "created_at"]
     search_fields = ["app_name", "market_appid"]
     actions = [follow_application]
     filter_fields = ["market", "deal_type", "app_type", "chart_type"]
