@@ -249,7 +249,7 @@ def ive_korea_internal_api():
                     print(market_appid)
                 except IntegrityError:
                     print(market_appid)
-    for app in Following.objects.filter(expire_date__lt=timezone.now()):
+    for app in Following.objects.filter(is_active=True, expire_date__lt=timezone.now()):
         app.is_active = False
         app.save()
 
