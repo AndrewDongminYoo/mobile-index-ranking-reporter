@@ -423,7 +423,7 @@ def read_information_of_google_app():
 
 
 def read_information_of_one_store_app():
-    for app in App.objects.filter(market="one", app_url__isnull=False):
+    for app in App.objects.filter(market="one", app_url__isnull=False, publisher_name=None):
         url = app.app_url
         req = requests.get(url)
         soup = BeautifulSoup(req.text, "html.parser")
@@ -443,7 +443,7 @@ def read_information_of_one_store_app():
 
 
 def read_information_of_apple_store_app():
-    for app in App.objects.filter(market="apple", app_url__isnull=False):
+    for app in App.objects.filter(market="apple", app_url__isnull=False, publisher_name=None):
         url = app.app_url
         req = requests.get(url)
         soup = BeautifulSoup(req.text, "html.parser")
@@ -465,12 +465,12 @@ def read_information_of_apple_store_app():
 
 
 if __name__ == '__main__':
-    ive_korea_internal_api()
+    # ive_korea_internal_api()
     # edit_apps_market()
     # set_apps_url_for_all()
     # get_developers_contact_number()
     # get_app_category()
     # get_app_publisher_name()
-    # read_information_of_google_app()
-    # read_information_of_one_store_app()
-    # read_information_of_apple_store_app()
+    read_information_of_google_app()
+    read_information_of_one_store_app()
+    read_information_of_apple_store_app()
