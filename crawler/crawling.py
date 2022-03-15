@@ -196,11 +196,11 @@ def following_one_crawl():
 
 
 def hourly():
-    for deal in ["realtime_rank_v2"]:
-        for market in ["all"]:
-            for price in ["free"]:
-                for game in ["app", "game"]:
-                    crawl_app_store_rank(deal, market, price, game)
+    deal = "realtime_rank_v2"
+    market = "all"
+    price = "free"
+    for game in ["app", "game"]:
+        crawl_app_store_rank(deal, market, price, game)
 
 
 def daily():
