@@ -2,7 +2,6 @@ from crawling import *
 from bs4 import BeautifulSoup
 from django.db import DataError, IntegrityError
 from django.db.models import Q
-
 from crawler.models import AppInformation
 
 GOOGLE_PREFIX = "https://play.google.com/store/apps/details?id="
@@ -246,13 +245,13 @@ def ive_korea_internal_api():
                         expire_date=timezone.now() + timedelta(days=7)
                     )
                     following.save()
-                    post_to_slack(f"{following.get_market_display()} {following.app_name} 앱 추적이 정기 등록 됐습니다.")
+                    post_to_slack(f"{following.get_market_display()} {following.app_name} 추적시작합니다.🛫")
                 except DataError:
                     print(market_appid)
                 except IntegrityError:
                     print(market_appid)
     for app in Following.objects.filter(expire_date__lt=timezone.now()):
-        post_to_slack(f"{app.get_market_display()} {app.app_name} 추적기한종료🪂")
+        post_to_slack(f"{app.get_market_display()} {app.app_name} 추적기한종료🛬")
         app.is_active = False
         app.save()
 
