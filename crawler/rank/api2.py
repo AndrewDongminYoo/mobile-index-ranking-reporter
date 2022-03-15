@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import List
 
-from django.db.models import Q
+from django.db.models import Q, Min
 from django.utils import timezone
 from ninja import NinjaAPI, Schema
 from ninja.orm import create_schema
@@ -72,7 +72,7 @@ def show_details_of_daily_ranks(request):
     w_day = timezone.now() - timedelta(days=14)
     return TrackingApps.objects \
         .filter(following_id=app_id,
-                deal_type="market_rank",
+                deal_type="realtime_rank",
                 created_at__gte=w_day,
                 chart_type="free")
 

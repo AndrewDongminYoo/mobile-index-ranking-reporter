@@ -1,6 +1,8 @@
 import sys
 from datetime import timedelta
 
+from django.db.models import Min
+
 sys.path.append('/home/ubuntu/app-rank/ranker')
 
 import os
@@ -202,11 +204,28 @@ def hourly():
 
 
 def daily():
-    for deal in ["global_rank_v2"]:
-        for market in ["all"]:
-            for price in ["free"]:
-                for game in ["app", "game"]:
-                    crawl_app_store_rank(deal, market, price, game)
+    to = timezone.now().strftime("%Y%m%d") + "0000"
+    yester = (timezone.now() - timedelta(days=1)).strftime("%Y%m%d") + "0000"
+    today = TimeIndex.objects.get(date=to)
+    yesterday = TimeIndex.objects.get(date=yester)
+    rank_set = Ranked.objects.filter(date__id__gte=yesterday.id, date__id__lte=today.id)
+    apps = set([r.market_appid for r in rank_set])
+    for market_appid in apps:
+        app = rank_set.filter(market_appid=market_appid) \
+            .values('market_appid', 'app_name', 'market', 'app_type', 'chart_type', 'icon_url') \
+            .annotate(highest_rank=Min('rank')).first()
+        new_app = Ranked(
+            market=app.get('market'),
+            rank=app.get('highest_rank'),
+            deal_type='market_rank',
+            app_type=app.get('app_type'),
+            chart_type=app.get('chart_type'),
+            app_name=app.get('app_name'),
+            market_appid=market_appid,
+            app=App.objects.get(market_appid=market_appid),
+            date=today
+        )
+        new_app.save()
     following_one_crawl()
 
 
