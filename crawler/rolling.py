@@ -245,13 +245,11 @@ def ive_korea_internal_api():
                         expire_date=timezone.now() + timedelta(days=7)
                     )
                     following.save()
-                    post_to_slack(f"{following.get_market_display()} {following.app_name} 추적시작합니다.🛫")
                 except DataError:
                     print(market_appid)
                 except IntegrityError:
                     print(market_appid)
     for app in Following.objects.filter(expire_date__lt=timezone.now()):
-        post_to_slack(f"{app.get_market_display()} {app.app_name} 추적기한종료🛬")
         app.is_active = False
         app.save()
 
@@ -530,10 +528,10 @@ def upto_400th_google_play_apps_contact():
 if __name__ == '__main__':
     # application_deduplicate()
     # upto_400th_google_play_apps_contact()
-    # ive_korea_internal_api()
+    ive_korea_internal_api()
     # edit_apps_market()
     # set_apps_url_for_all()
-    get_developers_contact_number()
+    # get_developers_contact_number()
     # get_app_category()
     # get_app_publisher_name()
     # read_information_of_google_app()
