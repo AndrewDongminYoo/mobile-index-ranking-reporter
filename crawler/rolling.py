@@ -407,7 +407,8 @@ def read_information_of_google_app():
 
     for app in App.objects.filter(app_url__isnull=False, market="google", category_main=None):
         url: str = app.app_url
-        print(url)
+        if not url:
+            continue
         title, publisher_name, category, email = get_data_from_soup(url)
         if app.app_info:
             app.app_info.email = email
@@ -419,12 +420,14 @@ def read_information_of_google_app():
                 if category in category_map.keys():
                     get_category(a, category_map[category])
                 else:
-                    print(category)
+                    pass
 
 
 def read_information_of_one_store_app():
     for app in App.objects.filter(market="one", app_url__isnull=False, publisher_name=None):
         url = app.app_url
+        if not url:
+            continue
         req = requests.get(url)
         soup = BeautifulSoup(req.text, "html.parser")
         try:
@@ -445,6 +448,8 @@ def read_information_of_one_store_app():
 def read_information_of_apple_store_app():
     for app in App.objects.filter(market="apple", app_url__isnull=False, publisher_name=None):
         url = app.app_url
+        if not url:
+            continue
         req = requests.get(url)
         soup = BeautifulSoup(req.text, "html.parser")
         try:
@@ -471,6 +476,6 @@ if __name__ == '__main__':
     # get_developers_contact_number()
     # get_app_category()
     # get_app_publisher_name()
-    read_information_of_google_app()
+    # read_information_of_google_app()
     read_information_of_one_store_app()
     read_information_of_apple_store_app()
