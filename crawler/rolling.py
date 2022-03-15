@@ -106,13 +106,6 @@ def get_developers_contact_number():
                     new_app_info.phone = ", ".join(set(phone))
                     new_app_info.email = ", ".join(set(email))
                     print(phone, email)
-                    if new_app_info.phone and new_app_info.email:
-                        post_to_slack(
-                            f"{app.market} {app.app_name} 앱의 연락처는 {new_app_info.phone}, 이메일은 {new_app_info.email} 입니다.")
-                    elif new_app_info.phone:
-                        post_to_slack(f"{app.market} {app.app_name} 앱의 연락처는 {new_app_info.phone}입니다.")
-                    elif new_app_info.email:
-                        post_to_slack(f"{app.market} {app.app_name} 앱의 이메일은 {new_app_info.email} 입니다.")
                 new_app_info.save()
                 app.app_info = new_app_info
                 app.save()
