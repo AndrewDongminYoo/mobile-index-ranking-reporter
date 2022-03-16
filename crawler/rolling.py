@@ -573,15 +573,19 @@ def upto_400th_google_play_apps_contact():
                     print(app_info)
 
 
-if __name__ == '__main__':
+def main():
     application_deduplicate()
-    # ive_korea_internal_api()
-    # edit_apps_market()
-    # set_apps_url_for_all()
-    # get_developers_contact_number()
-    # get_app_category()
-    # get_app_publisher_name()
-    # read_information_of_google_app()
-    # read_information_of_one_store_app()
-    # read_information_of_apple_store_app()
-    # upto_400th_google_play_apps_contact()
+    ive_korea_internal_api()
+    edit_apps_market()
+    set_apps_url_for_all()
+    get_developers_contact_number()
+    get_app_category()
+    get_app_publisher_name()
+    read_information_of_google_app()
+    read_information_of_one_store_app()
+    read_information_of_apple_store_app()
+    upto_400th_google_play_apps_contact()
+
+
+if __name__ == '__main__':
+    main()

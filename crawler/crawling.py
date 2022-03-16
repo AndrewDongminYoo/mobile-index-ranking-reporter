@@ -1,4 +1,22 @@
-from rolling import *
+import os
+import sys
+import json
+import datetime
+from datetime import timedelta
+
+sys.path.append('/home/ubuntu/app-rank/ranker')
+os.environ.setdefault("PYTHONUNBUFFERED;", "1")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
+import django
+
+if 'setup' in dir(django):
+    django.setup()
+import requests
+from bs4 import BeautifulSoup
+from django.utils import timezone
+from django.db.models import Min, Q
+from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex, OneStoreDL
+from rolling import headers, logger, main
 
 
 def post_to_slack(text=None):
@@ -198,14 +216,7 @@ def good_deep_night_twelve_ten_daily():
 
 
 def good_morning_half_past_ten_daily():
-    get_app_category()
-    get_app_publisher_name()
-    ive_korea_internal_api()
-    read_information_of_google_app()
-    read_information_of_one_store_app()
-    read_information_of_apple_store_app()
-    upto_400th_google_play_apps_contact()
-    get_developers_contact_number()
+    main()
 
 
 if __name__ == '__main__':
