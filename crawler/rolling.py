@@ -455,6 +455,7 @@ def read_information_of_google_app():
                 if category and (category in category_map.keys()):
                     app.app_info.category_main = category_map[category][0]
                     app.app_info.category_sub = category_map[category][1]
+                    print(category_map[category])
                 app.app_info.save()
                 app.app_name = title
                 app.save()
