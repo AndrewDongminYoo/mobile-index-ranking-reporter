@@ -14,9 +14,13 @@ if 'setup' in dir(django):
 import requests
 from bs4 import BeautifulSoup
 from django.utils import timezone
+from logging import getLogger
 from django.db.models import Min, Q
 from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex, OneStoreDL
-from crawler.rolling import headers, logger, main
+
+logger = getLogger(__name__)
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36"
+headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent, 'Content-type': 'application/json'}
 
 
 def post_to_slack(text=None):
@@ -175,8 +179,8 @@ def following_one_crawl():
 def get_highest_rank_of_realtime_ranks_today():
     pres = timezone.now().strftime("%Y%m%d") + "0000"
     last = (timezone.now() - timedelta(days=1)).strftime("%Y%m%d") + "0000"
-    today = TimeIndex.objects.get(date=pres)
-    yesterday = TimeIndex.objects.get(date=last)
+    today = TimeIndex.objects.get_or_create(date=pres)[0]
+    yesterday = TimeIndex.objects.get_or_create(date=last)[0]
     rank_set = Ranked.objects \
         .filter(date__id__gte=yesterday.id, date__id__lte=today.id) \
         .filter(Q(market="apple") | Q(market="google"))
@@ -215,9 +219,7 @@ def good_deep_night_twelve_ten_daily():
     get_highest_rank_of_realtime_ranks_today()
 
 
-def good_morning_half_past_ten_daily():
-    main()
-
-
 if __name__ == '__main__':
     every_o_clock_hourly()
+    good_afternoon_twelve_ten_daily()
+    good_deep_night_twelve_ten_daily()

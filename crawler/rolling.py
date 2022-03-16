@@ -553,7 +553,7 @@ def upto_400th_google_play_apps_contact():
                     print(app_info)
 
 
-def main():
+def good_morning_half_past_ten_daily():
     application_deduplicate()
     ive_korea_internal_api()
     edit_apps_market()
@@ -568,4 +568,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    good_morning_half_past_ten_daily()
