@@ -303,12 +303,15 @@ def get_app_category():
                     app.category_sub = sub_category
                     app.save()
                     print(app.app_name, app.category_main, app.category_sub)
-            if app_name and publisher_name and icon_url:
+            if app_name:
                 app.app_name = app_name
+                app.save()
+                print(app_name)
+            if publisher_name and icon_url:
                 app.publisher_name = publisher_name
                 app.icon_url = icon_url
                 app.save()
-                print(app_name, publisher_name, icon_url)
+                print(publisher_name, icon_url)
             if apple_id and one_id and app.app_info:
                 info = app.app_info
                 info.apple_url = APPLE_PREFIX + apple_id
@@ -552,14 +555,14 @@ def upto_400th_google_play_apps_contact():
 
 
 if __name__ == '__main__':
-    # application_deduplicate()
-    # upto_400th_google_play_apps_contact()
+    application_deduplicate()
     # ive_korea_internal_api()
     # edit_apps_market()
     # set_apps_url_for_all()
     # get_developers_contact_number()
-    get_app_category()
+    # get_app_category()
     # get_app_publisher_name()
     # read_information_of_google_app()
     # read_information_of_one_store_app()
     # read_information_of_apple_store_app()
+    # upto_400th_google_play_apps_contact()
