@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %}{{ following.app_name }} | {{ following.market_appid }}{% endblock %}
 {% block content %}
+    {% include 'includes/navstabs.html' %}
     <div id="myLarge">
         <div class="dialog container-lg">
             <div class="content">
@@ -17,43 +18,49 @@
                             </a></p>
                     </div>
                     <div class="body">
-                        <div id="canvas1"></div>
-                        <table class="flake-ui table second small rect use-selection bordered">
-                            <thead>
-                            <tr>
-                                <th scope="col" style="width: 15%" class="center">아이콘</th>
-                                <th scope="col" style="width: 35%" class="center">앱이름</th>
-                                <th scope="col" style="width: 35%" class="center">측정일</th>
-                                <th scope="col" style="width: 15%" class="center">다운로드</th>
-                            </thead>
-                            <tbody id="downloadTable"></tbody>
-                        </table>
-                        <div id="canvas2"></div>
-                        <table class="flake-ui table second small rect use-selection bordered">
-                            <thead>
-                            <tr>
-                                <th scope="col" style="width: 12%" class="center">아이콘</th>
-                                <th scope="col" style="width: 40%" class="center">앱이름</th>
-                                <th scope="col" style="width: 12%" class="center">마켓</th>
-                                <th scope="col" style="width: 12%" class="center">분야</th>
-                                <th scope="col" style="width: 12%" class="center">일자</th>
-                                <th scope="col" style="width: 12%" class="center">실시간 순위</th>
-                            </thead>
-                            <tbody id="trackingTable"></tbody>
-                        </table>
-                        <div id="canvas3"></div>
-                        <table class="flake-ui table second small rect use-selection bordered">
-                            <thead>
-                            <tr>
-                                <th scope="col" style="width: 12%" class="center">아이콘</th>
-                                <th scope="col" style="width: 40%" class="center">앱이름</th>
-                                <th scope="col" style="width: 12%" class="center">마켓</th>
-                                <th scope="col" style="width: 12%" class="center">분야</th>
-                                <th scope="col" style="width: 12%" class="center">일자</th>
-                                <th scope="col" style="width: 12%" class="center">일간 순위</th>
-                            </thead>
-                            <tbody id="dailyRankTable"></tbody>
-                        </table>
+                        <article class="accordion" id="accordion-1">
+                            <div id="canvas1"></div>
+                            <table class="flake-ui table second small rect use-selection bordered" id="downloadTable">
+                                <thead>
+                                <tr>
+                                    <th scope="col" style="width: 15%" class="center">아이콘</th>
+                                    <th scope="col" style="width: 35%" class="center">앱이름</th>
+                                    <th scope="col" style="width: 35%" class="center">측정일</th>
+                                    <th scope="col" style="width: 15%" class="center">다운로드</th>
+                                </thead>
+                                <tbody id="downloadTable"></tbody>
+                            </table>
+                        </article>
+                        <article class="accordion" id="accordion-2">
+                            <div id="canvas2"></div>
+                            <table class="flake-ui table second small rect use-selection bordered" id="hourlyRankTable">
+                                <thead>
+                                <tr>
+                                    <th scope="col" style="width: 12%" class="center">아이콘</th>
+                                    <th scope="col" style="width: 40%" class="center">앱이름</th>
+                                    <th scope="col" style="width: 12%" class="center">마켓</th>
+                                    <th scope="col" style="width: 12%" class="center">분야</th>
+                                    <th scope="col" style="width: 12%" class="center">일자</th>
+                                    <th scope="col" style="width: 12%" class="center">실시간 순위</th>
+                                </thead>
+                                <tbody id="trackingTable"></tbody>
+                            </table>
+                        </article>
+                        <article class="accordion" id="accordion-3">
+                            <div id="canvas3"></div>
+                            <table class="flake-ui table second small rect use-selection bordered" id="dailyRankTable">
+                                <thead>
+                                <tr>
+                                    <th scope="col" style="width: 12%" class="center">아이콘</th>
+                                    <th scope="col" style="width: 40%" class="center">앱이름</th>
+                                    <th scope="col" style="width: 12%" class="center">마켓</th>
+                                    <th scope="col" style="width: 12%" class="center">분야</th>
+                                    <th scope="col" style="width: 12%" class="center">일자</th>
+                                    <th scope="col" style="width: 12%" class="center">일간 순위</th>
+                                </thead>
+                                <tbody id="dailyRankTable"></tbody>
+                            </table>
+                        </article>
                     </div>
                 </div>
             </div>
@@ -77,8 +84,7 @@
         axios.get(`/v2/tracking/statistics?app=${app_id}`)
             .then((res) => {
                 if (!res.data.items.length) {
-                    $("#myLarge > div > div > div > div.body > table:nth-child(4)")
-                        .empty();
+                    $("#hourlyRankTable").empty();
                     return
                 }
                 _.forEach(res.data.items, (item, i) => {
@@ -130,8 +136,7 @@
         axios.get(`/v2/tracking/daily?app=${app_id}`)
             .then((res) => {
                 if (!res.data.items.length) {
-                    $("#myLarge > div > div > div > div.body > table:nth-child(6)")
-                        .empty();
+                    $("#dailyRankTable").empty();
                     return
                 }
                 _.forEach(res.data.items, (item, i) => {
@@ -182,8 +187,7 @@
         axios.get(`/v2/downloads?app=${pkg_id}`)
             .then((res) => {
                 if (!res.data.items.length) {
-                    $("#myLarge > div > div > div > div.body > table:nth-child(2)")
-                        .empty();
+                    $("#downloadTable").empty();
                     return
                 }
                 _.forEach(res.data.items, (item, i) => {

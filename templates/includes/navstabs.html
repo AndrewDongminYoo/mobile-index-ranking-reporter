@@ -1,0 +1,68 @@
+<div class="flake-ui tabs primary small horizontal rect shape-highlight lazy-animation   ">
+    <div class="header">
+        <button class="btn-1"
+                onclick="$(`.btn-1`).addClass('active').siblings().removeClass('active');$('#accordion-1').show().siblings().hide();">
+            다운로드 랭크
+        </button>
+        <button class="btn-2 active"
+                onclick="$(`.btn-2`).addClass('active').siblings().removeClass('active');$('#accordion-2').show().siblings().hide();">
+            실시간순위 추이
+        </button>
+        <button class="btn-3"
+                onclick="$(`.btn-3`).addClass('active').siblings().removeClass('active');$('#accordion-3').show().siblings().hide();">
+            일간순위 추이
+        </button>
+    </div>
+</div>
+<style>
+    .flake-ui.tabs.small.horizontal > .header {
+        height: 2.875rem;
+        line-height: 2.875rem;
+    }
+
+    .flake-ui.tabs.horizontal > .header {
+        display: flex;
+        padding-left: 1.5rem;
+    }
+
+    .flake-ui.tabs > .header {
+        position: relative;
+        border-color: inherit;
+    }
+
+    .flake-ui.tabs.primary.shape-highlight > .header > .active {
+        color: #f5f7fa;
+        background-color: #9b66f2;
+    }
+
+    .flake-ui.tabs.horizontal.shape-highlight > .header > .active {
+        border-width: 0;
+    }
+
+    .flake-ui.tabs > .header > .active {
+        pointer-events: none;
+        border-color: inherit;
+        border-style: solid;
+    }
+
+    .flake-ui.tabs.small.horizontal > .header > button {
+        padding: 0 1.5rem;
+    }
+
+    .flake-ui.tabs.horizontal > .header > button {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .flake-ui.tabs > .header > button {
+        position: relative;
+        font-size: inherit;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        color: #aaa;
+        height: inherit;
+        font-weight: 400;
+    }
+</style>
