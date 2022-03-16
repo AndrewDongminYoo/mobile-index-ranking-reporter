@@ -154,7 +154,7 @@ def crawl_app_store_rank(term: str, market, game_or_app: str):
                     chart_type=item.chart_type,
                     market_appid=item.app.market_appid,
                 )
-                # tracking.save()
+                tracking.save()
                 rank_diff = tracking.rank - last_one.last().rank if last_one.exists() else 0
                 if rank_diff < -2:
                     post_to_slack(
