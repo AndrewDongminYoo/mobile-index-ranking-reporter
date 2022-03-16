@@ -430,8 +430,10 @@ def read_information_of_google_app():
         "MAPS_AND_NAVIGATION": ("여행/교통", "지도/네비게이션"),
         "MEDICAL": ("건강/의료", "기타병의원"),
         "HOUSE_AND_HOME": ("가정/생활", "가구/인테리어"),
+        "FAMILY": ("가정/생활", "가족"),
         "MUSIC_AND_AUDIO": ("엔터테인먼트", "음악"),
         "PERSONALIZATION": ("퍼스널", "테마/폰트/알림음"),
+        "'NEWS_AND_MAGAZINES'": ("도서/참고자료", "뉴스/잡지"),
         "PHOTOGRAPHY": ("사진", "카메라"),
         "PRODUCTIVITY": ("생산성", "기록/일정관리"),
         "SHOPPING": ("패션/의류", "종합패션몰"),
@@ -450,8 +452,9 @@ def read_information_of_google_app():
                 app.app_info.email = email
                 app.app_info.google_url = url
                 app.app_info.publisher_name = publisher_name
-                app.app_info.category_main = category_map[category][0] if category else None
-                app.app_info.category_sub = category_map[category][1] if category else None
+                if category and (category in category_map.keys()):
+                    app.app_info.category_main = category_map[category][0]
+                    app.app_info.category_sub = category_map[category][1]
                 app.app_info.save()
                 app.app_name = title
                 app.save()
