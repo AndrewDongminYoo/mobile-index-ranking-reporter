@@ -102,7 +102,7 @@ def create_app(app_data: dict):
     return app
 
 
-def crawl_app_store_rank(term: str, market, game_or_app: str):
+def crawl_app_store_rank(term: str, market: str, game_or_app: str):
     url = f'https://proxy-insight.mobileindex.com/chart/{term}'  # "realtime_rank_v2", "global_rank_v2"
     data = {
         "market": "all",  # "all", "google"

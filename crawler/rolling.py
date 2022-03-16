@@ -302,7 +302,7 @@ def get_app_category():
     :return: None
     """
     url = "https://proxy-insight.mobileindex.com/common/app_info"
-    for app in App.objects.all().filter(Q(category_main=None) | Q(category_sub=None)).filter(market="google"):
+    for app in App.objects.all().filter(market="google", app_info__isnull=True):
         data = {
             'packageName': app.market_appid,
         }
@@ -316,37 +316,26 @@ def get_app_category():
             publisher_name = response["data"]['publisher_name']
             apple_id = response["data"]['apple_id']
             one_id = response["data"]['one_id']
-            if main_category and sub_category:
-                if main_category != "null" and sub_category != "null":
-                    app.category_main = main_category
-                    app.category_sub = sub_category
-                    app.save()
-                    print(app.app_name, app.category_main, app.category_sub)
+            app.icon_url = icon_url
             if app_name:
                 app.app_name = app_name
-                app.save()
-                print(app_name)
-            if publisher_name and icon_url:
-                app.publisher_name = publisher_name
-                app.icon_url = icon_url
-                app.save()
-                print(publisher_name, icon_url)
-            if apple_id and one_id and app.app_info:
-                info = app.app_info
-                info.apple_url = APPLE_PREFIX + apple_id
-                info.one_url = ONE_PREFIX + one_id
-                info.save()
-                print(apple_id, one_id, app.app_info)
-            elif apple_id and one_id:
+            if app.app_info:
+                app_info = app.app_info
+            else:
                 app_info = AppInformation.objects.filter(google_url=GOOGLE_PREFIX + app.market_appid)
-                if app_info:
-                    app.app_info = app_info.first()
-                    app.save()
-                    info = app_info.first()
-                    info.apple_url = APPLE_PREFIX + apple_id
-                    info.one_url = ONE_PREFIX + one_id
-                    info.save()
-                    print(apple_id, one_id, app.app_info)
+            if main_category and sub_category:
+                if main_category != "null" and sub_category != "null":
+                    app_info.category_main = main_category
+                    app_info.category_sub = sub_category
+            if publisher_name and icon_url:
+                app_info.publisher_name = publisher_name
+                print(publisher_name, icon_url)
+            if apple_id and one_id:
+                app_info.apple_url = APPLE_PREFIX + apple_id
+                app_info.one_url = ONE_PREFIX + one_id
+            app_info.save()
+            app.save()
+            print(apple_id, one_id, app.app_info)
 
 
 def get_app_publisher_name():
@@ -355,7 +344,7 @@ def get_app_publisher_name():
     :return: None
     """
     url = 'https://proxy-insight.mobileindex.com/common/app_info'
-    for app in App.objects.all().filter(publisher_name=None):
+    for app in App.objects.all().filter(app_info=None):
         data = {
             'packageName': app.market_appid,
         }
@@ -363,35 +352,29 @@ def get_app_publisher_name():
         response = req.json()
         if response["status"]:
             data = response["data"]
-            app.publisher_name = data['publisher_name']
-            if app.market == "google":
+            publisher_name = data.get('publisher_name')
+            if app.market == "googl e":
                 info = AppInformation.objects.filter(google_url__contains=data.get("package_name"))
                 if info.exists():
-                    app.app_info = info.first()
-                    for a in App.objects.filter(app_info=info.first()):
-                        a.publisher_name = app.publisher_name
-                        a.category_main = app.category_main
-                        a.category_sub = app.category_sub
-                        a.save()
+                    app_info = info.first()
+                    app_info.publisher_name = publisher_name
+                    app_info.save()
+                    app.app_info = app_info
             if app.market == "one":
                 info = AppInformation.objects.filter(one_url__contains=data.get("one_id"))
                 if info.exists():
-                    app.app_info = info.first()
-                    for a in App.objects.filter(app_info=info.first()):
-                        a.publisher_name = app.publisher_name
-                        a.category_main = app.category_main
-                        a.category_sub = app.category_sub
-                        a.save()
+                    app_info = info.first()
+                    app_info.publisher_name = publisher_name
+                    app_info.save()
+                    app.app_info = app_info
             if app.market == "apple":
                 info = AppInformation.objects.filter(apple_url__contains=data.get("apple_id"))
                 if info.exists():
-                    app.app_info = info.first()
-                    for a in App.objects.filter(app_info=info.first()):
-                        a.publisher_name = app.publisher_name
-                        a.category_main = app.category_main
-                        a.category_sub = app.category_sub
-                        a.save()
-            print(app.market, app.publisher_name, app.category_main, app.category_sub)
+                    app_info = info.first()
+                    app_info.publisher_name = publisher_name
+                    app_info.save()
+                    app.app_info = app_info
+            print(app.market, app.app_info.publisher_name, app.app_info.category_main, app.app_info.category_sub)
             app.save()
 
 
@@ -459,30 +442,23 @@ def read_information_of_google_app():
         "TRAVEL_AND_LOCAL": ("여행/교통", "국내숙박"),
     }
 
-    def get_category(application: App, categories: tuple):
-        application.category_main = categories[0]
-        application.category_sub = categories[1]
-        application.save()
-
-    for app in App.objects.filter(app_url__isnull=False, market="google", category_main=None):
+    for app in App.objects.filter(app_url__isnull=False, market="google"):
         url: str = app.app_url
         if url:
             title, publisher_name, category, email = get_google_apps_data_from_soup(url)
             if app.app_info:
                 app.app_info.email = email
                 app.app_info.google_url = url
+                app.app_info.publisher_name = publisher_name
+                app.app_info.category_main = category_map[category][0] if category else None
+                app.app_info.category_sub = category_map[category][1] if category else None
                 app.app_info.save()
-                for a in App.objects.filter(app_info=app.app_info):
-                    a.app_name = title
-                    a.publisher_name = publisher_name
-                    if category in category_map.keys():
-                        get_category(a, category_map[category])
-                    else:
-                        pass
+                app.app_name = title
+                app.save()
 
 
 def read_information_of_one_store_app():
-    for app in App.objects.filter(market="one", app_url__isnull=False, publisher_name=None):
+    for app in App.objects.filter(market="one", app_url__isnull=False):
         url = app.app_url
         if url:
             req = requests.get(url)
@@ -491,9 +467,9 @@ def read_information_of_one_store_app():
                 title = soup.select_one("title").get_text().replace(" - 원스토어", "")
                 publisher_name = soup.select_one("p.detailapptop-co-seller").get_text()
                 app.app_name = title
-                app.publisher_name = publisher_name
                 print(app.app_name, app.publisher_name)
                 if app.app_info:
+                    app.app_info.publisher_name = publisher_name
                     app.app_info.one_url = url
                     app.app_info.save()
                 app.save()
@@ -503,7 +479,7 @@ def read_information_of_one_store_app():
 
 
 def read_information_of_apple_store_app():
-    for app in App.objects.filter(market="apple", app_url__isnull=False, publisher_name=None):
+    for app in App.objects.filter(market="apple", app_url__isnull=False):
         url = app.app_url
         if url:
             req = requests.get(url)
@@ -513,10 +489,10 @@ def read_information_of_apple_store_app():
                 publisher_name = soup.select_one("a[href*='apps.apple.com/kr/developer']").get_text().strip()
                 genre_name = soup.select_one("a[href*='itunes.apple.com/kr/genre']").get_text().strip()
                 app.app_name = title
-                app.publisher_name = publisher_name
-                app.category_main = genre_name
-                print(app.app_name, app.publisher_name, genre_name)
+                print(app.app_name, publisher_name, genre_name)
                 if app.app_info:
+                    app.app_info.publisher_name = publisher_name
+                    app.app_info.category_main = genre_name
                     app.app_info.apple_url = url
                     app.app_info.save()
                 app.save()
