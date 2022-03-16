@@ -1,8 +1,27 @@
-from crawling import *
+import os
+import sys
+import json
+import datetime
+from datetime import timedelta
+
+sys.path.append('/home/ubuntu/app-rank/ranker')
+os.environ.setdefault("PYTHONUNBUFFERED;", "1")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
+import django
+
+if 'setup' in dir(django):
+    django.setup()
+import requests
 from bs4 import BeautifulSoup
+from logging import getLogger
+from django.utils import timezone
+from django.db.models import Min, Q
 from django.db import DataError, IntegrityError
-from django.db.models import Q
-from crawler.models import AppInformation
+from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex, OneStoreDL, AppInformation
+
+logger = getLogger(__name__)
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36"
+headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent, 'Content-type': 'application/json'}
 
 GOOGLE_PREFIX = "https://play.google.com/store/apps/details?id="
 APPLE_PREFIX = "https://apps.apple.com/kr/app/id"
