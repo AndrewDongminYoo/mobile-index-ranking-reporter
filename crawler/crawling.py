@@ -63,13 +63,16 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
 
 
 def create_app(app_data: dict):
+    app_info = AppInformation.objects.get_or_create(
+        publisher_name=app_data.get('publisher_name')
+    )[0]
     app = App.objects.get_or_create(
+        app_info=app_info,
         market_appid=app_data['market_appid'],
         icon_url=app_data['icon_url'],
     )[0]
     app.app_name = app_data.get('app_name')
     app.icon_url = app_data.get('icon_url')
-    app.publisher_name = app_data.get('publisher_name')
     if app.market_appid.startswith("0000"):
         app.market = "one"
         app.app_url = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" + app.market_appid
