@@ -69,6 +69,7 @@ def create_app(app_data: dict):
     )[0]
     app.app_name = app_data.get('app_name')
     app.icon_url = app_data.get('icon_url')
+    app.publisher_name = app_data.get('publisher_name')
     if app.market_appid.startswith("0000"):
         app.market = "one"
         app.app_url = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" + app.market_appid
