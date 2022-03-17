@@ -170,6 +170,12 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                     )
                     tracking.save()
                     rank_diff = (tracking.rank - last_one.last().rank) if last_one.exists() else 0
+
+                    # 테스트용 코드
+                    url = 'https://hooks.slack.com/services/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'
+                    body = json.dumps({"text": rank_diff})
+                    requests.post(url, headers={'Content-type': 'application/json'}, data=body)
+
                     if last_one.exists() and rank_diff < -2:
                         print(
                             f"순위 상승: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
