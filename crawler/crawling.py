@@ -227,6 +227,4 @@ def good_deep_night_twelve_ten_daily():
 
 
 if __name__ == '__main__':
-    every_o_clock_hourly()
-    good_afternoon_twelve_ten_daily()
-    good_deep_night_twelve_ten_daily()
+    post_to_slack("> 테스트")
