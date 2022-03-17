@@ -170,12 +170,13 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                     )
                     tracking.save()
                     rank_diff = (tracking.rank - last_one.last().rank) if last_one.exists() else 0
-                    if rank_diff < -2 and last_one.exists():
+                    print(tracking.rank, last_one.last().rank)
+                    if last_one.exists() and rank_diff < -2:
                         print(
                             f"순위 상승: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
                         post_to_slack(
                             f"순위 상승: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
-                    if rank_diff > 2 and last_one.exists():
+                    if last_one.exists() and rank_diff > 2:
                         print(
                             f"순위 하락: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
                         post_to_slack(
@@ -234,4 +235,5 @@ def good_deep_night_twelve_ten_daily():
 
 
 if __name__ == '__main__':
-    post_to_slack("> 테스트")
+    crawl_app_store_rank("realtime_rank_v2", "all", "game")
+    crawl_app_store_rank("realtime_rank_v2", "all", "app")
