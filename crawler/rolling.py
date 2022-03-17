@@ -12,13 +12,14 @@ if 'setup' in dir(django):
 import requests
 from bs4 import BeautifulSoup
 from logging import getLogger
+from django.db.models import Q
 from django.utils import timezone
 from django.db import DataError, IntegrityError
 from crawler.models import Ranked, Following, TrackingApps, App, OneStoreDL, AppInformation
 
 logger = getLogger(__name__)
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36"
-headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent, 'Content-type': 'application/json'}
+headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
 
 GOOGLE_PREFIX = "https://play.google.com/store/apps/details?id="
 APPLE_PREFIX = "https://apps.apple.com/kr/app/id"
@@ -36,29 +37,25 @@ def set_apps_url_for_all():
         if response.status_code == 200:
             return response.url
 
-    for app in App.objects.all().filter(app_info=None):
-        app_info = None
+    for app in App.objects.all().filter(Q(app_info=None) | Q(app_url=None)):
         if app.market == "google":
             if not app.app_url:
                 app.app_url = correct_path(GOOGLE_PREFIX + app.market_appid)
             app_info = AppInformation.objects.filter(google_url=app.app_url)
             if app_info.exists():
-                app_info = app_info.first()
+                app.app_info = app_info.first()
         elif app.market == "apple":
             if not app.app_url:
                 app.app_url = correct_path(APPLE_PREFIX + app.market_appid)
             app_info = AppInformation.objects.filter(apple_url=app.app_url)
             if app_info.exists():
-                app_info = app_info.first()
+                app.app_info = app_info.first()
         elif app.market == "one":
             if not app.app_url:
                 app.app_url = correct_path(ONE_PREFIX + app.market_appid)
             app_info = AppInformation.objects.filter(one_url=app.app_url)
             if app_info.exists():
-                app_info = app_info.first()
-        if app_info:
-            app.app_info = app_info
-            print(app_info)
+                app.app_info = app_info.first()
         app.save()
 
 
@@ -558,4 +555,5 @@ def good_morning_half_past_ten_daily():
 
 
 if __name__ == '__main__':
+    set_apps_url_for_all()
     read_information_of_one_store_app()
