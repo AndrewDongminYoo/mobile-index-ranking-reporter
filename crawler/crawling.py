@@ -31,6 +31,7 @@ def post_to_slack(text=None):
         url = 'https://hooks.slack.com/services/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'
         body = json.dumps({"text": text})
         req = requests.post(url, headers={'Content-type': 'application/json'}, data=body)
+        print(req.json())
         logger.debug(req.headers)
     except Exception as e:
         logger.error(e)
