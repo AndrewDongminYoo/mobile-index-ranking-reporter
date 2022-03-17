@@ -174,7 +174,8 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                     # 테스트용 코드
                     url = 'https://hooks.slack.com/services/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'
                     body = json.dumps({"text": rank_diff})
-                    requests.post(url, headers={'Content-type': 'application/json'}, data=body)
+                    req = requests.post(url, headers={'Content-Type': 'application/json'}, data=body)
+                    print(req.status_code)
 
                     if last_one.exists() and rank_diff < -2:
                         print(
