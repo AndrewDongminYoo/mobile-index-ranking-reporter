@@ -170,7 +170,6 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                     )
                     tracking.save()
                     rank_diff = (tracking.rank - last_one.last().rank) if last_one.exists() else 0
-                    print(tracking.rank, last_one.last().rank)
                     if last_one.exists() and rank_diff < -2:
                         print(
                             f"순위 상승: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
