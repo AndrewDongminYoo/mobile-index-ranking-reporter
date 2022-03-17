@@ -150,10 +150,12 @@ def application_information_deduplicate():
         else:
             for a in App.objects.filter(app_info=app_info):
                 a.app_info = dicto[app_info.google_url]
-            dicto[app_info.google_url].apple_url = app_info.apple_url
-            dicto[app_info.google_url].one_url = app_info.one_url
-            dicto[app_info.google_url].email = app_info.email
-            dicto[app_info.google_url].phone = app_info.phone
+            dicto[app_info.google_url].apple_url = app_info.apple_url if app_info.apple_url else dicto[
+                app_info.google_url].apple_url
+            dicto[app_info.google_url].one_url = app_info.one_url if app_info.one_url else dicto[
+                app_info.google_url].one_url
+            dicto[app_info.google_url].email = app_info.email if app_info.email else dicto[app_info.google_url].email
+            dicto[app_info.google_url].phone = app_info.phone if app_info.phone else dicto[app_info.google_url].phone
             app_info.delete()
 
 
@@ -426,12 +428,11 @@ def read_information_of_google_app():
         "TRAVEL_AND_LOCAL": ("여행/교통", "국내숙박"),
     }
 
-    for app in App.objects.filter(app_url__isnull=False, market="google"):
-        url: str = app.app_url
+    for app in App.objects.filter(app_url__isnull=False, market="google", app_info=None):
         if app.app_info:
-            app.app_info.google_url = url
-            if url:
-                title, publisher_name, category, email = get_google_apps_data_from_soup(url)
+            app.app_info.google_url = app.app_url
+            if app.app_url:
+                title, publisher_name, category, email = get_google_apps_data_from_soup(app.app_url)
                 app.app_name = title
                 app.app_info.email = email
                 app.app_info.publisher_name = publisher_name
@@ -444,13 +445,15 @@ def read_information_of_google_app():
                 app.app_info.save()
                 app.save()
         else:
-            app.app_info = AppInformation.objects.get_or_create(google_url=url)[0]
-            app.save()
+            info = AppInformation.objects.filter(google_url__contains=app.market_appid)
+            if info.exists():
+                app.app_info = info.first()
+                app.save()
 
 
 def read_information_of_one_store_app():
-    for app in App.objects.filter(market="one", app_url=None):
-        if not app.app_url:
+    for app in App.objects.filter(market="one", app_url__isnull=False, app_info=None):
+        if not app.app_url or app.app_url.endswith("ERR504"):
             app.app_url = ONE_PREFIX + app.market_appid
             app.save()
         print(app.app_url)
@@ -466,15 +469,17 @@ def read_information_of_one_store_app():
                 app.app_info.one_url = app.app_url
                 app.app_info.save()
             else:
-                app.app_info = AppInformation.objects.get_or_create(one_url=app.app_url)[0]
-                app.app_info.save()
+                info = AppInformation.objects.filter(one_url__contains=app.market_appid)
+                if info.exists():
+                    app.app_info = info.first()
+                    app.save()
         except AttributeError:
             app.app_url = ""
         app.save()
 
 
 def read_information_of_apple_store_app():
-    for app in App.objects.filter(market="apple", app_url__isnull=False):
+    for app in App.objects.filter(market="apple", app_url__isnull=False, app_info=None):
         req = requests.get(app.app_url, headers=headers)
         soup = BeautifulSoup(req.text, "html.parser")
         try:
@@ -488,6 +493,10 @@ def read_information_of_apple_store_app():
                 app.app_info.category_main = genre_name
                 app.app_info.apple_url = app.app_url
                 app.app_info.save()
+            else:
+                info = AppInformation.objects.filter(apple_url__contains=app.market_appid)
+                app.app_info = info.first() if info.exists() else None
+                app.save()
             app.save()
         except AttributeError:
             app.app_url = ""
@@ -518,6 +527,7 @@ def upto_400th_google_play_apps_contact():
             app_info = AppInformation.objects.update_or_create(
                 google_url=app_url,
             )[0]
+            app_info.publisher_name = publisher_name
             app_info.email = email
             app_info.save()
             app = App.objects.update_or_create(
@@ -543,13 +553,7 @@ def upto_400th_google_play_apps_contact():
 
 
 def good_morning_half_past_ten_daily():
-    application_deduplicate()
     ive_korea_internal_api()
-    edit_apps_market()
-    set_apps_url_for_all()
-    get_developers_contact_number()
-    get_app_category()
-    get_app_publisher_name()
     read_information_of_google_app()
     read_information_of_one_store_app()
     read_information_of_apple_store_app()
@@ -557,5 +561,4 @@ def good_morning_half_past_ten_daily():
 
 
 if __name__ == '__main__':
-    read_information_of_apple_store_app()
     upto_400th_google_play_apps_contact()
