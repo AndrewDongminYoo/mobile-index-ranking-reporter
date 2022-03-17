@@ -88,7 +88,6 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
 def create_app(app_data: dict):
     app = App.objects.get_or_create(
         market_appid=app_data['market_appid'],
-        icon_url=app_data['icon_url'],
     )[0]
     app.app_name = app_data.get('app_name')
     app.icon_url = app_data.get('icon_url')
@@ -124,7 +123,6 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
     if response["status"]:
         date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
         following = [f[0] for f in Following.objects.values_list("market_appid")]
-        print(following)
         logger.debug(following)
         for app_data in response["data"]:
             logger.debug(app_data)
