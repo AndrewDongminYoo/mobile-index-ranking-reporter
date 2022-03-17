@@ -20,10 +20,11 @@ from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex, OneS
 
 logger = getLogger(__name__)
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36"
-headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent, 'Content-type': 'application/json'}
+headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
 
 
 def post_to_slack(text=None):
+    headers['content-type'] = 'application/json'
     url = 'https://hooks.slack.com/services/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'
     body = json.dumps({"text": text})
     req = requests.post(url, headers=headers, data=body)
