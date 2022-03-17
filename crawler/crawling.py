@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import json
 import datetime
 from datetime import timedelta
 from slacker import Slacker
@@ -12,7 +11,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 
 from ranker import settings
-
 if 'setup' in dir(django):
     django.setup()
 import requests
@@ -171,17 +169,17 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                     )
                     tracking.save()
                     rank_diff = (tracking.rank - last_one.last().rank) if last_one.exists() else 0
-
+                    market_string = item.get_market_display()
                     if last_one.exists() and rank_diff < -2:
                         print(
-                            f"순위 상승: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
+                            f"순위 상승: {item.app_name} {market_string} {last_one.last().rank}위 -> {item.rank}위")
                         post_to_slack(
-                            f"순위 상승: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
+                            f"순위 상승: {item.app_name} {market_string} {last_one.last().rank}위 -> {item.rank}위")
                     if last_one.exists() and rank_diff > 2:
                         print(
-                            f"순위 하락: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
+                            f"순위 하락: {item.app_name} {market_string} {last_one.last().rank}위 -> {item.rank}위")
                         post_to_slack(
-                            f"순위 하락: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
+                            f"순위 하락: {item.app_name} {market_string} {last_one.last().rank}위 -> {item.rank}위")
 
 
 def following_one_crawl():
@@ -236,5 +234,4 @@ def good_deep_night_twelve_ten_daily():
 
 
 if __name__ == '__main__':
-    crawl_app_store_rank("realtime_rank_v2", "all", "game")
-    crawl_app_store_rank("realtime_rank_v2", "all", "app")
+    post_to_slack("크롤러 알람 파업 상태")
