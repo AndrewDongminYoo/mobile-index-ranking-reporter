@@ -431,63 +431,68 @@ def read_information_of_google_app():
 
     for app in App.objects.filter(app_url__isnull=False, market="google"):
         url: str = app.app_url
-        if url:
-            title, publisher_name, category, email = get_google_apps_data_from_soup(url)
-            if app.app_info:
+        if app.app_info:
+            app.app_info.google_url = url
+            if url:
+                title, publisher_name, category, email = get_google_apps_data_from_soup(url)
+                app.app_name = title
                 app.app_info.email = email
-                app.app_info.google_url = url
                 app.app_info.publisher_name = publisher_name
                 if category and (category in category_map.keys()):
                     app.app_info.category_main = category_map[category][0]
                     app.app_info.category_sub = category_map[category][1]
                     print(category_map[category])
+                else:
+                    logger.info(category)
                 app.app_info.save()
-                app.app_name = title
                 app.save()
+        else:
+            app.app_info = AppInformation.objects.get_or_create(google_url=url)[0]
+            app.save()
 
 
 def read_information_of_one_store_app():
-    for app in App.objects.filter(market="one", app_url__isnull=False):
-        url = app.app_url
-        if url:
-            req = requests.get(url)
-            soup = BeautifulSoup(req.text, "html.parser")
-            try:
-                title = soup.select_one("title").get_text().replace(" - 원스토어", "")
-                publisher_name = soup.select_one("p.detailapptop-co-seller").get_text()
-                app.app_name = title
-                print(app.app_name, app.publisher_name)
-                if app.app_info:
-                    app.app_info.publisher_name = publisher_name
-                    app.app_info.one_url = url
-                    app.app_info.save()
-                app.save()
-            except AttributeError:
-                app.app_url = ""
-                app.save()
+    for app in App.objects.filter(market="one", app_url=None):
+        if not app.app_url:
+            app.app_url = APPLE_PREFIX + app.market_appid
+            app.save()
+        req = requests.get(app.app_url, headers=headers)
+        soup = BeautifulSoup(req.text, "html.parser")
+        try:
+            title = soup.select_one("title").get_text().replace(" - 원스토어", "")
+            publisher_name = soup.select_one("p.detailapptop-co-seller").get_text()
+            app.app_name = title
+            print(app.app_name, app.publisher_name)
+            if app.app_info:
+                app.app_info.publisher_name = publisher_name
+                app.app_info.one_url = app.app_url
+            else:
+                app.app_info = AppInformation.objects.get_or_create(one_url=app.app_url)[0]
+            app.app_info.save()
+        except AttributeError:
+            app.app_url = ""
+        app.save()
 
 
 def read_information_of_apple_store_app():
     for app in App.objects.filter(market="apple", app_url__isnull=False):
-        url = app.app_url
-        if url:
-            req = requests.get(url)
-            soup = BeautifulSoup(req.text, "html.parser")
-            try:
-                title = soup.select_one("title").get_text().replace("App Store에서 제공하는 ", "").strip()
-                publisher_name = soup.select_one("a[href*='apps.apple.com/kr/developer']").get_text().strip()
-                genre_name = soup.select_one("a[href*='itunes.apple.com/kr/genre']").get_text().strip()
-                app.app_name = title
-                print(app.app_name, publisher_name, genre_name)
-                if app.app_info:
-                    app.app_info.publisher_name = publisher_name
-                    app.app_info.category_main = genre_name
-                    app.app_info.apple_url = url
-                    app.app_info.save()
-                app.save()
-            except AttributeError:
-                app.app_url = ""
-                app.save()
+        req = requests.get(app.app_url)
+        soup = BeautifulSoup(req.text, "html.parser")
+        try:
+            title = soup.select_one("title").get_text().replace("App Store에서 제공하는 ", "").strip()
+            publisher_name = soup.select_one("a[href*='apps.apple.com/kr/developer']").get_text().strip()
+            genre_name = soup.select_one("a[href*='itunes.apple.com/kr/genre']").get_text().strip()
+            app.app_name = title
+            print(app.app_name, publisher_name, genre_name)
+            if app.app_info:
+                app.app_info.publisher_name = publisher_name
+                app.app_info.category_main = genre_name
+                app.app_info.apple_url = app.app_url
+                app.app_info.save()
+            app.save()
+        except AttributeError:
+            app.app_url = ""
+            app.save()
 
 
 def upto_400th_google_play_apps_contact():
@@ -553,4 +558,4 @@ def good_morning_half_past_ten_daily():
 
 
 if __name__ == '__main__':
-    good_morning_half_past_ten_daily()
+    read_information_of_one_store_app()
