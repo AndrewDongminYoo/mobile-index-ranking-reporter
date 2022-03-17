@@ -451,21 +451,23 @@ def read_information_of_google_app():
 def read_information_of_one_store_app():
     for app in App.objects.filter(market="one", app_url=None):
         if not app.app_url:
-            app.app_url = APPLE_PREFIX + app.market_appid
+            app.app_url = ONE_PREFIX + app.market_appid
             app.save()
+        print(app.app_url)
         req = requests.get(app.app_url, headers=headers)
         soup = BeautifulSoup(req.text, "html.parser")
         try:
             title = soup.select_one("title").get_text().replace(" - 원스토어", "")
             publisher_name = soup.select_one("p.detailapptop-co-seller").get_text()
             app.app_name = title
-            print(app.app_name, app.publisher_name)
+            print(title, publisher_name)
             if app.app_info:
                 app.app_info.publisher_name = publisher_name
                 app.app_info.one_url = app.app_url
+                app.app_info.save()
             else:
                 app.app_info = AppInformation.objects.get_or_create(one_url=app.app_url)[0]
-            app.app_info.save()
+                app.app_info.save()
         except AttributeError:
             app.app_url = ""
         app.save()
@@ -473,7 +475,7 @@ def read_information_of_one_store_app():
 
 def read_information_of_apple_store_app():
     for app in App.objects.filter(market="apple", app_url__isnull=False):
-        req = requests.get(app.app_url)
+        req = requests.get(app.app_url, headers=headers)
         soup = BeautifulSoup(req.text, "html.parser")
         try:
             title = soup.select_one("title").get_text().replace("App Store에서 제공하는 ", "").strip()
@@ -555,5 +557,5 @@ def good_morning_half_past_ten_daily():
 
 
 if __name__ == '__main__':
-    set_apps_url_for_all()
-    read_information_of_one_store_app()
+    read_information_of_apple_store_app()
+    upto_400th_google_play_apps_contact()
