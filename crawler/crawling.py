@@ -6,12 +6,12 @@ import datetime
 from datetime import timedelta
 from slacker import Slacker
 
-from ranker import settings
-
 sys.path.append('/home/ubuntu/app-rank/ranker')
 os.environ.setdefault("PYTHONUNBUFFERED;", "1")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
+
+from ranker import settings
 
 if 'setup' in dir(django):
     django.setup()
@@ -31,7 +31,7 @@ def post_to_slack(text=None):
     slack_token = settings.SLACK_TOKEN
     slack_channel = "#ranker-crawler-alert"
     slack = Slacker(slack_token)
-    slack.chat.post_message(slack_channel, text)
+    slack.chat.post_message(channel=slack_channel, text=text)
 
 
 def get_soup(market_id, back=True):
@@ -111,6 +111,7 @@ def create_app(app_data: dict):
 
 
 def crawl_app_store_rank(term: str, market: str, game_or_app: str):
+    post_to_slack("크롤링 시작")
     url = f'https://proxy-insight.mobileindex.com/chart/{term}'  # "realtime_rank_v2", "global_rank_v2"
     data = {
         "market": "all",  # "all", "google"
