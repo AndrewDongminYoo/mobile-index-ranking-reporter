@@ -61,7 +61,7 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
         last_one = OneStoreDL.objects.filter(
             app=app,
             market_appid=app.market_appid,
-        ).last()
+        )
         ones_app = OneStoreDL(
             date=date,
             app=app,
@@ -74,11 +74,11 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
             app_name=app_name,
         )
         ones_app.save()
-        rank_diff = ones_app.downloads - last_one.downloads if last_one else 0
-        if rank_diff > 2000:
+        rank_diff = ones_app.downloads - last_one.last().downloads if last_one.exists() else 0
+        if rank_diff > 2000 and last_one.exists():
             post_to_slack(
                 f"""{app_name} 앱 다운로드가 전일 대비 {format(rank_diff, ',')}건 증가했습니다.✈\n 
-            {format(last_one.downloads, ',')}건 -> {format(ones_app.downloads, ',')}건.""")
+            {format(last_one.last().downloads, ',')}건 -> {format(ones_app.downloads, ',')}건.""")
         return ones_app
     except AttributeError:
         print("AttributeError")
@@ -121,51 +121,56 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
     if response["status"]:
         date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
         following = [f[0] for f in Following.objects.values_list("market_appid")]
+        print(following)
+        logger.debug(following)
         for app_data in response["data"]:
             logger.debug(app_data)
             app = create_app(app_data)
-            if market == "one" or term == "global_rank_v2":
-                if app_data.get("market_name") in ["apple", "google"]:
-                    continue
-            item = Ranked(
-                app=app, date=date,
-                app_type=game_or_app,  # "game", "app"
-                app_name=app.app_name,
-                icon_url=app.icon_url,
-                market_appid=app.market_appid,
-                rank=app_data.get('rank'),
-                market=app_data.get("market_name"),  # "google", "apple", "one"
-                chart_type=app_data.get('rank_type'),
-                deal_type=term.replace("_v2", "").replace("global", "market"),  # "realtime_rank", "market_rank"
-            )
-            item.save()
-            if app.market_appid in following:
-                last_one = TrackingApps.objects.filter(
-                    market_appid=item.market_appid,
-                    deal_type=item.deal_type,
-                    market=item.market,
-                    chart_type=item.chart_type,
-                    app_name=item.app_name,
-                )
-                tracking = TrackingApps(
-                    following=Following.objects.get(market_appid=app.market_appid),
+            market_name = app_data.get("market_name")
+            if market == "one" and market_name in ["apple", "google"]:
+                pass
+            else:
+                item = Ranked(
                     app=app, date=date,
-                    deal_type=item.deal_type,
-                    rank=item.rank,
-                    market=item.market,
-                    app_name=item.app_name,
-                    icon_url=item.app.icon_url,
-                    chart_type=item.chart_type,
-                    market_appid=item.app.market_appid,
+                    app_type=game_or_app,  # "game", "app"
+                    app_name=app.app_name,
+                    icon_url=app.icon_url,
+                    market_appid=app.market_appid,
+                    rank=app_data.get('rank'),
+                    market=market_name,  # "google", "apple", "one"
+                    chart_type=app_data.get('rank_type'),
+                    deal_type=term.replace("_v2", "").replace("global", "market"),  # "realtime_rank", "market_rank"
                 )
-                tracking.save()
-                rank_diff = tracking.rank - last_one.last().rank if last_one.exists() else 0
-                if rank_diff < -2:
-                    post_to_slack(
-                        f"> 순위 상승: {item.app_name} 🛫 {item.get_market_display()} _{last_one.rank}위_ -> *{item.rank}위*")
-                if rank_diff > 2:
-                    post_to_slack(
-                        f"> 순위 하락: {item.app_name} 🛬 {item.get_market_display()} _{last_one.rank}위_ -> *{item.rank}위*")
+                item.save()
+                print(item.app_name)
+                logger.info(item.app_name)
+                if app.market_appid in following:
+                    last_one = TrackingApps.objects.filter(
+                        market_appid=item.market_appid,
+                        deal_type=item.deal_type,
+                        market=item.market,
+                        chart_type=item.chart_type,
+                        app_name=item.app_name,
+                    )
+                    tracking = TrackingApps(
+                        following=Following.objects.get(market_appid=app.market_appid),
+                        app=app, date=date,
+                        deal_type=item.deal_type,
+                        rank=item.rank,
+                        market=item.market,
+                        app_name=item.app_name,
+                        icon_url=app.icon_url,
+                        chart_type=item.chart_type,
+                        market_appid=app.market_appid,
+                    )
+                    tracking.save()
+                    rank_diff = tracking.rank - last_one.last().rank if last_one.exists() else 0
+                    if rank_diff < -2 and last_one.exists():
+                        post_to_slack(
+                            f"> 순위 상승: {item.app_name} 🛫 {item.get_market_display()} _{last_one.last().rank}위_ -> *{item.rank}위*")
+                    if rank_diff > 2 and last_one.exists():
+                        post_to_slack(
+                            f"> 순위 하락: {item.app_name} 🛬 {item.get_market_display()} _{last_one.last().rank}위_ -> *{item.rank}위*")
 
 
 def following_one_crawl():

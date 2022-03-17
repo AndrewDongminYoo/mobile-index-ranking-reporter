@@ -88,31 +88,19 @@ def get_developers_contact_number():
                         new_app_info = AppInformation.objects.update_or_create(
                             google_url=google
                         )[0]
-                    else:
-                        new_app_info = AppInformation.objects.update_or_create(
-                            google_url=GOOGLE_PREFIX + app.market_appid
-                        )[0]
                     print(new_app_info.google_url)
-                if app.market == "apple":
+                elif app.market == "apple":
                     apple = data.get("apple_url") if data.get("apple_url") != APPLE_PREFIX else None
                     if apple:
                         new_app_info = AppInformation.objects.update_or_create(
                             apple_url=apple,
                         )[0]
-                    else:
-                        new_app_info = AppInformation.objects.update_or_create(
-                            apple_url=APPLE_PREFIX + app.market_appid
-                        )[0]
                     print(new_app_info.apple_url)
-                if app.market == "one":
+                elif app.market == "one":
                     one = data.get("one_url") if data.get("one_url") != ONE_PREFIX else None
                     if one:
                         new_app_info = AppInformation.objects.update_or_create(
                             one_url=one
-                        )[0]
-                    else:
-                        new_app_info = AppInformation.objects.update_or_create(
-                            one_url=ONE_PREFIX + app.market_appid
                         )[0]
                     print(new_app_info.one_url)
                 logger.info(new_app_info)
