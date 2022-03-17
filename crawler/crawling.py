@@ -103,6 +103,7 @@ def create_app(app_data: dict):
         app.market = "apple"
         app.app_url = "https://apps.apple.com/kr/app/id" + app.market_appid
     app.save()
+    print(app.market_appid, app.app_name)
     return app
 
 
