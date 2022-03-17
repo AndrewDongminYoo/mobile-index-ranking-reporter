@@ -4,6 +4,9 @@ import sys
 import json
 import datetime
 from datetime import timedelta
+from slacker import Slacker
+
+from ranker import settings
 
 sys.path.append('/home/ubuntu/app-rank/ranker')
 os.environ.setdefault("PYTHONUNBUFFERED;", "1")
@@ -25,13 +28,10 @@ headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
 
 
 def post_to_slack(text=None):
-    try:
-        url = 'https://hooks.slack.com/services/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'
-        body = json.dumps({"text": text})
-        req = requests.post(url, headers={'Content-type': 'application/json'}, data=body)
-        logger.debug(req.headers)
-    except Exception as e:
-        logger.error(e)
+    slack_token = settings.SLACK_TOKEN
+    slack_channel = "#ranker-crawler-alert"
+    slack = Slacker(slack_token)
+    slack.chat.post_message(slack_channel, text)
 
 
 def get_soup(market_id, back=True):
@@ -170,12 +170,6 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                     )
                     tracking.save()
                     rank_diff = (tracking.rank - last_one.last().rank) if last_one.exists() else 0
-
-                    # 테스트용 코드
-                    url = 'https://hooks.slack.com/services/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'
-                    body = json.dumps({"text": rank_diff})
-                    req = requests.post(url, headers={'Content-Type': 'application/json'}, data=body)
-                    print(req.status_code)
 
                     if last_one.exists() and rank_diff < -2:
                         print(
