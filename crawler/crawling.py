@@ -113,10 +113,12 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
         "country": "kr",
         "rankType": "free",  # "gross", "paid", "free"
         "appType": game_or_app,  # "game", "app"
-        "date": timezone.now().strftime("%Y%m%d"),
-        "startRank": 1,
+        "date": "",
+        "startRank": 0,
         "endRank": 100,
     }
+    if market == "one":
+        data["date"] = timezone.now().strftime("%Y%m%d")
     response = requests.post(url, data=data, headers=headers).json()
     if response["status"]:
         date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
