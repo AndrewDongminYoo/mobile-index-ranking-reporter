@@ -25,10 +25,13 @@ headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
 
 
 def post_to_slack(text=None):
-    url = 'https://hooks.slack.com/services/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'
-    body = json.dumps({"text": text})
-    req = requests.post(url, headers={'Content-type': 'application/json'}, data=body)
-    logger.debug(req.headers)
+    try:
+        url = 'https://hooks.slack.com/services/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'
+        body = json.dumps({"text": text})
+        req = requests.post(url, headers={'Content-type': 'application/json'}, data=body)
+        logger.debug(req.headers)
+    except Exception as e:
+        logger.error(e)
 
 
 def get_soup(market_id, back=True):
@@ -155,7 +158,7 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                         app_name=item.app_name,
                     )
                     tracking = TrackingApps(
-                        following=Following.objects.get(market_appid=app.market_appid),
+                        following=Following.objects.filter(market_appid=app.market_appid).first(),
                         app=app, date=date,
                         deal_type=item.deal_type,
                         rank=item.rank,
@@ -166,13 +169,17 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                         market_appid=app.market_appid,
                     )
                     tracking.save()
-                    rank_diff = tracking.rank - last_one.last().rank if last_one.exists() else 0
+                    rank_diff = (tracking.rank - last_one.last().rank) if last_one.exists() else 0
                     if rank_diff < -2 and last_one.exists():
+                        print(
+                            f"순위 상승: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
                         post_to_slack(
-                            f"순위 상승: {item.app_name} 🛫 {item.get_market_display()} _{last_one.last().rank}위_ -> *{item.rank}위*")
+                            f"순위 상승: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
                     if rank_diff > 2 and last_one.exists():
+                        print(
+                            f"순위 하락: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
                         post_to_slack(
-                            f"순위 하락: {item.app_name} 🛬 {item.get_market_display()} _{last_one.last().rank}위_ -> *{item.rank}위*")
+                            f"순위 하락: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
 
 
 def following_one_crawl():
