@@ -139,6 +139,7 @@
                     return
                 }
                 _.forEach(res.data.items, (item, i) => {
+                    if (i % 2 === 0) return
                     let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
                     let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
