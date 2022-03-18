@@ -33,7 +33,7 @@
                         </article>
                         <article class="accordion" id="accordion-2">
                             <div id="canvas2"></div>
-                            <table class="flake-ui table second small rect use-selection bordered" id="hourlyRankTable">
+                            <table class="flake-ui table second small rect use-selection bordered" id="trackingTable">
                                 <thead>
                                 <tr>
                                     <th scope="col" style="width: 12%" class="center">아이콘</th>
@@ -84,7 +84,7 @@
         axios.get(`/v2/tracking/statistics?app=${app_id}`)
             .then((res) => {
                 if (!res.data.items.length) {
-                    $("#hourlyRankTable").empty();
+                    $("#trackingTable").empty();
                     return
                 }
                 _.forEach(res.data.items, (item, i) => {
