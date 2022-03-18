@@ -133,6 +133,7 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
         date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
         following = [f[0] for f in Following.objects.values_list("market_appid")]
         logger.debug(following)
+        post_to_slack(following)
         for app_data in response["data"]:
             logger.debug(app_data)
             app = create_app(app_data)
@@ -154,6 +155,7 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                 item.save()
                 print(item.app_name)
                 logger.info(item.app_name)
+                post_to_slack(item.app_name)
                 if app.market_appid in following:
                     last_one = TrackingApps.objects.order_by("id").filter(
                         market_appid=app.market_appid,
@@ -178,6 +180,7 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                         last_one = last_one.last()
                         rank_diff = tracking.rank - last_one.rank
                         market_string = item.get_market_display()
+                        post_to_slack(f"{rank_diff}")
                         if rank_diff < -2:
                             print(f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
                             logger.debug(f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
