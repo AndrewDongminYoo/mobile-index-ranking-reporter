@@ -418,7 +418,7 @@ def read_information_of_google_app():
         "FAMILY": ("가정/생활", "가족"),
         "MUSIC_AND_AUDIO": ("엔터테인먼트", "음악"),
         "PERSONALIZATION": ("퍼스널", "테마/폰트/알림음"),
-        "'NEWS_AND_MAGAZINES'": ("도서/참고자료", "뉴스/잡지"),
+        "NEWS_AND_MAGAZINES": ("도서/참고자료", "뉴스/잡지"),
         "PHOTOGRAPHY": ("사진", "카메라"),
         "PRODUCTIVITY": ("생산성", "기록/일정관리"),
         "SHOPPING": ("패션/의류", "종합패션몰"),

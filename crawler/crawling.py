@@ -28,9 +28,11 @@ headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
 
 def post_to_slack(text=None):
     try:
-        url = 'https://hooks.slack.com/services/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'
+        url = settings.SLACK_WEBHOOK_URL
         body = json.dumps({"text": text})
         req = requests.post(url, headers={'Content-type': 'application/json'}, data=body)
+        import time
+        time.sleep(0.5)
         print(req.json())
         print(req.status_code)
         print(req.text)
