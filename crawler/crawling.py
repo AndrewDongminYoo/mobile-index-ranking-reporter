@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import json
 import datetime
+import json
 from datetime import timedelta
 from slacker import Slacker
 
@@ -12,7 +12,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 
 from ranker import settings
-
 if 'setup' in dir(django):
     django.setup()
 import requests
@@ -28,10 +27,16 @@ headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
 
 
 def post_to_slack(text=None):
-    slack_token = settings.SLACK_TOKEN
-    slack_channel = "#ranker-crawler-alert"
-    slack = Slacker(slack_token)
-    slack.chat.post_message(channel=slack_channel, text=text)
+    try:
+        url = 'https://hooks.slack.com/services/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'
+        body = json.dumps({"text": text})
+        req = requests.post(url, headers={'Content-type': 'application/json'}, data=body)
+        print(req.json())
+        print(req.status_code)
+        print(req.text)
+        logger.debug(req.headers)
+    except Exception as e:
+        logger.error(e)
 
 
 def get_soup(market_id, back=True):
@@ -171,17 +176,17 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                     )
                     tracking.save()
                     rank_diff = (tracking.rank - last_one.last().rank) if last_one.exists() else 0
-
+                    market_string = item.get_market_display()
                     if last_one.exists() and rank_diff < -2:
                         print(
-                            f"순위 상승: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
+                            f"순위 상승: {item.app_name} {market_string} {last_one.last().rank}위 -> {item.rank}위")
                         post_to_slack(
-                            f"순위 상승: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
+                            f"순위 상승: {item.app_name} {market_string} {last_one.last().rank}위 -> {item.rank}위")
                     if last_one.exists() and rank_diff > 2:
                         print(
-                            f"순위 하락: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
+                            f"순위 하락: {item.app_name} {market_string} {last_one.last().rank}위 -> {item.rank}위")
                         post_to_slack(
-                            f"순위 하락: {item.app_name} {item.get_market_display()} {last_one.last().rank}위 -> {item.rank}위")
+                            f"순위 하락: {item.app_name} {market_string} {last_one.last().rank}위 -> {item.rank}위")
 
 
 def following_one_crawl():
@@ -236,5 +241,4 @@ def good_deep_night_twelve_ten_daily():
 
 
 if __name__ == '__main__':
-    crawl_app_store_rank("realtime_rank_v2", "all", "game")
-    crawl_app_store_rank("realtime_rank_v2", "all", "app")
+    post_to_slack("크롤러 알람 파업 상태")

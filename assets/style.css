@@ -1,0 +1,5813 @@
+@charset "UTF-8";
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+.flake-ui.button {
+    display: inline-block;
+    padding: 0 1rem;
+    cursor: pointer;
+    outline: 0;
+    border-width: 1px;
+    border-style: solid;
+    vertical-align: top;
+    transition: all .25s linear;
+    font-size: 1rem;
+    height: 2.875rem;
+    white-space: nowrap
+}
+
+.flake-ui.button:hover {
+    opacity: .7
+}
+
+.flake-ui.button.small {
+    font-size: .875rem;
+    height: 2.375rem;
+    padding: 0 .75rem
+}
+
+.flake-ui.button.round {
+    border-radius: .25rem
+}
+
+.flake-ui.button > span:first-child {
+    display: flex;
+    width: inherit;
+    height: inherit;
+    justify-content: center;
+    align-items: center
+}
+
+.flake-ui.button > span:first-child > .icon {
+    margin-right: .5rem;
+    font-size: 1rem
+}
+
+.flake-ui.button > span:first-child > .icon img {
+    display: block;
+    width: 1rem;
+    height: 1rem
+}
+
+.flake-ui.button.second:not(.reverse) {
+    color: #4d4e5a;
+    background-color: #fff;
+    border-color: #dcdeea
+}
+
+.flake-ui.button.second.reverse {
+    color: #fff;
+    background-color: #4d4e5a
+}
+
+.flake-ui.button.dark:not(.reverse) {
+    color: #232326;
+    background-color: #fff;
+    border-color: #232326
+}
+
+.flake-ui.button.dark.reverse {
+    color: #fff;
+    background-color: #232326
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes mi-ani-rolling {
+    0% {
+        transform: rotate(0)
+    }
+    to {
+        transform: rotate(1turn)
+    }
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: 0;
+    user-select: none
+}
+
+* ::-webkit-scrollbar {
+    width: .375rem
+}
+
+* ::-webkit-scrollbar:horizontal {
+    height: .375rem
+}
+
+* ::-webkit-scrollbar-track {
+    background: 0 0
+}
+
+* ::-webkit-scrollbar-corner {
+    display: none
+}
+
+* ::-webkit-scrollbar-thumb {
+    background: rgba(54, 55, 64, .3);
+    border-radius: .5rem
+}
+
+html {
+    font-size: 16px
+}
+
+@media only screen and (max-width: 1080px) {
+    html {
+        font-size: 15px
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    html {
+        font-size: 14px
+    }
+}
+
+@media only screen and (max-width: 640px) {
+    html {
+        font-size: 12px
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    html {
+        font-size: 10px
+    }
+}
+
+@media only screen and (max-width: 320px) {
+    html {
+        font-size: 8px
+    }
+}
+
+body, button, label {
+    font-family: Lato, Noto Sans KR, sans-serif !important;
+    user-select: none
+}
+
+button {
+    outline: 0;
+    border: none;
+    background: 0 0;
+    cursor: pointer
+}
+
+a, a:visited {
+    text-decoration: none;
+    color: inherit
+}
+
+article.app {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    font-size: 16px;
+    overflow: hidden;
+    animation: flake-anim-fade-in .15s ease-in none;
+    background: #f4f6f9
+}
+
+article.app > .main {
+    display: flex;
+    position: relative;
+    width: calc(100% - 20rem);
+    flex-direction: column;
+    flex: 1 1 auto
+}
+
+article.app > .main > .page {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    flex: 1 1 auto
+}
+
+article.app > .main > .page > section {
+    background-color: #f4f6f9;
+    flex: 1 0 auto
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+.flake-ui.input {
+    position: relative;
+    vertical-align: top;
+    box-sizing: border-box
+}
+
+.flake-ui.input.small {
+    font-size: .875rem
+}
+
+.flake-ui.input.small > .description {
+    font-size: .625rem
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+article.flake-ui.modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, .7);
+    z-index: 9998;
+    animation: flake-anim-fade-in .25s ease-in none
+}
+
+article.flake-ui.modal > section {
+    font-size: 1rem;
+    padding: 1.5rem 2rem 3.125rem;
+    box-sizing: border-box;
+    min-width: 35%;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-weight: 400;
+    background: #fff;
+    box-shadow: 0 4px 15px 0 rgba(0, 0, 0, .1)
+}
+
+article.flake-ui.modal > section > header {
+    font-size: 1.25rem;
+    display: flex;
+    position: relative;
+    align-items: center;
+    font-weight: 700
+}
+
+article.flake-ui.modal > section > header:not(.empty) {
+    border-bottom: 1px solid #ebecf1;
+    padding-bottom: 1.5rem
+}
+
+article.flake-ui.modal > section > header.empty > button {
+    position: absolute;
+    right: 0;
+    top: 0
+}
+
+article.flake-ui.modal > section > header > .icon {
+    margin-right: .5rem
+}
+
+article.flake-ui.modal > section > header > .icon img {
+    display: block;
+    width: 1rem;
+    height: 1rem
+}
+
+article.flake-ui.modal > section > header > .title {
+    flex: 1
+}
+
+article.flake-ui.modal > section > header > button {
+    outline: 0;
+    border: none;
+    cursor: pointer;
+    background: 0 0;
+    font-weight: 700;
+    color: inherit;
+    transition: opacity .25s linear
+}
+
+article.flake-ui.modal > section > header > button:hover {
+    opacity: .8
+}
+
+article.flake-ui.modal > section > header > button img {
+    width: 2.5rem;
+    height: 2.5rem
+}
+
+article.flake-ui.modal > section > div {
+    padding-top: 2rem
+}
+
+article.flake-ui.modal > section > footer {
+    display: flex;
+    text-align: right;
+    padding-top: 2rem
+}
+
+article.flake-ui.modal > section > footer > .button {
+    flex: 1
+}
+
+article.flake-ui.modal > section > footer > .button > span {
+    justify-content: center
+}
+
+article.flake-ui.modal > section > footer > .button:nth-child(2) {
+    margin-left: .5rem
+}
+
+article.flake-ui.modal > section.round {
+    border-radius: .25rem
+}
+
+article.flake-ui.modal > section.small {
+    font-size: .875rem
+}
+
+article.flake-ui.modal > section.small > header {
+    font-size: 1.125rem
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+.flake-ui.table {
+    display: table;
+    border-spacing: .25rem;
+    font-size: 1rem;
+    box-sizing: border-box;
+    user-select: text;
+    table-layout: fixed
+}
+
+.flake-ui.table:not(.bordered).round, .flake-ui.table:not(.bordered).round > thead > tr > th {
+    border-radius: .25rem
+}
+
+.flake-ui.table > tbody > tr {
+    color: #444;
+    transition: background-color .25s linear, color .25s linear, opacity .25s linear
+}
+
+.flake-ui.table:not(.bordered) > tbody > tr:nth-child(2n) {
+    background-color: #f1f1f1
+}
+
+.flake-ui.table:not(.bordered) > tbody > tr:nth-child(odd) {
+    background-color: #fafafa
+}
+
+.flake-ui.table.bordered {
+    border-spacing: 0;
+    border-width: 1px;
+    border-style: solid;
+    position: relative
+}
+
+.flake-ui.table.bordered thead > tr > th:after {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 1px;
+    height: 25%;
+    transform: translateY(-50%);
+    border-right-color: inherit;
+    border-right-width: 1px;
+    border-right-style: solid;
+    content: ""
+}
+
+.flake-ui.table.bordered thead > tr > th > div, .flake-ui.table.bordered thead > tr > th > div > .column-sort {
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+
+.flake-ui.table.bordered thead > tr > th > div > .column-sort {
+    flex-direction: column-reverse;
+    width: fit-content
+}
+
+.flake-ui.table.bordered tr > td, .flake-ui.table.bordered tr > th {
+    position: relative;
+    border-bottom-width: 1px;
+    border-bottom-style: solid
+}
+
+.flake-ui.table.bordered tr > td:last-child:after, .flake-ui.table.bordered tr > th:last-child:after {
+    display: none
+}
+
+.flake-ui.table td, .flake-ui.table th {
+    text-align: center;
+    font-size: inherit;
+    height: 2.875rem;
+    font-weight: 400
+}
+
+.flake-ui.table td.left, .flake-ui.table th.left {
+    text-align: left
+}
+
+.flake-ui.table.small {
+    font-size: .875rem
+}
+
+.flake-ui.table.small td, .flake-ui.table.small th {
+    padding: .75rem;
+    height: .875rem
+}
+
+.flake-ui.table.second {
+    border-color: #dcdeea
+}
+
+.flake-ui.table.second:not(.bordered) > thead > tr > th {
+    color: #fff;
+    background-color: #4d4e5a
+}
+
+.flake-ui.table.second.bordered {
+    background-color: #fff
+}
+
+.flake-ui.table.second.bordered td, .flake-ui.table.second.bordered th {
+    word-break: break-word;
+    border-color: #dcdeea;
+    color: #4d4e5a
+}
+
+.flake-ui.table.second:not(.loading).use-selection {
+    cursor: pointer
+}
+
+.flake-ui.table.second:not(.loading).use-selection > tbody > tr:hover {
+    color: #656570;
+    background-color: #f7f2fe
+}
+
+.flake-ui.table.dark {
+    border-color: #232326
+}
+
+.flake-ui.table.dark:not(.bordered) > thead > tr > th {
+    color: #fff;
+    background-color: #232326
+}
+
+.flake-ui.table.dark.bordered {
+    background-color: #fff
+}
+
+.flake-ui.table.dark.bordered td, .flake-ui.table.dark.bordered th {
+    border-color: #232326;
+    color: #232326
+}
+
+.flake-ui.table.dark:not(.loading).use-selection {
+    cursor: pointer
+}
+
+.flake-ui.table.dark:not(.loading).use-selection > tbody > tr:hover {
+    color: #fff;
+    background-color: #61616b
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+.flake-ui.no-data {
+    display: block;
+    font-size: 1rem;
+    padding: 2.875rem;
+    opacity: .5;
+    text-align: center
+}
+
+.flake-ui.no-data.small {
+    font-size: .875rem;
+    padding: 2.375rem
+}
+
+.flake-ui.no-data.second {
+    color: #4d4e5a
+}
+
+.flake-ui.no-data.dark {
+    color: #232326
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+.page-description {
+    margin: .8rem 0
+}
+
+.page-description > .description {
+    font-weight: 400;
+    letter-spacing: -.01rem;
+    color: #878896;
+    display: flex;
+    align-items: center;
+    font-size: .85rem;
+    padding: 0 .3rem
+}
+
+.page-description > .description > div {
+    flex: 1
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+.mi-chart.market-rank > div.main {
+    padding: 1.5rem !important
+}
+
+.mi-chart.market-rank > div.main > .table {
+    width: 100%
+}
+
+.mi-chart.market-rank > div.main > .table > thead th {
+    height: 2rem;
+    line-height: 2rem;
+    color: #68697b
+}
+
+.mi-chart.market-rank > div.main > .table > tbody td {
+    height: 4.125rem
+}
+
+.mi-chart.market-rank > div.main > .table .app {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: opacity .25s linear
+}
+
+.mi-chart.market-rank > div.main > .table .app.empty > span.text {
+    color: #cacaca !important
+}
+
+.mi-chart.market-rank > div.main > .table .app:hover:not(.mobile):not(.empty):after {
+    display: block;
+    position: absolute;
+    width: 2.625rem;
+    height: 2.625rem;
+    border-radius: .25rem;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    content: " ";
+    background-color: rgba(148, 91, 240, .3);
+    z-index: 1
+}
+
+.mi-chart.market-rank > div.main > .table .app:hover > span > span {
+    text-decoration: underline
+}
+
+.mi-chart.market-rank > div.main > .table .app img {
+    display: inline-block;
+    width: 2.625rem;
+    height: 2.625rem;
+    border-radius: .25rem
+}
+
+.mi-chart.market-rank > div.main > .table .app > span {
+    flex: 1;
+    padding: 0 1rem
+}
+
+.mi-chart.market-rank > div.main > .table .app > span > span:first-of-type {
+    display: block;
+    color: #363740;
+    font-size: .875rem;
+    font-weight: 500;
+    margin-bottom: .25rem
+}
+
+.mi-chart.market-rank > div.main > .table .app > span > span:last-of-type {
+    color: #878896;
+    font-size: .758rem
+}
+
+.mi-chart.market-rank > div.main > .table .app button {
+    line-height: 0
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+article.flake-ui.chart2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 300px;
+    min-height: 300px;
+    font-size: .9rem;
+    background: 0 0
+}
+
+article.flake-ui.chart2 > footer, article.flake-ui.chart2 > header {
+    margin: .5rem;
+    background-color: gold
+}
+
+article.flake-ui.chart2 * {
+    font-size: .9rem;
+    line-height: 1rem;
+    box-sizing: border-box
+}
+
+@keyframes first-ani {
+    to {
+        stroke-dashoffset: 0
+    }
+}
+
+section.flake-ui.chart {
+    position: relative;
+    vertical-align: top;
+    text-align: left;
+    width: 100%;
+    height: 100%;
+    font-size: .9rem;
+    box-sizing: border-box;
+    display: flex
+}
+
+section.flake-ui.chart * {
+    font-size: .9rem
+}
+
+section.flake-ui.chart:not(.legend-none).legend-bottom, section.flake-ui.chart:not(.legend-none).legend-top {
+    flex-direction: column
+}
+
+section.flake-ui.chart:not(.legend-none).legend-left, section.flake-ui.chart:not(.legend-none).legend-right {
+    flex-direction: row
+}
+
+section.flake-ui.chart .app-icon {
+    border-radius: .25rem;
+    width: 100%
+}
+
+section.flake-ui.chart .rect-app-icon {
+    overflow: visible;
+    border-radius: .25rem
+}
+
+section.flake-ui.chart .rect-app-icon > span {
+    width: 100%;
+    height: 100%;
+    box-shadow: .5px .5px .25rem 1px rgba(0, 0, 0, .05)
+}
+
+@keyframes first-ani {
+    to {
+        stroke-dashoffset: 0
+    }
+}
+
+@keyframes rect-ani-x {
+    to {
+        transform: translateX(100%);
+        opacity: 0
+    }
+}
+
+@keyframes rect-ani-y {
+    to {
+        transform: translateY(100%);
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+.page-description-2 > label {
+    color: #acacb8;
+    font-size: .75rem
+}
+
+section.chart-header {
+    padding: 2rem 1rem 1.5rem;
+    text-align: center;
+    letter-spacing: -.05rem
+}
+
+section.chart-header span.title {
+    display: block;
+    font-size: 1.25rem;
+    color: #363740;
+    font-weight: 500
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+.market {
+    padding: 1.5rem !important
+}
+
+.market > .header {
+    background-color: #313134;
+    padding: 0 1.5rem
+}
+
+.market .main-chart.table {
+    margin: 1rem 0
+}
+
+.market .no-data {
+    background-color: #fff;
+    border-bottom: .25rem;
+    padding: 1.3rem 1.5rem
+}
+
+.market .no-data.border {
+    border: 1px solid #dcdeea
+}
+
+.search-group {
+    flex-grow: 0;
+    border-radius: 4px;
+    border: 1px solid #dcdeea;
+    background-color: #fff;
+    padding: 1.3rem 1.5rem
+}
+
+@keyframes rotateMenu {
+    0% {
+        transform: rotateX(-90deg)
+    }
+    80% {
+        transform: rotateX(20deg)
+    }
+    to {
+        transform: rotateX(0)
+    }
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes global-notify-anim-floating {
+    0% {
+        transform: translateY(100%)
+    }
+    50% {
+        transform: translateY(103%)
+    }
+    to {
+        transform: translateY(100%)
+    }
+}
+
+@keyframes custom-anim-slow-on {
+    0% {
+        opacity: 0;
+        transform: translateY(calc(100% - .5rem))
+    }
+    to {
+        opacity: 1;
+        transform: translateY(100%)
+    }
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes custom-anim-floating {
+    0% {
+        transform: translateY(100%)
+    }
+    50% {
+        transform: translateY(103%)
+    }
+    to {
+        transform: translateY(100%)
+    }
+}
+
+@keyframes custom-anim-floating2 {
+    0% {
+        transform: translateY(0)
+    }
+    50% {
+        transform: translateY(3%)
+    }
+    to {
+        transform: translateY(0)
+    }
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+.flake-ui {
+    user-select: none
+}
+
+.flake-ui.container {
+    display: flex;
+    align-items: center;
+    overflow-x: hidden
+}
+
+.flake-ui.container > button {
+    font-size: 1.5rem;
+    font-weight: 700;
+    user-select: none
+}
+
+.flake-ui.container > button:first-of-type {
+    margin-right: 1.1rem
+}
+
+.flake-ui.container > button:last-of-type {
+    margin-left: 1.1rem
+}
+
+.flake-ui.container > div {
+    flex: 1;
+    display: flex;
+    overflow-x: auto;
+    cursor: move;
+    -ms-overflow-style: none
+}
+
+.flake-ui.container > div > * {
+    pointer-events: none;
+    user-select: none;
+    margin: 0 .4rem
+}
+
+.flake-ui.container > div::-webkit-scrollbar {
+    display: none
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes first-ani-bar {
+    0% {
+        height: 0
+    }
+}
+
+@keyframes first-ani-bar-column {
+    0% {
+        width: 0
+    }
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes first-ani-stack {
+    0% {
+        height: 0
+    }
+}
+
+@keyframes first-ani-stack-column {
+    0% {
+        width: 0
+    }
+}
+
+@keyframes first-ani {
+    to {
+        stroke-dashoffset: 0
+    }
+}
+
+@keyframes first-ani-stack {
+    0% {
+        height: 0
+    }
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+section.app-search {
+    padding: 5vw
+}
+
+section.app-search > header {
+    color: #363740;
+    font-size: 1.55rem
+}
+
+section.app-search > header > b {
+    color: #945bf0
+}
+
+section.app-search > .description {
+    color: #878896;
+    font-size: .875rem;
+    margin-bottom: 3.25rem
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+footer.footer {
+    display: block;
+    color: #acacb8;
+    background-color: #f4f6f9;
+    padding: 1.5rem 2rem;
+    font-size: .875rem
+}
+
+footer.footer > div:nth-of-type(2) {
+    margin-top: 1.06rem;
+    font-weight: 700
+}
+
+footer.footer > div:nth-of-type(2) > a {
+    text-decoration: none
+}
+
+footer.footer > div:nth-of-type(2) > a:hover {
+    text-decoration: underline
+}
+
+footer.footer > div:nth-of-type(2) > a:before {
+    content: "|";
+    font-weight: 400;
+    color: #dcdeea;
+    margin: 0 .5rem
+}
+
+footer.footer > div:nth-of-type(2) > a:first-child:before {
+    content: none
+}
+
+footer.footer > div:last-of-type {
+    font-size: .75rem;
+    margin-top: .6rem
+}
+
+footer.footer > div:last-of-type > * {
+    display: inline-block
+}
+
+footer.footer > div:last-of-type > :before {
+    content: "|";
+    color: #dcdeea;
+    margin: 0 .5rem
+}
+
+footer.footer > div:last-of-type > :first-child:before, footer.footer > div:last-of-type > :last-child:before {
+    content: none
+}
+
+footer.footer > div:last-of-type > :last-child {
+    float: right
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+@keyframes flake-anim-fade-in {
+    0% {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes flake-anim-fade-out {
+    0% {
+        opacity: 1
+    }
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes flake-anim-from-left {
+    0% {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-from-right {
+    0% {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes flake-anim-to-left {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes flake-anim-to-right {
+    0% {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes flake-anim-shake-it {
+    0% {
+        opacity: 0;
+        transform: translateX(0)
+    }
+    37% {
+        transform: translateX(5px)
+    }
+    55% {
+        transform: translateX(-5px)
+    }
+    73% {
+        transform: translateX(4px)
+    }
+    82% {
+        transform: translateX(-4px)
+    }
+    91% {
+        transform: translateX(2px)
+    }
+    96% {
+        transform: translateX(-2px)
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
+}
+
+.flake-ui * {
+    font-family: inherit
+}
+
+tbody#my-rank-table-body {
+    vertical-align: middle
+}
+
+a, a:visited {
+    text-decoration: none;
+    color: inherit;
+}
+
+img.product-hero__media-image-img {
+    width: 160px;
+    height: 160px;
+    border-radius: 22.5%;
+    float: left;
+    margin-right: 10px;
+}
