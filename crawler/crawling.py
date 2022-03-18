@@ -201,20 +201,23 @@ def get_highest_rank_of_realtime_ranks_today():
         .filter(date__date__gte=yesterday.date, date__date__lte=today.date) \
         .filter(Q(market="apple") | Q(market="google"))
     for app in Following.objects.filter(is_active=True, market__in=["apple", "google"]).all():
-        first = rank_set.filter(market_appid=app.market_appid) \
-            .values('market_appid', 'app_name', 'market', 'app_type', 'chart_type', 'icon_url') \
-            .annotate(highest_rank=Min('rank')).first()
-        new_app = TrackingApps.objects.update_or_create(
-            market=first.get('market'),
-            rank=first.get('highest_rank'),
-            deal_type='market_rank',
-            chart_type=first.get('chart_type'),
-            app_name=first.get('app_name'),
-            market_appid=first.market_appid,
-            app=App.objects.get(market_appid=app.market_appid),
-            date=today,
-        )[0]
-        new_app.save()
+        try:
+            first = rank_set.filter(market_appid=app.market_appid) \
+                .values('market_appid', 'app_name', 'market', 'app_type', 'chart_type', 'icon_url') \
+                .annotate(highest_rank=Min('rank')).first()
+            new_app = TrackingApps.objects.update_or_create(
+                market=first.get('market'),
+                rank=first.get('highest_rank'),
+                deal_type='market_rank',
+                chart_type=first.get('chart_type'),
+                app_name=first.get('app_name'),
+                market_appid=first.market_appid,
+                app=App.objects.get(market_appid=app.market_appid),
+                date=today,
+            )[0]
+            new_app.save()
+        except Exception as e:
+            logger.debug(e)
 
 
 def every_o_clock_hourly():
