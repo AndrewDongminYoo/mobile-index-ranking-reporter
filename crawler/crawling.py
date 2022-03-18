@@ -193,35 +193,35 @@ def following_one_crawl():
 
 
 def get_highest_rank_of_realtime_ranks_today():
-    pres = timezone.now().strftime("%Y%m%d") + "0000"
-    last = (timezone.now() - timedelta(days=1)).strftime("%Y%m%d") + "0000"
+    pres = (timezone.now()).strftime("%Y%m%d") + "1500"
+    last = (timezone.now() - timedelta(days=1)).strftime("%Y%m%d") + "1500"
     today = TimeIndex.objects.get_or_create(date=pres)[0]
     yesterday = TimeIndex.objects.get_or_create(date=last)[0]
     rank_set = Ranked.objects \
-        .filter(date__id__gte=yesterday.id, date__id__lte=today.id) \
+        .filter(date__date__gte=yesterday.date, date__date__lte=today.date) \
         .filter(Q(market="apple") | Q(market="google"))
-    apps = set([r.market_appid for r in rank_set])
-    for market_appid in apps:
-        app = rank_set.filter(market_appid=market_appid) \
+    for app in rank_set:
+        first = rank_set.filter(market_appid=app.market_appid) \
             .values('market_appid', 'app_name', 'market', 'app_type', 'chart_type', 'icon_url') \
             .annotate(highest_rank=Min('rank')).first()
-        new_app = Ranked(
-            market=app.get('market'),
-            rank=app.get('highest_rank'),
+        new_app = Ranked.objects.update_or_create(
+            market=first.get('market'),
+            rank=first.get('highest_rank'),
             deal_type='market_rank',
-            app_type=app.get('app_type'),
-            chart_type=app.get('chart_type'),
-            app_name=app.get('app_name'),
-            market_appid=market_appid,
-            app=App.objects.get(market_appid=market_appid),
-            date=today
-        )
+            app_type=first.get('app_type'),
+            chart_type=first.get('chart_type'),
+            app_name=first.get('app_name'),
+            market_appid=first.market_appid,
+            app=App.objects.get(market_appid=app.market_appid),
+            date=today,
+        )[0]
         new_app.save()
 
 
 def every_o_clock_hourly():
     crawl_app_store_rank("realtime_rank_v2", "all", "game")
     crawl_app_store_rank("realtime_rank_v2", "all", "app")
+    get_highest_rank_of_realtime_ranks_today()
 
 
 def good_afternoon_twelve_ten_daily():
@@ -232,7 +232,6 @@ def good_afternoon_twelve_ten_daily():
 
 def good_deep_night_twelve_ten_daily():
     following_one_crawl()
-    get_highest_rank_of_realtime_ranks_today()
 
 
 if __name__ == '__main__':

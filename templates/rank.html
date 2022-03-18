@@ -139,19 +139,19 @@
                     return
                 }
                 _.forEach(res.data.items, (item, i) => {
-                    let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
+                    let {app, app_name, chart_type, updated_at, icon_url, market, rank} = item
                     let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
                         <td class="center">${app_name}</td>
                         <td class="center">${market}</td>
                         <td class="center">${chart_type}</td>
-                        <td class="center">${moment(created_at).format("MM.DD HH:mm")}</td>
+                        <td class="center">${moment(updated_at).format("MM.DD HH:mm")}</td>
                         <td class="center">${rank} 위</td></tr>`
                     $("#myLarge #dailyRankTableBody").prepend(template)
                 })
                 $("#canvas3").append(`<canvas id="myChart3" class="bg-white table bordered" width="600" height="200"></canvas>`)
                 let ctx3 = document.getElementById('myChart3').getContext('2d');
-                let labels3 = _.map(res.data.items, item => moment(item['created_at']).format("DD일 HH시"))
+                let labels3 = _.map(res.data.items, item => moment(item['updated_at']).format("DD일 HH시"))
                 let data3 = {
                     labels: labels3,
                     datasets: [{

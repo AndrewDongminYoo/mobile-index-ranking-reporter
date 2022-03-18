@@ -481,6 +481,7 @@ def read_information_of_one_store_app():
 
 def read_information_of_apple_store_app():
     for app in App.objects.filter(market="apple", app_url__isnull=False, app_info=None):
+
         req = requests.get(app.app_url, headers=headers)
         soup = BeautifulSoup(req.text, "html.parser")
         try:
