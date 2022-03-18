@@ -133,7 +133,6 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
         date = TimeIndex.objects.get_or_create(date=timezone.now().strftime("%Y%m%d%H%M"))[0]
         following = [f[0] for f in Following.objects.values_list("market_appid")]
         logger.debug(following)
-        post_to_slack(following.__str__())
         for app_data in response["data"]:
             logger.debug(app_data)
             app = create_app(app_data)
