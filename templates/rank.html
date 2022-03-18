@@ -88,19 +88,19 @@
                     return
                 }
                 _.forEach(res.data.items, (item, i) => {
-                    let {app, app_name, chart_type, created_at, icon_url, market, rank} = item
+                    let {app, app_name, chart_type, updated_at, icon_url, market, rank} = item
                     let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
                         <td class="center">${app_name}</td>
                         <td class="center">${market}</td>
                         <td class="center">${chart_type}</td>
-                        <td class="center">${moment(created_at).format("MM.DD HH:mm")}</td>
+                        <td class="center">${moment(updated_at).format("MM.DD HH:mm")}</td>
                         <td class="center">${rank} 위</td></tr>`
                     $("#myLarge #trackingTableBody").prepend(template)
                 })
                 $("#canvas2").append(`<canvas id="myChart2" class="bg-white table bordered" width="600" height="200"></canvas>`)
                 let ctx2 = document.getElementById('myChart2').getContext('2d');
-                let labels2 = _.map(res.data.items, item => moment(item['created_at']).format("DD일 HH시"))
+                let labels2 = _.map(res.data.items, item => moment(item['updated_at']).format("DD일 HH시"))
                 let data2 = {
                     labels: labels2,
                     datasets: [{
@@ -190,18 +190,18 @@
                     return
                 }
                 _.forEach(res.data.items, (item, i) => {
-                    let {app, app_name, created_at, downloads, icon_url,} = item
+                    let {app, app_name, updated_at, downloads, icon_url,} = item
                     let template = `<tr>
                         <td class=""><img src="${icon_url}" alt=${app} width="24"></td>
                         <td class="">${app_name}</td>
-                        <td class="">${moment(created_at).format("YY.MM.DD. HH:mm")}</td>
+                        <td class="">${moment(updated_at).format("YY.MM.DD. HH:mm")}</td>
                         <td class="">${downloads}</td>
                         </tr>`
                     $("#myLarge #downloadTableBody").prepend(template)
                 })
                 $("#canvas1").append(`<canvas id="myChart1" class="bg-white table bordered" width="600" height="200"></canvas>`)
                 let ctx1 = document.getElementById('myChart1').getContext('2d');
-                let labels1 = _.map(res.data.items, item => moment(item['created_at']).format("DD일 HH시"))
+                let labels1 = _.map(res.data.items, item => moment(item['updated_at']).format("DD일 HH시"))
                 let data1 = {
                     labels: labels1,
                     datasets: [{
