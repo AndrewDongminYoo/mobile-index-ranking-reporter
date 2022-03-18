@@ -32,6 +32,8 @@ def post_to_slack(text=None):
         body = json.dumps({"text": text})
         req = requests.post(url, headers={'Content-type': 'application/json'}, data=body)
         print(req.json())
+        print(req.status_code)
+        print(req.text)
         logger.debug(req.headers)
     except Exception as e:
         logger.error(e)
@@ -83,8 +85,7 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
         ones_app.save()
         rank_diff = ones_app.downloads - last_one.last().downloads if last_one.exists() else 0
         if rank_diff > 2000 and last_one.exists():
-            post_to_slack(
-                f"""{app_name} 앱 다운로드가 전일 대비 {format(rank_diff, ',')}건 증가했습니다.✈\n 
+            post_to_slack(f"""{app_name} 앱 다운로드가 전일 대비 {format(rank_diff, ',')}건 증가했습니다.✈\n 
             {format(last_one.last().downloads, ',')}건 -> {format(ones_app.downloads, ',')}건.""")
         return ones_app
     except AttributeError:
