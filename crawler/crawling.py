@@ -157,37 +157,34 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                 logger.info(item.app_name)
                 if item.market_appid in following:
                     post_to_slack(item.market_appid)
-                    last_one = TrackingApps.objects.order_by("id").filter(
-                        market_appid=app.market_appid,
-                        deal_type=item.deal_type,
+                    last_one = TrackingApps.objects.filter(
+                        market_appid=item.market_appid,
                         market=item.market,
                         chart_type=item.chart_type,
                         app_name=item.app_name,
-                    )
+                    ).last()
                     tracking = TrackingApps(
-                        following=Following.objects.filter(market_appid=app.market_appid).first(),
+                        following=Following.objects.filter(market_appid=item.market_appid).first(),
                         app=app, date=date,
                         deal_type=item.deal_type,
                         rank=item.rank,
                         market=item.market,
                         app_name=item.app_name,
-                        icon_url=app.icon_url,
+                        icon_url=item.icon_url,
                         chart_type=item.chart_type,
                         market_appid=app.market_appid,
                     )
                     tracking.save()
-                    if last_one.exists():
-                        last_one = last_one.last()
-                        rank_diff = tracking.rank - last_one.rank
-                        market_string = item.get_market_display()
-                        if rank_diff < 0:
-                            print(f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
-                            logger.debug(f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
-                            post_to_slack(f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
-                        if rank_diff > 0:
-                            print(f"순위 하락: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
-                            logger.debug(f"순위 하락: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
-                            post_to_slack(f"순위 하락: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                    rank_diff = tracking.rank - last_one.rank if last_one else 0
+                    market_string = item.get_market_display()
+                    if rank_diff < 0:
+                        print(f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                        logger.debug(f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                        post_to_slack(f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                    if rank_diff > 0:
+                        print(f"순위 하락: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                        logger.debug(f"순위 하락: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                        post_to_slack(f"순위 하락: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
 
 
 def following_one_crawl():
