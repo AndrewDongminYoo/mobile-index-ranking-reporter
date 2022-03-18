@@ -178,15 +178,13 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                         rank_diff = tracking.rank - last_one.rank
                         market_string = item.get_market_display()
                         if rank_diff < -2:
-                            print(
-                                f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
-                            post_to_slack(
-                                f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                            print(f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                            logger.debug(f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                            post_to_slack(f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
                         if rank_diff > 2:
-                            print(
-                                f"순위 하락: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
-                            post_to_slack(
-                                f"순위 하락: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                            print(f"순위 하락: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                            logger.debug(f"순위 하락: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                            post_to_slack(f"순위 하락: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
 
 
 def following_one_crawl():
