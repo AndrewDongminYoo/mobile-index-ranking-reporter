@@ -4,7 +4,6 @@ import sys
 import datetime
 import json
 from datetime import timedelta
-from slacker import Slacker
 
 sys.path.append('/home/ubuntu/app-rank/ranker')
 os.environ.setdefault("PYTHONUNBUFFERED;", "1")
@@ -30,10 +29,9 @@ def post_to_slack(text=None):
     try:
         url = settings.SLACK_WEBHOOK_URL
         body = json.dumps({"text": text})
-        req = requests.post(url, headers={'Content-type': 'application/json'}, data=body)
+        req = requests.post(url, headers={'Content-Type': 'application/json'}, data=body)
         import time
         time.sleep(0.5)
-        print(req.json())
         print(req.status_code)
         print(req.text)
         logger.debug(req.headers)
@@ -117,7 +115,6 @@ def create_app(app_data: dict):
 
 
 def crawl_app_store_rank(term: str, market: str, game_or_app: str):
-    post_to_slack("크롤링 시작")
     url = f'https://proxy-insight.mobileindex.com/chart/{term}'  # "realtime_rank_v2", "global_rank_v2"
     data = {
         "market": "all",  # "all", "google"
@@ -158,12 +155,12 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                 logger.info(item.app_name)
                 if app.market_appid in following:
                     last_one = TrackingApps.objects.filter(
-                        market_appid=item.market_appid,
+                        market_appid=app.market_appid,
                         deal_type=item.deal_type,
                         market=item.market,
                         chart_type=item.chart_type,
                         app_name=item.app_name,
-                    )
+                    ).order_by("id")
                     tracking = TrackingApps(
                         following=Following.objects.filter(market_appid=app.market_appid).first(),
                         app=app, date=date,
@@ -176,18 +173,20 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                         market_appid=app.market_appid,
                     )
                     tracking.save()
-                    rank_diff = (tracking.rank - last_one.last().rank) if last_one.exists() else 0
-                    market_string = item.get_market_display()
-                    if last_one.exists() and rank_diff < -2:
-                        print(
-                            f"순위 상승: {item.app_name} {market_string} {last_one.last().rank}위 -> {item.rank}위")
-                        post_to_slack(
-                            f"순위 상승: {item.app_name} {market_string} {last_one.last().rank}위 -> {item.rank}위")
-                    if last_one.exists() and rank_diff > 2:
-                        print(
-                            f"순위 하락: {item.app_name} {market_string} {last_one.last().rank}위 -> {item.rank}위")
-                        post_to_slack(
-                            f"순위 하락: {item.app_name} {market_string} {last_one.last().rank}위 -> {item.rank}위")
+                    if last_one.exists():
+                        last_one = last_one.last()
+                        rank_diff = tracking.rank - last_one.rank
+                        market_string = item.get_market_display()
+                        if rank_diff < -2:
+                            print(
+                                f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                            post_to_slack(
+                                f"순위 상승: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                        if rank_diff > 2:
+                            print(
+                                f"순위 하락: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
+                            post_to_slack(
+                                f"순위 하락: {item.app_name} {market_string} {last_one.rank}위 -> {item.rank}위")
 
 
 def following_one_crawl():
@@ -242,4 +241,4 @@ def good_deep_night_twelve_ten_daily():
 
 
 if __name__ == '__main__':
-    post_to_slack("크롤러 알람 파업 상태")
+    crawl_app_store_rank("realtime_rank_v2", "all", "game")
