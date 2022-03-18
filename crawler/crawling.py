@@ -115,6 +115,7 @@ def create_app(app_data: dict):
 
 
 def crawl_app_store_rank(term: str, market: str, game_or_app: str):
+    post_to_slack("`hello`")
     url = f'https://proxy-insight.mobileindex.com/chart/{term}'  # "realtime_rank_v2", "global_rank_v2"
     data = {
         "market": "all",  # "all", "google"
@@ -154,13 +155,13 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                 print(item.app_name)
                 logger.info(item.app_name)
                 if app.market_appid in following:
-                    last_one = TrackingApps.objects.filter(
+                    last_one = TrackingApps.objects.order_by("id").filter(
                         market_appid=app.market_appid,
                         deal_type=item.deal_type,
                         market=item.market,
                         chart_type=item.chart_type,
                         app_name=item.app_name,
-                    ).order_by("id")
+                    )
                     tracking = TrackingApps(
                         following=Following.objects.filter(market_appid=app.market_appid).first(),
                         app=app, date=date,
