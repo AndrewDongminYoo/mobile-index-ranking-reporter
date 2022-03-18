@@ -155,7 +155,6 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                 print(item.app_name)
                 logger.info(item.app_name)
                 if item.market_appid in following:
-                    post_to_slack(item.market_appid)
                     last_one = TrackingApps.objects.filter(
                         market_appid=item.market_appid,
                         market=item.market,
