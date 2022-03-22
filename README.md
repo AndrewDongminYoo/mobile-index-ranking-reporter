@@ -27,9 +27,9 @@ requests==2.27.1
 
 ## Installation
 
-A step by step list of commands / guide that informs how to install an instance of this project.  
+A step by step list of commands / guide that informs how to install an instance of this project.
 
-`git clone https://github.com/AndrewDongminYoo/ranker.git`
+`git clone https://github.com/AndrewDongminYoo/mobile-market-ranker.git`
 
 `pip install -r requirements.txt`
 

@@ -193,12 +193,12 @@ def following_one_crawl():
 
 
 def get_highest_rank_of_realtime_ranks_today():
-    pres = (timezone.now()).strftime("%Y%m%d") + "1500"
-    last = (timezone.now() - timedelta(days=1)).strftime("%Y%m%d") + "1500"
-    today = TimeIndex.objects.get_or_create(date=pres)[0]
+    pres = (timezone.now() + timedelta(days=1)).strftime("%Y%m%d") + "0000"
+    last = (timezone.now()).strftime("%Y%m%d") + "0000"
+    date_today = TimeIndex.objects.get_or_create(date=pres)[0]
     yesterday = TimeIndex.objects.get_or_create(date=last)[0]
     rank_set = Ranked.objects \
-        .filter(date__date__gte=yesterday.date, date__date__lte=today.date) \
+        .filter(date__date__gte=yesterday.date, date__date__lte=date_today.date) \
         .filter(market__in=["apple", "google"])
     for following in Following.objects.filter(is_active=True, market__in=["apple", "google"]).all():
         try:
@@ -216,7 +216,7 @@ def get_highest_rank_of_realtime_ranks_today():
                 market_appid=market_appid,
                 app=App.objects.get(market_appid=market_appid),
                 following=following,
-                date=today,
+                date=date_today,
             )[0]
             new_app.save()
         except Exception as e:
