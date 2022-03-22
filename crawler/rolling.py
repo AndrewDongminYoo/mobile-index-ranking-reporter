@@ -3,13 +3,13 @@ import os
 import sys
 from datetime import timedelta
 
-sys.path.append('/home/ubuntu/app-rank/ranker')
+sys.path.append('/home/ubuntu/app-rank')
 os.environ.setdefault("PYTHONUNBUFFERED;", "1")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 
-if 'setup' in dir(django):
-    django.setup()
+django.setup()
+
 import requests
 from bs4 import BeautifulSoup
 from logging import getLogger
@@ -250,10 +250,10 @@ def ive_korea_internal_api():
                     )
                     following.save()
                     print(following)
-                except DataError:
-                    print(market_appid)
-                except IntegrityError:
-                    print(market_appid)
+                except DataError as e:
+                    print(market_appid, e)
+                except IntegrityError as e:
+                    print(market_appid, e)
     for app in Following.objects.filter(is_active=True, expire_date__lt=timezone.now()):
         app.is_active = False
         app.save()
