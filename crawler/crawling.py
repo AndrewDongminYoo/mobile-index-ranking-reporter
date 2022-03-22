@@ -72,8 +72,7 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
             market_appid=app.market_appid,
         ).last()
         ones_app = OneStoreDL(
-            date=date,
-            app=app,
+            date=date, app=app,
             market_appid=app.market_appid,
             downloads=download,
             genre=genre,
@@ -200,7 +199,7 @@ def get_highest_rank_of_realtime_ranks_today():
     yesterday = TimeIndex.objects.get_or_create(date=last)[0]
     rank_set = Ranked.objects \
         .filter(date__date__gte=yesterday.date, date__date__lte=today.date) \
-        .filter(Q(market="apple") | Q(market="google"))
+        .filter(market__in=["apple", "google"])
     for following in Following.objects.filter(is_active=True, market__in=["apple", "google"]).all():
         try:
             market_appid = following.market_appid
@@ -214,7 +213,7 @@ def get_highest_rank_of_realtime_ranks_today():
                 chart_type=first.get('chart_type'),
                 app_name=first.get('app_name'),
                 icon_url=first.get('icon_url'),
-                market_appid=first.market_appid,
+                market_appid=market_appid,
                 app=App.objects.get(market_appid=market_appid),
                 following=following,
                 date=today,
