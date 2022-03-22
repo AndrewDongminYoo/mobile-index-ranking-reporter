@@ -85,8 +85,9 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
         ones_app.save()
         rank_diff = ones_app.downloads - last_one.downloads if last_one else 0
         if rank_diff > 2000:
-            post_to_slack(f"""{app_name} 앱 다운로드가 전일 대비 {format(rank_diff, ',')}건 증가했습니다.✈\n 
-            {format(last_one.downloads, ',')}건 -> {format(ones_app.downloads, ',')}건.""")
+            msg = f"{app_name} 앱 다운로드가 전일 대비 {format(rank_diff, ',')}건 증가했습니다.✈\n" \
+                  + f"`{format(last_one.downloads, ',')}건` -> `{format(ones_app.downloads, ',')}건`"
+            post_to_slack(msg)
         return ones_app
     except AttributeError:
         print("AttributeError")
@@ -174,11 +175,11 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str):
                     tracking.save()
                     rank_diff = tracking.rank - last_one.rank if last_one else 0
                     market_string = item.get_market_display()
-                    if rank_diff < -2:
+                    if rank_diff < -1:
                         print(f"순위 상승🚀: {item.app_name} {market_string} `{last_one.rank}위` → `{item.rank}위`")
                         logger.debug(f"순위 상승🚀: {item.app_name} {market_string} `{last_one.rank}위` → `{item.rank}위`")
                         post_to_slack(f" 순위 상승🚀: {item.app_name} {market_string} `{last_one.rank}위` → `{item.rank}위`")
-                    if rank_diff > 2:
+                    if rank_diff > 1:
                         print(f"순위 하락🛬: {item.app_name} {market_string} `{last_one.rank}위` → `{item.rank}위`")
                         logger.debug(f"순위 하락🛬: {item.app_name} {market_string} `{last_one.rank}위` → `{item.rank}위`")
                         post_to_slack(f" 순위 하락🛬: {item.app_name} {market_string} `{last_one.rank}위` → `{item.rank}위`")
