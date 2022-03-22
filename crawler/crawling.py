@@ -5,7 +5,7 @@ import datetime
 import json
 from datetime import timedelta
 
-sys.path.append('/home/ubuntu/app-rank/ranker')
+sys.path.append('/home/ubuntu/app-rank')
 os.environ.setdefault("PYTHONUNBUFFERED;", "1")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
