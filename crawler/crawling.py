@@ -212,6 +212,7 @@ def get_highest_rank_of_realtime_ranks_today():
                 deal_type='market_rank',
                 chart_type=first.get('chart_type'),
                 app_name=first.get('app_name'),
+                icon_url=first.get('icon_url'),
                 market_appid=first.market_appid,
                 app=App.objects.get(market_appid=app.market_appid),
                 following=app,
