@@ -201,9 +201,10 @@ def get_highest_rank_of_realtime_ranks_today():
     rank_set = Ranked.objects \
         .filter(date__date__gte=yesterday.date, date__date__lte=today.date) \
         .filter(Q(market="apple") | Q(market="google"))
-    for app in Following.objects.filter(is_active=True, market__in=["apple", "google"]).all():
+    for following in Following.objects.filter(is_active=True, market__in=["apple", "google"]).all():
         try:
-            first = rank_set.filter(market_appid=app.market_appid) \
+            market_appid = following.market_appid
+            first = rank_set.filter(market_appid=market_appid) \
                 .values('market_appid', 'app_name', 'market', 'app_type', 'chart_type', 'icon_url') \
                 .annotate(highest_rank=Min('rank')).first()
             new_app = TrackingApps.objects.update_or_create(
@@ -214,8 +215,8 @@ def get_highest_rank_of_realtime_ranks_today():
                 app_name=first.get('app_name'),
                 icon_url=first.get('icon_url'),
                 market_appid=first.market_appid,
-                app=App.objects.get(market_appid=app.market_appid),
-                following=app,
+                app=App.objects.get(market_appid=market_appid),
+                following=following,
                 date=today,
             )[0]
             new_app.save()
