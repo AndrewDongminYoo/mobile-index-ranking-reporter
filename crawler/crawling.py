@@ -193,18 +193,18 @@ def following_one_crawl():
 
 
 def get_highest_rank_of_realtime_ranks_today():
-    pres = (timezone.now() + timedelta(days=1)).strftime("%Y%m%d") + "0000"
-    date_today = TimeIndex.objects.get_or_create(date=pres)[0]
+    today = (timezone.now() + timedelta(days=1)).strftime("%Y%m%d") + "0000"
+    date_today = TimeIndex.objects.get_or_create(date=today)[0]
     rank_set = Ranked.objects \
-        .filter(created_at__gte=(timezone.now() - timedelta(days=1)),
-                created_at__lte=(timezone.now())) \
+        .filter(created_at__gte=timezone.now() - timedelta(days=1),
+                created_at__lte=timezone.now()) \
         .filter(market__in=["apple", "google"])
     for following in Following.objects.filter(is_active=True, market__in=["apple", "google"]).all():
         try:
             market_appid = following.market_appid
             first = rank_set.filter(market_appid=market_appid) \
                 .values('market_appid', 'app_name', 'market', 'app_type', 'chart_type', 'icon_url') \
-                .annotate(highest_rank=Min('rank')).first()
+                .annotate(highest_rank=Min('rank'))[0]
             if first:
                 new_app = TrackingApps.objects.update_or_create(
                     market=first.get('market'),
