@@ -214,11 +214,13 @@ def get_highest_rank_of_realtime_ranks_today():
                 app_name=first.get('app_name'),
                 market_appid=first.market_appid,
                 app=App.objects.get(market_appid=app.market_appid),
+                following=app,
                 date=today,
             )[0]
             new_app.save()
         except Exception as e:
             logger.debug(e)
+            print(e)
 
 
 def every_o_clock_hourly():
