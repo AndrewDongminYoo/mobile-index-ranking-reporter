@@ -209,10 +209,10 @@ def get_highest_rank_of_realtime_ranks_today():
             new_app = TrackingApps.objects.update_or_create(
                 market=first.get('market'),
                 rank=first.get('highest_rank'),
-                deal_type='market_rank',
                 chart_type=first.get('chart_type'),
                 app_name=first.get('app_name'),
                 icon_url=first.get('icon_url'),
+                deal_type='market_rank',
                 market_appid=market_appid,
                 app=App.objects.get(market_appid=market_appid),
                 following=following,
