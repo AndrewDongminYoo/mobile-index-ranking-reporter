@@ -242,4 +242,4 @@ def good_deep_night_twelve_ten_daily():
 
 
 if __name__ == '__main__':
-    crawl_app_store_rank("realtime_rank_v2", "all", "game")
+    every_o_clock_hourly()
