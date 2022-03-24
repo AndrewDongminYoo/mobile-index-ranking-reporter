@@ -544,10 +544,8 @@ def upto_400th_google_play_apps_contact():
 def good_morning_half_past_ten_daily():
     ive_korea_internal_api()
     read_information_of_google_app()
-    read_information_of_one_store_app()
-    read_information_of_apple_store_app()
 
 
 if __name__ == '__main__':
     good_morning_half_past_ten_daily()
-    # ive_korea_internal_api()
+    upto_400th_google_play_apps_contact()
