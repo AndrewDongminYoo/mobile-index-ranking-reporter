@@ -4,7 +4,7 @@ import sys
 from datetime import timedelta
 
 sys.path.append('/home/ubuntu/app-rank')
-os.environ.setdefault("PYTHONUNBUFFERED;", "1")
+os.environ.setdefault("PYTHON" + "UNBUFFERED;", "1")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 
@@ -19,7 +19,9 @@ from django.db import DataError, IntegrityError
 from crawler.models import Ranked, Following, TrackingApps, App, OneStoreDL, AppInformation
 
 logger = getLogger(__name__)
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36"
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " + \
+             "AppleWebKit/537.36 (KHTML, like Gecko) " + \
+             "Chrome/98.0.4758.80 Safari/537.36 "
 headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
 
 GOOGLE_PREFIX = "https://play.google.com/store/apps/details?id="
@@ -30,7 +32,6 @@ ONE_PREFIX = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId="
 def set_apps_url_for_all():
     """
     등록되어 있는 모든 애플리케이션의 url을 설정한다.
-    :return: None
     """
 
     def correct_path(url):
@@ -63,7 +64,6 @@ def set_apps_url_for_all():
 def get_developers_contact_number():
     """
     앱 개발자의 이메일과 연락처를 추출한다.
-    :return: None
     """
     import re
     for app in App.objects.filter(app_info=None).all():
@@ -119,7 +119,6 @@ def get_developers_contact_number():
 def application_deduplicate():
     """
     마켓 아이디가 중복된 앱은 모두 제거한다.
-    :return: None
     """
     array = dict()
     for app in App.objects.all().order_by("id"):
@@ -142,7 +141,6 @@ def application_deduplicate():
 def application_information_deduplicate():
     """
     마켓 아이디가 중복된 앱은 모두 제거한다.
-    :return: None
     """
     dicto = dict()
     for app_info in AppInformation.objects.all().order_by("-id"):
@@ -163,7 +161,6 @@ def application_information_deduplicate():
 def edit_apps_market():
     """
     마켓 아이디를 보고 앱의 마켓을 추측 및 수정한다.
-    :return: None
     """
     for app in App.objects.all().filter(market=""):
         if app.market_appid.startswith("0000"):
@@ -178,7 +175,6 @@ def edit_apps_market():
 def tracked_app_dedupe():
     """
     추적 결과 중 중복된 앱을 제거한다.
-    :return: None
     """
     app_list = []
     for ranked in TrackingApps.objects.all():
@@ -195,7 +191,6 @@ def tracked_app_dedupe():
 def ive_korea_internal_api():
     """
     아이브코리아 내부 API를 호출해 앱 정보를 등록한다.
-    :return: None
     """
     API_KEY = 'wkoo4ko0g808s0kkossoo4o8ow0kwwg88gw004sg'
     url = f'http://dev.i-screen.kr/channel/rank_ads_list?apikey={API_KEY}'
@@ -262,8 +257,6 @@ def ive_korea_internal_api():
 def get_app_history(app: Ranked):
     """
     특정 앱의 추적 결과 히스토리를 가져온다.(내부결과아님. 모바일인덱스)
-    :param app: 랭킹에 추적된 앱
-    :return: 해당 앱의 추적 결과 히스토리
     """
     url = 'https://proxy-insight.mobileindex.com/chart/market_rank_history'  # "realtime_rank_v2", "global_rank_v2"
     data = {
@@ -326,7 +319,6 @@ def get_app_category():
 def get_app_publisher_name():
     """
     앱의 퍼블리셔를 가져와 세팅한다.
-    :return: None
     """
     url = 'https://proxy-insight.mobileindex.com/common/app_info'
     for app in App.objects.all().filter(app_info=None):
@@ -481,7 +473,6 @@ def read_information_of_one_store_app():
 
 def read_information_of_apple_store_app():
     for app in App.objects.filter(market="apple", app_url__isnull=False, app_info=None):
-
         req = requests.get(app.app_url, headers=headers)
         soup = BeautifulSoup(req.text, "html.parser")
         try:
@@ -519,12 +510,8 @@ def upto_400th_google_play_apps_contact():
     req = requests.post(url, headers=headers, data=body)
     res = req.json()
     for data in res["data"]:
-        market = data['market_name']
-        app_name = data['app_name']
-        icon_url = data['icon_url']
-        market_appid = data['market_appid']
-        if market == "google":
-            app_url = GOOGLE_PREFIX + market_appid
+        if data['market_name'] == "google":
+            app_url = GOOGLE_PREFIX + data['market_appid']
             title, publisher_name, category, email = get_google_apps_data_from_soup(app_url)
             app_info = AppInformation.objects.update_or_create(
                 google_url=app_url,
@@ -533,16 +520,16 @@ def upto_400th_google_play_apps_contact():
             app_info.email = email
             app_info.save()
             app = App.objects.update_or_create(
-                market_appid=market_appid,
+                market_appid=data['market_appid'],
             )[0]
-            app.app_name = app_name
-            app.icon_url = icon_url
-            app.market = market
+            app.app_name = data['app_name']
+            app.icon_url = data['icon_url']
+            app.market = data['market_name']
             app.app_url = app_url
             app.app_info = app_info
             app.save()
             mobile_index_app = "https://proxy-insight.mobileindex.com/app/market_info"
-            req = requests.post(mobile_index_app, headers=headers, data={"packageName": market_appid})
+            req = requests.post(mobile_index_app, headers=headers, data={"packageName": data['market_appid']})
             if req.status_code == 200:
                 response = req.json()
                 data = response.get("data")
@@ -559,9 +546,8 @@ def good_morning_half_past_ten_daily():
     read_information_of_google_app()
     read_information_of_one_store_app()
     read_information_of_apple_store_app()
-    upto_400th_google_play_apps_contact()
 
 
 if __name__ == '__main__':
-    upto_400th_google_play_apps_contact()
+    good_morning_half_past_ten_daily()
     # ive_korea_internal_api()
