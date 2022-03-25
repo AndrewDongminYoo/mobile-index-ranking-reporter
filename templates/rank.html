@@ -87,15 +87,27 @@
                     $("#trackingTable").empty();
                     return
                 }
+                let temp_rank = 100;
+                let up = false
                 _.forEach(res.data.items, (item, i) => {
                     let {app, app_name, chart_type, updated_at, icon_url, market, rank} = item
+                    if (temp_rank === rank) return
+                    else {
+                        if (temp_rank > rank) {
+                            temp_rank = rank
+                            up = true;
+                        } else if (temp_rank < rank) {
+                            temp_rank = rank
+                            up = false;
+                        }
+                    }
                     let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
                         <td class="center">${app_name}</td>
                         <td class="center">${market}</td>
                         <td class="center">${chart_type}</td>
-                        <td class="center">${moment(updated_at).format("MM/DD HH시")}</td>
-                        <td class="center">${rank} 위</td></tr>`
+                        <td class="center">${moment(updated_at).format("MM월DD일 HH시")}</td>
+                        <td class="center">${rank} 위 ${up ? '🚀' : "🛬"}</td></tr>`
                     $("#myLarge #trackingTableBody").prepend(template)
                 })
                 $("#canvas2").append(`<canvas id="myChart2" class="bg-white table bordered" width="600" height="200"></canvas>`)
@@ -138,15 +150,27 @@
                     $("#dailyRankTable").empty();
                     return
                 }
+                let temp_rank = 100
+                let up = false
                 _.forEach(res.data.items, (item, i) => {
                     let {app, app_name, chart_type, date, icon_url, market, rank} = item
+                    if (temp_rank === rank) return
+                    else {
+                        if (temp_rank > rank) {
+                            temp_rank = rank
+                            up = true;
+                        } else if (temp_rank < rank) {
+                            temp_rank = rank
+                            up = false;
+                        }
+                    }
                     let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
                         <td class="center">${app_name}</td>
                         <td class="center">${market}</td>
                         <td class="center">${chart_type}</td>
                         <td class="center">${moment(date['date'], "YYYYMMDDHHmm").format("MM월 DD일")}</td>
-                        <td class="center">${rank} 위</td></tr>`
+                        <td class="center">${rank} 위 ${up ? "🚀" : "📉"}</td></tr>`
                     $("#myLarge #dailyRankTableBody").prepend(template)
                 })
                 $("#canvas3").append(`<canvas id="myChart3" class="bg-white table bordered" width="600" height="200"></canvas>`)
@@ -156,8 +180,8 @@
                     labels: labels3,
                     datasets: [{
                         label: "일간 랭킹",
-                        backgroundColor: 'rgb(255, 99, 132)',
-                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgb(123,100,255)',
+                        borderColor: 'rgb(123,100,255)',
                         data: _.map(res.data.items, item => item["rank"])
                     }]
                 }
