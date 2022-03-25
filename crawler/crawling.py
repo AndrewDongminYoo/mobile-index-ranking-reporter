@@ -6,6 +6,7 @@ import json
 import datetime
 from datetime import timedelta
 
+
 sys.path.append('/home/ubuntu/app-rank')
 os.environ.setdefault("PYTHON" + "UNBUFFERED", "1")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
@@ -18,6 +19,8 @@ if 'setup' in dir(django):
 import requests
 from bs4 import BeautifulSoup
 from django.utils import timezone
+from backports.zoneinfo import ZoneInfo
+
 from logging import getLogger
 from django.db.models import Min, Q
 from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex, OneStoreDL
@@ -185,7 +188,7 @@ def following_one_crawl():
 
 
 def get_highest_rank_of_realtime_ranks_today():
-    today = timezone.now().strftime("%Y%m%d") + "2300"
+    today = timezone.localdate(timezone=ZoneInfo(key='Asia/Seoul')).strftime("%Y%m%d") + "2300"
     date_today = TimeIndex.objects.get_or_create(date=today)[0]
     rank_set = Ranked.objects \
         .filter(created_at__gte=timezone.now() - timedelta(days=1),
