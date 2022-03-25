@@ -15,7 +15,7 @@ RankedSchema = create_schema(Ranked)
 ApplicationSchema = create_schema(App)
 FollowingSchema = create_schema(Following)
 OneStoreSchema = create_schema(OneStoreDL)
-TrackingSchema = create_schema(TrackingApps)
+TrackingSchema = create_schema(TrackingApps, depth=1)
 
 
 class EmptySchema(Schema):
