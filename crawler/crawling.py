@@ -192,8 +192,8 @@ def get_highest_rank_of_realtime_ranks_today():
     date_today = TimeIndex.objects.get_or_create(date=today)[0]
     rank_set = Ranked.objects \
         .filter(created_at__gte=timezone.now() - timedelta(days=1),
-                created_at__lte=timezone.now()) \
-        .filter(market__in=["apple", "google"],
+                created_at__lte=timezone.now(),
+                market__in=["apple", "google"],
                 deal_type="realtime_rank")
     for following in Following.objects.filter(is_active=True, market__in=["apple", "google"]).all():
         try:

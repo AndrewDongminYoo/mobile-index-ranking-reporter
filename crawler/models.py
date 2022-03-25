@@ -53,7 +53,7 @@ class App(models.Model):
 
     app_name = models.CharField(max_length=80, null=True, verbose_name="앱 이름")
     icon_url = models.URLField(max_length=200, null=True, verbose_name="아이콘 이미지")
-    market_appid = models.CharField(max_length=80, verbose_name="스토어 아이디")
+    market_appid = models.CharField(max_length=80, unique=True, verbose_name="스토어 아이디")
     market = models.CharField(max_length=16, null=True, verbose_name="마켓명")
     app_url = models.URLField(max_length=200, null=True, verbose_name="앱 주소")
     app_info = models.ForeignKey(AppInformation, null=True, on_delete=models.SET_NULL, verbose_name="앱 정보")
