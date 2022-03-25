@@ -169,7 +169,7 @@
                         <td class="center">${market}</td>
                         <td class="center">${chart_type}</td>
                         <td class="center">${moment(date['date'], "YYYYMMDDHHmm").format("MM월 DD일")}</td>
-                        <td class="center">${rank} 위 ${up ? "🚀" : "📉"}</td></tr>`
+                        <td class="center">${rank} 위 ${up ? "📈" : "📉"}</td></tr>`
                     $("#myLarge #dailyRankTableBody").prepend(template)
                 })
                 $("#canvas3").append(`<canvas id="myChart3" class="bg-white table bordered" width="600" height="200"></canvas>`)

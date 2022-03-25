@@ -26,7 +26,8 @@ from django.db.models import Min, Q
 from crawler.models import Ranked, Following, TrackingApps, App, TimeIndex, OneStoreDL
 
 logger = getLogger(__name__)
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36"
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
+             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36 "
 headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
 
 
