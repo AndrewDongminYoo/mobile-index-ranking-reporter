@@ -87,7 +87,7 @@
                     $("#trackingTable").empty();
                     return
                 }
-                let temp_rank = 100;
+                let temp_rank = 100
                 let up = false
                 _.forEach(res.data.items, (item, i) => {
                     let {app, app_name, chart_type, updated_at, icon_url, market, rank} = item
@@ -154,15 +154,14 @@
                 let up = false
                 _.forEach(res.data.items, (item, i) => {
                     let {app, app_name, chart_type, date, icon_url, market, rank} = item
-                    if (temp_rank === rank) return
-                    else {
-                        if (temp_rank > rank) {
-                            temp_rank = rank
-                            up = true;
-                        } else if (temp_rank < rank) {
-                            temp_rank = rank
-                            up = false;
-                        }
+                    if (temp_rank === rank) {
+                        up = false
+                    } else if (temp_rank > rank) {
+                        temp_rank = rank
+                        up = true
+                    } else if (temp_rank < rank) {
+                        temp_rank = rank
+                        up = false
                     }
                     let template = `<tr>
                         <td class="center"><img src="${icon_url}" alt=${app} width="24"></td>
