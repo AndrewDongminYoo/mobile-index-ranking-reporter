@@ -185,7 +185,7 @@ def following_one_crawl():
 
 
 def get_highest_rank_of_realtime_ranks_today():
-    today = (timezone.now() + timedelta(days=1)).strftime("%Y%m%d") + "0000"
+    today = timezone.now().strftime("%Y%m%d") + "2300"
     date_today = TimeIndex.objects.get_or_create(date=today)[0]
     rank_set = Ranked.objects \
         .filter(created_at__gte=timezone.now() - timedelta(days=1),
