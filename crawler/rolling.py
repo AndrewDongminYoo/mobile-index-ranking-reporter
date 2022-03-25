@@ -66,7 +66,7 @@ def get_developers_contact_number():
     앱 개발자의 이메일과 연락처를 추출한다.
     """
     import re
-    for app in App.objects.filter(app_info=None).all():
+    for app in App.objects.filter(app_info=None, market="google").all():
         url = 'https://proxy-insight.mobileindex.com/app/market_info'
         body = {
             "packageName": app.market_appid,
@@ -74,7 +74,8 @@ def get_developers_contact_number():
         req = requests.post(url, body, headers=headers)
         if req.status_code == 200:
             response = req.json()
-            try:
+            print(response)
+            if response['status']:
                 data = response.get("data").get("market_info")
                 new_app_info = AppInformation(), True
                 if app.market == "google":
@@ -110,10 +111,6 @@ def get_developers_contact_number():
                 new_app_info.save()
                 app.app_info = new_app_info
                 app.save()
-            except KeyError:
-                print(app.id, "key")
-            except AttributeError:
-                pass
 
 
 def application_deduplicate():
@@ -297,19 +294,22 @@ def get_app_category():
             app.icon_url = icon_url
             if app_name:
                 app.app_name = app_name
+            if icon_url:
+                app.icon_url = icon_url
             if app.app_info:
                 app_info = app.app_info
             else:
-                app_info = AppInformation.objects.filter(google_url=GOOGLE_PREFIX + app.market_appid)
+                app_info = AppInformation.objects.get_or_create(google_url=GOOGLE_PREFIX + app.market_appid)[0]
+                app.app_info = app_info
             if main_category and sub_category:
                 if main_category != "null" and sub_category != "null":
                     app_info.category_main = main_category
                     app_info.category_sub = sub_category
-            if publisher_name and icon_url:
+            if publisher_name:
                 app_info.publisher_name = publisher_name
-                print(publisher_name, icon_url)
-            if apple_id and one_id:
+            if apple_id:
                 app_info.apple_url = APPLE_PREFIX + apple_id
+            if one_id:
                 app_info.one_url = ONE_PREFIX + one_id
             app_info.save()
             app.save()
@@ -547,5 +547,7 @@ def good_morning_half_past_ten_daily():
 
 
 if __name__ == '__main__':
-    good_morning_half_past_ten_daily()
-    upto_400th_google_play_apps_contact()
+    get_developers_contact_number()
+    get_app_category()
+    # good_morning_half_past_ten_daily()
+    # upto_400th_google_play_apps_contact()

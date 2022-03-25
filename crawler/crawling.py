@@ -193,7 +193,8 @@ def get_highest_rank_of_realtime_ranks_today():
     rank_set = Ranked.objects \
         .filter(created_at__gte=timezone.now() - timedelta(days=1),
                 created_at__lte=timezone.now()) \
-        .filter(market__in=["apple", "google"])
+        .filter(market__in=["apple", "google"],
+                deal_type="realtime_rank")
     for following in Following.objects.filter(is_active=True, market__in=["apple", "google"]).all():
         try:
             market_appid = following.market_appid
