@@ -4,7 +4,7 @@ import sys
 from datetime import timedelta
 
 sys.path.append('/home/ubuntu/app-rank')
-os.environ.setdefault("PYTHON" + "UNBUFFERED;", "1")
+os.environ.setdefault("PYTHON" + "UNBUFFERED", "1")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 

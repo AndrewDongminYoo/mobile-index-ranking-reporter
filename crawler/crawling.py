@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import datetime
+import time
 import json
+import datetime
 from datetime import timedelta
 
 sys.path.append('/home/ubuntu/app-rank')
-os.environ.setdefault("PYTHONUNBUFFERED;", "1")
+os.environ.setdefault("PYTHON" + "UNBUFFERED", "1")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
 import django
 
 from ranker import settings
+
 if 'setup' in dir(django):
     django.setup()
 import requests
@@ -26,22 +28,14 @@ headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
 
 
 def post_to_slack(text=None):
-    try:
-        url = settings.SLACK_WEBHOOK_URL
-        body = json.dumps({"text": text})
-        req = requests.post(url, headers={'Content-Type': 'application/json'}, data=body)
-        import time
-        time.sleep(0.5)
-        print(req.status_code)
-        print(req.text)
-        logger.debug(req.headers)
-    except Exception as e:
-        logger.error(e)
+    url = settings.SLACK_WEBHOOK_URL
+    requests.post(url, headers={'Content-Type': 'application/json'}, data=json.dumps({"text": text}))
+    time.sleep(0.5)
 
 
 def get_soup(market_id, back=True):
     one_url = "https://m.onestore.co.kr/mobilepoc/"
-    if back is True:
+    if back:
         one_url += f"web/apps/appsDetail/spec.omp?prodId={market_id}"
     else:
         one_url += f"apps/appsDetail.omp?prodId={market_id}"
@@ -93,9 +87,7 @@ def get_one_store_app_download_count(date: TimeIndex, app: App):
 
 
 def create_app(app_data: dict):
-    app = App.objects.get_or_create(
-        market_appid=app_data['market_appid'],
-    )[0]
+    app = App.objects.get_or_create(market_appid=app_data['market_appid'])[0]
     app.app_name = app_data.get('app_name')
     app.icon_url = app_data.get('icon_url')
     if app.app_info:
@@ -193,7 +185,7 @@ def following_one_crawl():
 
 
 def get_highest_rank_of_realtime_ranks_today():
-    today = timezone.localdate().strftime("%Y%m%d") + "2400"
+    today = (timezone.now() + timedelta(days=1)).strftime("%Y%m%d") + "0000"
     date_today = TimeIndex.objects.get_or_create(date=today)[0]
     rank_set = Ranked.objects \
         .filter(created_at__gte=timezone.now() - timedelta(days=1),
@@ -209,7 +201,6 @@ def get_highest_rank_of_realtime_ranks_today():
                 first = query[0]
                 new_app = TrackingApps.objects.update_or_create(
                     market=first.get('market'),
-                    rank=first.get('highest_rank'),
                     chart_type=first.get('chart_type'),
                     app_name=first.get('app_name'),
                     icon_url=first.get('icon_url'),
@@ -219,6 +210,7 @@ def get_highest_rank_of_realtime_ranks_today():
                     following=following,
                     date=date_today,
                 )[0]
+                new_app.rank = first.get('highest_rank')
                 new_app.save()
         except Exception as e:
             logger.debug(e)
