@@ -124,12 +124,13 @@ def show_details_of_downloads(request):
         .filter(market_appid=appid,
                 created_at__gte=time3).order_by("created_at")
 
-# @api.get("/down/last", response={200: OneStoreSchema, 204: EmptySchema}, tags=["index"])
-# def show_details_of_downloads_last(request):
-#     """앱 기준으로 원스토어 다운로드 수 리스트"""
-#     market_appid = request.GET.get("app")
-#     app = OneStoreDL.objects.filter(market_appid=market_appid).order_by("-created_at")
-#     if app.exists():
-#         return 200, app.first()
-#     else:
-#         return 204, ""
+
+@api.get("/down/last", response={200: OneStoreSchema, 204: EmptySchema}, tags=["index"])
+def show_details_of_downloads_last(request):
+    """앱 기준으로 원스토어 다운로드 수 리스트"""
+    market_appid = request.GET.get("app")
+    app = OneStoreDL.objects.filter(market_appid=market_appid).order_by("-created_at")
+    if app.exists():
+        return 200, app.first()
+    else:
+        return 204, ""
