@@ -95,7 +95,7 @@
         const searchInModal = () => {
             let query = $("#search-input").val()
             $("#modalTableBody").empty()
-            axios.post(`/v1/ranking?query=${query}`)
+            axios.post(`/v2/ranking?query=${query}`)
                 .then((res) => {
                     $("#staticBackdrop")?.modal("show")
                     _.forEach(res.data.items, (item, i) => {

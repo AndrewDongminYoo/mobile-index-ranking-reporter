@@ -239,4 +239,6 @@ def good_deep_night_twelve_ten_daily():
 
 
 if __name__ == '__main__':
+    good_afternoon_twelve_ten_daily()
+    good_deep_night_twelve_ten_daily()
     every_o_clock_hourly()

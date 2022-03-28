@@ -77,26 +77,34 @@ def show_details_of_daily_ranks(request):
                 chart_type="free")
 
 
-@api.post("/search", response=List[ApplicationSchema], tags=["index"])
+# one "POST"
+@api.post("/ranking", response=List[ApplicationSchema], tags=["ranking"])
 @paginate(LimitOffsetPagination)
-def search_apps_with_query(request):
-    """앱 이름 혹은 마켓 아이디 검색하기"""
-    query = request.POST.get('query')
-    return App.objects.filter(Q(app_name__search=query) | Q(market_appid__search=query)).all()
+def find_app_with_query(request, query):
+    query_set = App.objects.filter(Q(app_name__icontains=query) | Q(market_appid__icontains=query))
+    return query_set.order_by("app_name").all()
 
 
-@api.post("/follow/new", response={201: FollowingSchema, 200: FollowingSchema}, tags=["index"])
-def new_follow_register(request):
-    """새로운 팔로우할 앱 등록하기"""
-    app_data = request.POST
-    follow = Following.objects.get_or_create(
-        app_name=app_data.get('app_name'),
-        market_appid=app_data.get('market_appid') or app_data.get('package_name'),
-        is_active=True)
-    if follow[1]:
-        return 201, follow[0].save()
-    else:
-        return 200, follow[0]
+# @api.post("/search", response=List[ApplicationSchema], tags=["index"])
+# @paginate(LimitOffsetPagination)
+# def search_apps_with_query(request):
+#     """앱 이름 혹은 마켓 아이디 검색하기"""
+#     query = request.POST.get('query')
+#     return App.objects.filter(Q(app_name__search=query) | Q(market_appid__search=query)).all()
+
+
+# @api.post("/follow/new", response={201: FollowingSchema, 200: FollowingSchema}, tags=["index"])
+# def new_follow_register(request):
+#     """새로운 팔로우할 앱 등록하기"""
+#     app_data = request.POST
+#     follow = Following.objects.get_or_create(
+#         app_name=app_data.get('app_name'),
+#         market_appid=app_data.get('market_appid') or app_data.get('package_name'),
+#         is_active=True)
+#     if follow[1]:
+#         return 201, follow[0].save()
+#     else:
+#         return 200, follow[0]
 
 
 @api.get("/follow/list", response=List[FollowingSchema], tags=["index"])
@@ -116,13 +124,12 @@ def show_details_of_downloads(request):
         .filter(market_appid=appid,
                 created_at__gte=time3).order_by("created_at")
 
-
-@api.get("/down/last", response={200: OneStoreSchema, 204: EmptySchema}, tags=["index"])
-def show_details_of_downloads_last(request):
-    """앱 기준으로 원스토어 다운로드 수 리스트"""
-    market_appid = request.GET.get("app")
-    app = OneStoreDL.objects.filter(market_appid=market_appid).order_by("-created_at")
-    if app.exists():
-        return 200, app.first()
-    else:
-        return 204, ""
+# @api.get("/down/last", response={200: OneStoreSchema, 204: EmptySchema}, tags=["index"])
+# def show_details_of_downloads_last(request):
+#     """앱 기준으로 원스토어 다운로드 수 리스트"""
+#     market_appid = request.GET.get("app")
+#     app = OneStoreDL.objects.filter(market_appid=market_appid).order_by("-created_at")
+#     if app.exists():
+#         return 200, app.first()
+#     else:
+#         return 204, ""
