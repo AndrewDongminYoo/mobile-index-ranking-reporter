@@ -16,21 +16,14 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-
-from crawler.rank.api1 import api as api1
-from crawler.rank.api2 import api as api2
+from crawler.rank.api2 import api as api_version_2
 from crawler.rank.views import index, rank, redirect_to_rank
-from .settings import STATIC_URL, STATIC_ROOT
+from ranker.settings import STATIC_URL, STATIC_ROOT
 
 urlpatterns = [
                   path("", index),
                   path("rank", redirect_to_rank),
                   path("statistic/<int:following_id>", rank),
-                  # path("ranking", ranking),
-                  # path("register", app_register),
-                  # path("statistic/<str:market>/<str:deal>/<str:app>", statistic),
-                  # path("my_rank", my_rank, name="my_rank"),
                   path('admin/', admin.site.urls),
-                  path("v1/", api1.urls),
-                  path("v2/", api2.urls)
+                  path("v2/", api_version_2.urls),
               ] + static(STATIC_URL, document_root=STATIC_ROOT)
