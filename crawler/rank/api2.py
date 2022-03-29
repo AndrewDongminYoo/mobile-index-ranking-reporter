@@ -85,28 +85,6 @@ def find_app_with_query(request, query):
     return query_set.order_by("app_name").all()
 
 
-# @api.post("/search", response=List[ApplicationSchema], tags=["index"])
-# @paginate(LimitOffsetPagination)
-# def search_apps_with_query(request):
-#     """앱 이름 혹은 마켓 아이디 검색하기"""
-#     query = request.POST.get('query')
-#     return App.objects.filter(Q(app_name__search=query) | Q(market_appid__search=query)).all()
-
-
-# @api.post("/follow/new", response={201: FollowingSchema, 200: FollowingSchema}, tags=["index"])
-# def new_follow_register(request):
-#     """새로운 팔로우할 앱 등록하기"""
-#     app_data = request.POST
-#     follow = Following.objects.get_or_create(
-#         app_name=app_data.get('app_name'),
-#         market_appid=app_data.get('market_appid') or app_data.get('package_name'),
-#         is_active=True)
-#     if follow[1]:
-#         return 201, follow[0].save()
-#     else:
-#         return 200, follow[0]
-
-
 @api.get("/follow/list", response=List[FollowingSchema], tags=["index"])
 @paginate(LimitOffsetPagination)
 def load_all_following(request):
