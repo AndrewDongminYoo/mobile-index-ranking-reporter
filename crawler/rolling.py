@@ -15,8 +15,7 @@ from bs4 import BeautifulSoup
 from logging import getLogger
 from django.db.models import Q
 from django.utils import timezone
-from django.db import DataError, IntegrityError
-from crawler.models import Ranked, Following, TrackingApps, App, OneStoreDL, AppInformation
+from crawler.models import Ranked, TrackingApps, App, OneStoreDL, AppInformation
 
 logger = getLogger(__name__)
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " + \
@@ -476,7 +475,6 @@ def upto_400th_google_play_apps_contact():
 
 
 def good_morning_half_past_ten_daily():
-    ive_korea_internal_api()
     read_information_of_google_app()
 
 
