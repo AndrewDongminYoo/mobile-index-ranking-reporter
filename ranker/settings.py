@@ -62,7 +62,7 @@ CRONJOBS = [
     ('0 * * * *', 'crawler.crawling.every_o_clock_hourly', ">> /home/ubuntu/0000.log"),
     ('10 15 * * *', 'crawler.crawling.good_deep_night_twelve_ten_daily', '>> /home/ubuntu/0010.log'),
     ('10 3 * * *', 'crawler.crawling.good_afternoon_twelve_ten_daily', '>> /home/ubuntu/1210.log'),
-    ('30 1 * * *', 'crawler.rolling.good_morning_half_past_ten_daily', '>> /home/ubuntu/1030.log'),
+    # ('30 1 * * *', 'crawler.rolling.good_morning_half_past_ten_daily', '>> /home/ubuntu/1030.log'),
 ]
 
 ROOT_URLCONF = 'ranker.urls'
