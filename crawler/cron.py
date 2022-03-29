@@ -1,5 +1,4 @@
 import requests
-from bs4 import BeautifulSoup
 
 
 def ive_korea_internal_api():
@@ -31,8 +30,20 @@ def following_one_crawl():
     url = "http://13.125.164.253/cron/new/downloads"
     url = "http://127.0.0.1:8000/cron/new/downloads"
     for obj in res:
-        market_id = obj["market_id"]
-        requests.post(url, data={"market_id": market_id})
+        market_appid = obj["market_appid"]
+        requests.post(url, data={"market_appid": market_appid})
+
+
+def crawl_app_store_hourly():
+    url = "http://13.125.164.253/cron/new/ranking"
+    url = "http://127.0.0.1:8000/cron/new/ranking"
+    res = requests.post(url, data={"market": "all"})
+
+
+def crawl_app_store_daily():
+    url = "http://13.125.164.253/cron/new/ranking"
+    url = "http://127.0.0.1:8000/cron/new/ranking"
+    res = requests.post(url, data={"market": "one"})
 
 
 if __name__ == '__main__':

@@ -1,23 +1,28 @@
 # -*- coding: utf-8 -*-
-import datetime
 import re
 from django.core.handlers.wsgi import WSGIRequest
 from ninja import NinjaAPI
 from ninja.orm import create_schema
 from datetime import timedelta
-from django.utils import timezone
-from crawler.models import Following, App, TimeIndex
+from pytz import timezone
+from datetime import datetime
+from crawler.models import Following, App, TimeIndex, OneStoreDL
+from crawler.utils import post_to_slack, get_date
+from crawler.utils import get_data_from_soup, crawl_app_store_rank
 
+KST = timezone('Asia/Seoul')
+today = datetime.now().astimezone(tz=KST)
 api = NinjaAPI(title="Application", urls_namespace="cron")
 ApplicationSchema = create_schema(App)
 FollowingSchema = create_schema(Following)
 TimeIndexSchema = create_schema(TimeIndex)
+OneStoreDLSchema = create_schema(OneStoreDL)
 
 
 @api.post("/new/following", response=FollowingSchema)
 def internal_cron(request: WSGIRequest):
     post_data = request.POST
-    for app in Following.objects.filter(is_active=True, expire_date__lt=timezone.now()):
+    for app in Following.objects.filter(is_active=True, expire_date__lt=today):
         app.is_active = False
         app.save()
     market_appid = post_data.get("market_appid")
@@ -47,7 +52,7 @@ def internal_cron(request: WSGIRequest):
     following = Following.objects.filter(market=market, market_appid=market_appid).first()
     if following:
         following.is_active = True
-        following.expire_date = timezone.now() + timedelta(days=7)
+        following.expire_date = today + timedelta(days=7)
         following.save()
     elif appname and market and market_appid:
         following = Following(
@@ -55,7 +60,7 @@ def internal_cron(request: WSGIRequest):
             market_appid=market_appid,
             market=market,
             is_active=True,
-            expire_date=timezone.now() + timedelta(days=6)
+            expire_date=today + timedelta(days=6)
         )
         following.save()
         print(following)
@@ -88,3 +93,43 @@ def create_app_and_return(request: WSGIRequest):
 def what_date(request: WSGIRequest):
     date_data = request.POST["date"]
     return TimeIndex.objects.get_or_create(date=date_data)[0]
+
+
+@api.post("/new/downloads", response=OneStoreDLSchema)
+def get_one_store_information(market_appid) -> OneStoreDL:
+    date_id = get_date()
+    app = App.objects.get(market_appid=market_appid)
+    genre, volume, icon_url, app_name, released, download = get_data_from_soup(market_appid)
+    last_one = OneStoreDL.objects.filter(
+        market_appid=market_appid,
+        app_id=app["id"],
+    ).last()
+    ones_app = OneStoreDL(
+        market_appid=market_appid,
+        app_id=app["id"],
+        date_id=date_id,
+        genre=genre,
+        volume=volume,
+        downloads=download,
+        released=released,
+        icon_url=icon_url,
+        app_name=app_name,
+    )
+    ones_app.save()
+    rank_diff = ones_app.downloads - last_one.downloads if last_one else 0
+    if rank_diff > 2000:
+        msg = f"{app_name} 앱 다운로드가 전일 대비 {format(rank_diff, ',')}건 증가했습니다.✈ " \
+              + f"`{format(last_one.downloads, ',')}건` -> `{format(ones_app.downloads, ',')}건`"
+        post_to_slack(msg)
+    return ones_app
+
+
+@api.post("/new/ranking")
+def ranking_crawl(request: WSGIRequest):
+    post_data = request.POST
+    if post_data["market"] == "one":
+        crawl_app_store_rank("global_rank_v2", "one", "game")
+        crawl_app_store_rank("global_rank_v2", "one", "app")
+    else:
+        crawl_app_store_rank("realtime_rank_v2", "all", "game")
+        crawl_app_store_rank("realtime_rank_v2", "all", "app")

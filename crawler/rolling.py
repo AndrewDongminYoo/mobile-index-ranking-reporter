@@ -211,19 +211,17 @@ def get_app_category():
     """
     url = "https://proxy-insight.mobileindex.com/common/app_info"
     for app in App.objects.all().filter(market="google", app_info__isnull=True):
-        data = {
-            'packageName': app.market_appid,
-        }
-        req = requests.post(url, data=data, headers=headers)
+        req = requests.post(url, headers=headers, data={'packageName': app.market_appid})
         response = req.json()
         if response["status"]:
-            main_category = response["data"]['biz_category_main']
-            sub_category = response["data"]['biz_category_sub']
-            app_name = response["data"]['app_name']
-            icon_url = response["data"]['icon_url']
-            publisher_name = response["data"]['publisher_name']
-            apple_id = response["data"]['apple_id']
-            one_id = response["data"]['one_id']
+            app_data = response["data"]
+            main_category = app_data['biz_category_main']
+            sub_category = app_data['biz_category_sub']
+            publisher_name = app_data['publisher_name']
+            app_name = app_data['app_name']
+            icon_url = app_data['icon_url']
+            apple_id = app_data['apple_id']
+            one_id = app_data['one_id']
             app.icon_url = icon_url
             if app_name:
                 app.app_name = app_name
