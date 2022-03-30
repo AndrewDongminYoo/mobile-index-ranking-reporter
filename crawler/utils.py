@@ -1,4 +1,13 @@
-from crawler.models import Ranked, TrackingApps, Following, App, AppInformation
+# -*- coding: utf-8 -*-
+import os
+import sys
+
+sys.path.append('/home/ubuntu/app-rank')
+os.environ.setdefault("PYTHON" + "UNBUFFERED", "1")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ranker.settings")
+import django
+
+django.setup()
 from datetime import datetime, timedelta, date
 from django.db.models import Min, Q
 from bs4 import BeautifulSoup
@@ -6,6 +15,8 @@ from pytz import timezone
 from typing import Tuple
 import requests
 import re
+from crawler.models import Ranked, Following, App
+from crawler.models import TrackingApps, AppInformation
 
 KST = timezone('Asia/Seoul')
 today = datetime.now().astimezone(tz=KST)
@@ -309,3 +320,12 @@ def get_app_publisher_name():
         app_info.save()
         app.app_info = app_info
         app.save()
+
+
+if __name__ == '__main__':
+    upto_400th_google_play_apps_contact()
+    read_information_of_apple_store_app()
+    read_information_of_one_store_app()
+    get_developers_contact_number()
+    get_app_category()
+    get_app_publisher_name()
