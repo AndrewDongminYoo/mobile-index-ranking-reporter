@@ -334,6 +334,7 @@ def get_information_of_following_apps():
         )[0]
         app = App.objects.update_or_create(
             market_appid=market_appid,
+            market="google",
         )[0]
         app.app_url = google_url
         mobile_index = MOBILE_INDEX + "/common/app_info"
