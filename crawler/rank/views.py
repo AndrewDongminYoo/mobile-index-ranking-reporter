@@ -16,7 +16,7 @@ def rank(request: WSGIRequest, following_id: int):
     if request.user.is_superuser and tracked.exists():
         app = tracked.select_related("app__app_info").last().app
     else:
-        app = App.objects.get(market_appid=following.market_appid).select_related("app_info")
+        app = App.objects.get(market_appid=following.market_appid)
     return render(request, "rank.html", {"following": following, "app": app, "package_name": package_name})
 
 
