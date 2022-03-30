@@ -57,8 +57,8 @@ class AppAdmin(admin.ModelAdmin):
 
 
 class AppInformationAdmin(admin.ModelAdmin):
-    list_display = ['email', 'phone', 'google_url', 'apple_url', 'one_url']
-    search_fields = ['google_url', 'apple_url', 'one_url']
+    list_display = ['email', 'phone', 'category_main', 'category_sub', 'publisher_name']
+    search_fields = ['google_url', 'apple_url', 'one_url', 'publisher_name']
 
     def has_add_permission(self, request):
         return False
