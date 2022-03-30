@@ -89,7 +89,7 @@
                 }
                 let temp_rank = 100
                 let up = false
-                _.forEach(res.data.items, (item, i) => {
+                _.forEach(res.data.items, (item) => {
                     let {app, app_name, chart_type, updated_at, icon_url, market, rank} = item
                     if (temp_rank === rank) return
                     else {
@@ -152,7 +152,7 @@
                 }
                 let temp_rank = 100
                 let up = false
-                _.forEach(res.data.items, (item, i) => {
+                _.forEach(res.data.items, (item) => {
                     let {app, app_name, chart_type, date, icon_url, market, rank} = item
                     if (temp_rank === rank) {
                         up = false
@@ -212,7 +212,7 @@
                     $("#downloadTable").empty();
                     return
                 }
-                _.forEach(res.data.items, (item, i) => {
+                _.forEach(res.data.items, (item) => {
                     let {app, app_name, updated_at, downloads, icon_url,} = item
                     let template = `<tr>
                         <td class=""><img src="${icon_url}" alt=${app} width="24"></td>

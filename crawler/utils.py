@@ -17,6 +17,7 @@ import requests
 import re
 from crawler.models import Ranked, Following, App
 from crawler.models import TrackingApps, AppInformation
+from ranker.settings import SLACK_WEBHOOK_URL
 
 KST = timezone('Asia/Seoul')
 today = datetime.now().astimezone(tz=KST)
@@ -30,6 +31,8 @@ ONE_PREFIX = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId="
 
 
 def post_to_slack(text=None, URL=""):
+    if not URL:
+        URL = SLACK_WEBHOOK_URL
     requests.post(URL, headers={'Content-Type': 'application/json'}, data=f'{"text": "{text}"}')
 
 
@@ -37,7 +40,7 @@ def get_date(date_string=None) -> int:
     if not date_string:
         date_string = datetime.now().astimezone(tz=KST).strftime("%Y%m%d%H%M")
     url = "http://13.125.164.253/cron/new/date"
-    url = "http://127.0.0.1:8000/cron/new/date"
+    # url = "http://127.0.0.1:8000/cron/new/date"
     res = requests.post(url, data={"date": date_string})
     return res.json()["id"]
 
@@ -55,7 +58,7 @@ def get_soup(market_id, back=True) -> BeautifulSoup:
 
 def create_app(app_data: dict) -> dict:
     url = "http://13.125.164.253/cron/new/app"
-    url = "http://127.0.0.1:8000/cron/new/app"
+    # url = "http://127.0.0.1:8000/cron/new/app"
     res = requests.post(url, data=app_data)
     return res.json()
 
@@ -77,7 +80,7 @@ def get_data_from_soup(market_appid: str) -> Tuple[str, str, str, str, date, int
 
 
 def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
-    url = f'https://proxy-insight.mobileindex.com/chart/{term}'  # "realtime_rank_v2", "global_rank_v2"
+    url = f'{MOBILE_INDEX}/chart/{term}'  # "realtime_rank_v2", "global_rank_v2"
     data = {
         "market": "all", "country": "kr",
         "rankType": "free", "appType": game_or_app,
@@ -179,7 +182,7 @@ def get_google_apps_data_from_soup(google_url: str):
 
 
 def get_information_of_app(data: dict):
-    assert data["market_name"] == "google", "구글 앱이 아닙니다."
+    # assert data.get('market_name') == "google", "구글 앱이 아닙니다."
     market_appid = data["market_appid"]
     app_url = GOOGLE_PREFIX + market_appid
     title, publisher_name, category, email = get_google_apps_data_from_soup(app_url)
@@ -193,7 +196,7 @@ def get_information_of_app(data: dict):
     )[0]
     app.app_name = data['app_name']
     app.icon_url = data['icon_url']
-    app.market = data['market_name']
+    app.market = data.get('market_name') or data.get("market")
     app.app_url = app_url
     mobile_index = MOBILE_INDEX + "/app/market_info"
     req = requests.post(mobile_index, headers=headers, data={"packageName": market_appid})
@@ -322,10 +325,30 @@ def get_app_publisher_name():
         app.save()
 
 
+def get_information_of_following_apps():
+    for following in Following.objects.filter(market="google"):
+        market_appid = following.market_appid
+        google_url = GOOGLE_PREFIX + market_appid
+        app_info = AppInformation.objects.get_or_create(
+            google_url=google_url,
+        )[0]
+        app = App.objects.update_or_create(
+            market_appid=market_appid,
+        )[0]
+        app.app_url = google_url
+        mobile_index = MOBILE_INDEX + "/common/app_info"
+        response = requests.post(mobile_index, headers=headers, data={"packageName": market_appid}).json()
+        if response["status"]:
+            app_data = response["data"]
+            print(app_data)
+            app_info.publisher_name = app_data["publisher_name"]
+            app.icon_url = app_data["icon_url"]
+            app.app_name = app_data["app_name"]
+            app_info.save()
+            print(app_info)
+            app.app_info = app_info
+            app.save()
+
+
 if __name__ == '__main__':
-    upto_400th_google_play_apps_contact()
-    read_information_of_apple_store_app()
-    read_information_of_one_store_app()
-    get_developers_contact_number()
-    get_app_category()
-    get_app_publisher_name()
+    get_information_of_following_apps()
