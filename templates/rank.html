@@ -84,7 +84,10 @@
         axios.get(`/v2/tracking/statistics?app=${app_id}`)
             .then((res) => {
                 if (!res.data.items.length) {
-                    $("#trackingTable").empty();
+                    let trackingTable = $("#trackingTable")
+                    trackingTable.empty();
+                    trackingTable.html('<h4 style="text-align:center;">앱의 순위 정보가 없습니다.<br/>100위 이상의 앱만 수집됩니다.</h4>');
+                    console.warn("앱의 실시간 순위 정보가 없습니다.")
                     return
                 }
                 let temp_rank = 100
@@ -148,6 +151,7 @@
             .then((res) => {
                 if (!res.data.items.length) {
                     $("#dailyRankTable").empty();
+                    console.warn("앱의 일간 순위 정보가 없습니다.")
                     return
                 }
                 let temp_rank = 100
@@ -210,6 +214,7 @@
             .then((res) => {
                 if (!res.data.items.length) {
                     $("#downloadTable").empty();
+                    console.warn("앱의 다운로드 정보가 없습니다.")
                     return
                 }
                 _.forEach(res.data.items, (item) => {
