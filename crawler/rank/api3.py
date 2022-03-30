@@ -75,6 +75,7 @@ def create_app_and_return(request: WSGIRequest):
     app.icon_url = app_data.get('icon_url')
     if app.app_info:
         app.app_info.publisher_name = app_data.get('publisher_name')
+        app.app_info.save()
     if app.market_appid.startswith("0000"):
         app.market = "one"
         app.app_url = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" + app.market_appid
