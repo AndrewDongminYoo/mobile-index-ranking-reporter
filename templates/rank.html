@@ -13,9 +13,8 @@
                         <h3 class="title" style="font-weight: 900;">{{ following.app_name }}</h3>
                         <h3 class="card-subtitle" style="margin: 0;">{{ following.market_appid }}</h3>
                         <a style="font-weight: 900;" href="{{ app.app_url }}">{{ following.market }}</a>
-                        <p>
-                            <a href="mailto:{{ app.app_info.email }}">{{ app.app_info.email }}<br>{{ app.app_info.phone }}
-                            </a></p>
+                        <a href="mailto:{{ app.app_info.email }}">{{ app.app_info.email }}<br>
+                            {{ app.app_info.phone }}</a>
                     </div>
                     <div class="body">
                         <article class="accordion" id="accordion-1">
