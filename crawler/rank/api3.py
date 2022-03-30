@@ -102,11 +102,11 @@ def get_one_store_information(market_appid) -> OneStoreDL:
     genre, volume, icon_url, app_name, released, download = get_data_from_soup(market_appid)
     last_one = OneStoreDL.objects.filter(
         market_appid=market_appid,
-        app_id=app["id"],
+        app=app,
     ).last()
     ones_app = OneStoreDL(
         market_appid=market_appid,
-        app_id=app["id"],
+        app=app,
         date_id=date_id,
         genre=genre,
         volume=volume,

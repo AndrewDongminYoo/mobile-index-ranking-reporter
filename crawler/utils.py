@@ -1,16 +1,21 @@
-from crawler.models import Ranked, TrackingApps, Following, App
+from crawler.models import Ranked, TrackingApps, Following, App, AppInformation
 from datetime import datetime, timedelta, date
-from django.db.models import Min
+from django.db.models import Min, Q
 from bs4 import BeautifulSoup
 from pytz import timezone
 from typing import Tuple
 import requests
+import re
 
 KST = timezone('Asia/Seoul')
 today = datetime.now().astimezone(tz=KST)
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
              "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36 "
 headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
+MOBILE_INDEX = "https://proxy-insight.mobileindex.com"
+GOOGLE_PREFIX = "https://play.google.com/store/apps/details?id="
+APPLE_PREFIX = "https://apps.apple.com/kr/app/id"
+ONE_PREFIX = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId="
 
 
 def post_to_slack(text=None, URL=""):
@@ -26,7 +31,7 @@ def get_date(date_string=None) -> int:
     return res.json()["id"]
 
 
-def get_soup(market_id, back=True):
+def get_soup(market_id, back=True) -> BeautifulSoup:
     one_url = "https://m.onestore.co.kr/mobilepoc/"
     if back:
         one_url += f"web/apps/appsDetail/spec.omp?prodId={market_id}"
@@ -145,3 +150,162 @@ def get_highest_rank_of_realtime_ranks_today() -> None:
             )[0]
             new_app.rank = first.get('highest_rank')
             new_app.save()
+
+
+def get_google_apps_data_from_soup(google_url: str):
+    headers["accept-language"] = "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
+    req = requests.get(google_url, headers=headers)
+    _soup = BeautifulSoup(req.text, 'html.parser')
+    _title = _soup.find("title").text.replace(" - Google Play 앱", "").replace(" - Apps on Google Play", "")
+    assert _title != "찾을 수 없음", "잘못된 앱 이름입니다."
+    publisher = _soup.select_one("a[href*='/store/apps/dev']")
+    _publisher_name = publisher.text if publisher else None
+    first = _soup.select_one("a[href*='store/apps/category']")
+    _category = first.get("href")[21:] if first else None
+    _mailto = _soup.select_one("a[href*='mailto:']")
+    _email = _soup.select_one("a[href*='mailto:']").text.replace("email이메일", "") if _mailto else None
+    return _title, _publisher_name, _category, _email
+
+
+def get_information_of_app(data: dict):
+    assert data["market_name"] == "google", "구글 앱이 아닙니다."
+    market_appid = data["market_appid"]
+    app_url = GOOGLE_PREFIX + market_appid
+    title, publisher_name, category, email = get_google_apps_data_from_soup(app_url)
+    app_info = AppInformation.objects.update_or_create(
+        google_url=app_url,
+    )[0]
+    app_info.publisher_name = publisher_name
+    app_info.email = email
+    app = App.objects.update_or_create(
+        market_appid=market_appid,
+    )[0]
+    app.app_name = data['app_name']
+    app.icon_url = data['icon_url']
+    app.market = data['market_name']
+    app.app_url = app_url
+    mobile_index = MOBILE_INDEX + "/app/market_info"
+    req = requests.post(mobile_index, headers=headers, data={"packageName": market_appid})
+    response = req.json()
+    res_data = response.get("data")
+    app_data = res_data.get("market_info")
+    app_info.apple_url = app_data.get("apple_url")
+    app_info.one_url = app_data.get("one_url")
+    app_info.save()
+    print(app_info)
+    app.app_info = app_info
+    app.save()
+
+
+def upto_400th_google_play_apps_contact():
+    url = MOBILE_INDEX + "/chart/global_rank_v2"
+    body = {
+        "market": "all",
+        "country": "kr",
+        "rankType": "gross",
+        "appType": "game",
+        "date": (today - timedelta(days=1)).strftime("%Y%m%d"),
+        "startRank": 101,
+        "endRank": 400,
+    }
+    req = requests.post(url, headers=headers, data=body)
+    res = req.json()
+    for app_data in res["data"]:
+        get_information_of_app(app_data)
+
+
+def read_information_of_apple_store_app():
+    for app in App.objects.filter(market="apple", app_url__isnull=False, app_info=None):
+        req = requests.get(app.app_url, headers=headers)
+        soup = BeautifulSoup(req.text, "html.parser")
+        title = soup.select_one("title").get_text().replace("App Store에서 제공하는 ", "").strip()
+        publisher_name = soup.select_one("a[href*='apps.apple.com/kr/developer']").get_text().strip()
+        genre_name = soup.select_one("a[href*='itunes.apple.com/kr/genre']").get_text().strip()
+        app.app_name = title
+        print(app.app_name, publisher_name, genre_name)
+        info = AppInformation.objects.get_or_create(apple_url=APPLE_PREFIX + app.market_appid)[0]
+        info.publisher_name = publisher_name
+        info.category_main = genre_name
+        info.apple_url = app.app_url
+        info.save()
+        app.app_info = info
+        app.save()
+
+
+def read_information_of_one_store_app():
+    for app in App.objects.filter(market="one", app_url__isnull=False, app_info=None):
+        if not app.app_url or app.app_url.endswith("ERR504"):
+            app.app_url = ONE_PREFIX + app.market_appid
+            app.save()
+        print(app.app_url)
+        req = requests.get(app.app_url, headers=headers)
+        soup = BeautifulSoup(req.text, "html.parser")
+        try:
+            title = soup.select_one("title").get_text().replace(" - 원스토어", "")
+            publisher_name = soup.select_one("p.detailapptop-co-seller").get_text()
+            app.app_name = title
+            print(title, publisher_name)
+            info = AppInformation.objects.get_or_create(one_url=ONE_PREFIX + app.market_appid)[0]
+            info.publisher_name = publisher_name
+            info.one_url = app.app_url
+            info.save()
+            app.app_info = info
+        except AttributeError:
+            app.delete()
+        app.save()
+
+
+def get_developers_contact_number():
+    for app in App.objects.filter(app_info=None, market="google").all():
+        url = MOBILE_INDEX + '/app/market_info'
+        response = requests.post(url, headers=headers, data={"packageName": app.market_appid}).json()
+        data = response["data"].get("market_info")
+        app_info = AppInformation.objects.update_or_create(google_url=data.get("google_url"))[0]
+        description = data.get("description")
+        phone = re.findall(r"([0-1][0-9]*[\- ]*[0-9]{3,4}[\- ][0-9]{4,}|\+82[0-9\-]+)", description)
+        email = re.findall(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)", description)
+        app_info.phone = ", ".join(set(phone))
+        app_info.email = ", ".join(set(email))
+        print(app_info.phone, app_info.email)
+        app_info.save()
+        app.app_info = app_info
+        app.save()
+
+
+def get_app_category():
+    url = MOBILE_INDEX + "/common/app_info"
+    for app in App.objects.all().filter(market="google", app_info__isnull=True):
+        market_id = app.market_appid
+        req = requests.post(url, headers=headers, data={'packageName': market_id})
+        app_data = req.json()["data"]
+        app.app_name = app_data['app_name']
+        app.icon_url = app_data['icon_url']
+        app_info = AppInformation.objects.get_or_create(google_url=GOOGLE_PREFIX + market_id)[0]
+        app_info.apple_url = APPLE_PREFIX + app_data['apple_id']
+        app_info.publisher_name = app_data['publisher_name']
+        app_info.one_url = ONE_PREFIX + app_data['one_id']
+        _main = app_data['biz_category_main']
+        _subs = app_data['biz_category_sub']
+        if (_main and _subs) and (_main != "null" and _subs != "null"):
+            app_info.category_main = _main
+            app_info.category_sub = _subs
+        app.app_info = app_info
+        app_info.save()
+        app.save()
+
+
+def get_app_publisher_name():
+    url = MOBILE_INDEX + '/common/app_info'
+    for app in App.objects.all().filter(app_info=None):
+        response = requests.post(url, data={'packageName': app.market_appid}, headers=headers).json()
+        data = response["data"]
+        publisher_name = data.get('publisher_name')
+        app_info = AppInformation.objects.filter(
+            Q(google_url=GOOGLE_PREFIX + data.get("package_name")) |
+            Q(one_url=ONE_PREFIX + data.get("one_id")) |
+            Q(apple_url=APPLE_PREFIX + data.get("apple_id"))
+        ).first()
+        app_info.publisher_name = publisher_name
+        app_info.save()
+        app.app_info = app_info
+        app.save()
