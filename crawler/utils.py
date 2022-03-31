@@ -58,10 +58,25 @@ def get_soup(market_id, back=True) -> BeautifulSoup:
         return BeautifulSoup(response.text, "html.parser")
 
 
-def create_app(app_data: dict) -> dict:
-    url = "http://13.125.164.253/cron/new/app"
-    res = requests.post(url, data=app_data)
-    return res.json()
+def create_app(app_data: dict) -> App:
+    app = App.objects.get_or_create(market_appid=app_data.get('market_appid'))[0]
+    app.app_name = app_data.get('app_name')
+    app.icon_url = app_data.get('icon_url')
+    if app.app_info:
+        publisher_name = app_data.get('publisher_name')
+        app.app_info.publisher_name = publisher_name
+        app.app_info.save()
+    if app.market_appid.startswith("0000"):
+        app.market = "one"
+        app.app_url = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" + app.market_appid
+    elif app.market_appid[0].isalpha():
+        app.market = "google"
+        app.app_url = "https://play.google.com/store/apps/details?id=" + app.market_appid
+    else:
+        app.market = "apple"
+        app.app_url = "https://apps.apple.com/kr/app/id" + app.market_appid
+    app.save()
+    return app
 
 
 def get_data_from_soup(market_appid: str) -> Tuple[str, str, str, str, date, int]:
@@ -81,7 +96,7 @@ def get_data_from_soup(market_appid: str) -> Tuple[str, str, str, str, date, int
 
 
 def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
-    url = f'{MOBILE_INDEX}/chart/{term}'  # "realtime_rank_v2", "global_rank_v2"
+    url = MOBILE_INDEX + '/chart/' + term  # "realtime_rank_v2", "global_rank_v2"
     data = {
         "market": "all", "country": "kr",
         "rankType": "free", "appType": game_or_app,
@@ -90,52 +105,11 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
     if market == "one":
         data["date"] = datetime.now().astimezone(tz=KST).strftime("%Y%m%d")
     response = requests.post(url, data=data, headers=headers).json()
-    date_id = get_date()
-    following = [f.market_appid for f in Following.objects.filter(is_active=True)]
     if response["status"]:
         for app_data in response["data"]:
-            app = create_app(app_data)
-            market_name = app_data["market_name"]
-            if not (market == "one" and market_name in ["apple", "google"]):
-                item = Ranked(
-                    app_id=app["id"],
-                    date_id=date_id,
-                    app_type=game_or_app,  # "game", "app"
-                    app_name=app["app_name"],
-                    icon_url=app["icon_url"],
-                    market_appid=app["market_appid"],
-                    rank=app_data.get('rank'),
-                    market=market_name,  # "google", "apple", "one"
-                    chart_type=app_data.get('rank_type'),
-                    deal_type=term.replace("_v2", "").replace("global", "market"),  # "realtime_rank", "market_rank"
-                )
-                item.save()
-                if item.market_appid in following:
-                    last = TrackingApps.objects.filter(
-                        market_appid=item.market_appid,
-                        market=item.market,
-                        chart_type=item.chart_type,
-                        app_name=item.app_name,
-                    ).last()
-                    tracking = TrackingApps(
-                        following=Following.objects.get(market_appid=item.market_appid),
-                        app_id=app["id"],
-                        date_id=date_id,
-                        deal_type=item.deal_type,
-                        rank=item.rank,
-                        market=item.market,
-                        app_name=item.app_name,
-                        icon_url=item.icon_url,
-                        chart_type=item.chart_type,
-                        market_appid=app["market_appid"],
-                    )
-                    tracking.save()
-                    rank_diff = tracking.rank - last.rank if last else 0
-                    market_str = item.get_market_display()
-                    if rank_diff <= -1:
-                        post_to_slack(f" 순위 상승🚀: {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
-                    if rank_diff >= 1:
-                        post_to_slack(f" 순위 하락🛬: {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
+            url = "http://13.125.164.253/cron/new/ranking/app"
+            url = f"http://127.0.0.1:8000/cron/new/ranking/app?market={market}&game={game_or_app}&term={term}"
+            requests.post(url, data=app_data)
 
 
 def get_highest_rank_of_realtime_ranks_today() -> None:

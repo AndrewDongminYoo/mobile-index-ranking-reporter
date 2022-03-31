@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 from django.core.handlers.wsgi import WSGIRequest
 from ninja import NinjaAPI
@@ -6,8 +7,8 @@ from ninja.orm import create_schema
 from datetime import timedelta
 from pytz import timezone
 from datetime import datetime
-from crawler.models import Following, App, TimeIndex, OneStoreDL
-from crawler.utils import post_to_slack, get_date
+from crawler.models import Following, App, TimeIndex, OneStoreDL, Ranked, TrackingApps
+from crawler.utils import post_to_slack, get_date, create_app
 from crawler.utils import get_data_from_soup, crawl_app_store_rank
 
 KST = timezone('Asia/Seoul')
@@ -67,29 +68,6 @@ def internal_cron(request: WSGIRequest):
     return following if following else None
 
 
-@api.post("/new/app", response=ApplicationSchema)
-def create_app_and_return(request: WSGIRequest):
-    app_data = request.POST
-    app = App.objects.get_or_create(market_appid=app_data['market_appid'])[0]
-    app.app_name = app_data.get('app_name')
-    app.icon_url = app_data.get('icon_url')
-    if app.app_info:
-        app.app_info.publisher_name = app_data.get('publisher_name')
-        app.app_info.save()
-    if app.market_appid.startswith("0000"):
-        app.market = "one"
-        app.app_url = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=" + app.market_appid
-    elif app.market_appid[0].isalpha():
-        app.market = "google"
-        app.app_url = "https://play.google.com/store/apps/details?id=" + app.market_appid
-    else:
-        app.market = "apple"
-        app.app_url = "https://apps.apple.com/kr/app/id" + app.market_appid
-    app.save()
-    print(app.market_appid, app.app_name)
-    return app
-
-
 @api.post("/new/date", response=TimeIndexSchema)
 def what_date(request: WSGIRequest):
     date_data = request.POST["date"]
@@ -134,3 +112,52 @@ def ranking_crawl(request: WSGIRequest):
     else:
         crawl_app_store_rank("realtime_rank_v2", "all", "game")
         crawl_app_store_rank("realtime_rank_v2", "all", "app")
+
+
+@api.post("/new/ranking/app")
+def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
+    app_data = request.POST
+    date_id = get_date()
+    following = [f.market_appid for f in Following.objects.filter(is_active=True)]
+    app = create_app(app_data)
+    market_name = app_data["market_name"]
+    if not (market == "one" and market_name in ["apple", "google"]):
+        item = Ranked(
+            app=app,
+            date_id=date_id,
+            app_type=game,  # "game", "app"
+            app_name=app.app_name,
+            icon_url=app.icon_url,
+            market_appid=app.market_appid,
+            rank=app_data.get('rank'),
+            market=market_name,  # "google", "apple", "one"
+            chart_type=app_data.get('rank_type'),
+            deal_type=term.replace("_v2", "").replace("global", "market"),  # "realtime_rank", "market_rank"
+        )
+        item.save()
+        if item.market_appid in following:
+            last = TrackingApps.objects.filter(
+                market_appid=item.market_appid,
+                market=item.market,
+                chart_type=item.chart_type,
+                app_name=item.app_name,
+            ).last()
+            tracking = TrackingApps(
+                following=Following.objects.get(market_appid=item.market_appid),
+                app_id=app.id,
+                date_id=date_id,
+                deal_type=item.deal_type,
+                rank=item.rank,
+                market=item.market,
+                app_name=item.app_name,
+                icon_url=item.icon_url,
+                chart_type=item.chart_type,
+                market_appid=app.market_appid,
+            )
+            tracking.save()
+            rank_diff = int(tracking.rank) - int(last.rank) if last else 0
+            market_str = item.get_market_display()
+            if rank_diff <= -1:
+                post_to_slack(f" 순위 상승🚀: {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
+            if rank_diff >= 1:
+                post_to_slack(f" 순위 하락🛬: {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")

@@ -30,6 +30,7 @@ def following_one_crawl():
 
 def crawl_app_store_hourly():
     url = "http://13.125.164.253/cron/new/ranking"
+    url = "http://127.0.0.1:8000/cron/new/ranking"
     requests.post(url, data={"market": "all"})
 
 
