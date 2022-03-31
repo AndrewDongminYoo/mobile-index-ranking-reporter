@@ -31,6 +31,8 @@ def following_one_crawl():
 def crawl_app_store_hourly():
     url = "http://apprank.i-screen.kr/cron/new/ranking"
     requests.post(url, data={"market": "all"})
+    url = "http://apprank.i-screen.kr/cron/new/ranking/high"
+    requests.post(url)
 
 
 def crawl_app_store_daily():
@@ -39,4 +41,4 @@ def crawl_app_store_daily():
 
 
 if __name__ == '__main__':
-    crawl_app_store_hourly()
+    ive_korea_internal_api()

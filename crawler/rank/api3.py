@@ -2,6 +2,7 @@
 import json
 import re
 from django.core.handlers.wsgi import WSGIRequest
+from django.db.models import Min
 from ninja import NinjaAPI
 from ninja.orm import create_schema
 from datetime import timedelta
@@ -161,3 +162,33 @@ def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
                 post_to_slack(f" 순위 상승🚀: {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
             if rank_diff >= 1:
                 post_to_slack(f" 순위 하락🛬: {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
+
+
+@api.post("/new/ranking/high")
+def get_highest_rank_of_realtime_ranks_today(request) -> None:
+    date_today = get_date(datetime.now().astimezone(tz=KST).strftime("%Y%m%d") + "2300")
+    rank_set = Ranked.objects \
+        .filter(created_at__gte=today - timedelta(days=1),
+                created_at__lte=today,
+                market__in=["apple", "google"],
+                deal_type="realtime_rank")
+    for following in Following.objects.filter(is_active=True, market__in=["apple", "google"]).all():
+        market_appid = following.market_appid
+        query = rank_set.filter(market_appid=market_appid) \
+            .values('market_appid', 'app_name', 'market', 'app_type', 'chart_type', 'icon_url') \
+            .annotate(highest_rank=Min('rank'))
+        if query:
+            first = query[0]
+            new_app = TrackingApps.objects.update_or_create(
+                market=first.get('market'),
+                chart_type=first.get('chart_type'),
+                app_name=first.get('app_name'),
+                icon_url=first.get('icon_url'),
+                deal_type='market_rank',
+                market_appid=market_appid,
+                app=App.objects.get(market_appid=market_appid),
+                following=following,
+                date=date_today,
+            )[0]
+            new_app.rank = first.get('highest_rank')
+            new_app.save()

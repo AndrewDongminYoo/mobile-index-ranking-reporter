@@ -111,35 +111,6 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
             requests.post(url, data=app_data)
 
 
-def get_highest_rank_of_realtime_ranks_today() -> None:
-    date_today = get_date(datetime.now().astimezone(tz=KST).strftime("%Y%m%d") + "2300")
-    rank_set = Ranked.objects \
-        .filter(created_at__gte=today - timedelta(days=1),
-                created_at__lte=today,
-                market__in=["apple", "google"],
-                deal_type="realtime_rank")
-    for following in Following.objects.filter(is_active=True, market__in=["apple", "google"]).all():
-        market_appid = following.market_appid
-        query = rank_set.filter(market_appid=market_appid) \
-            .values('market_appid', 'app_name', 'market', 'app_type', 'chart_type', 'icon_url') \
-            .annotate(highest_rank=Min('rank'))
-        if query:
-            first = query[0]
-            new_app = TrackingApps.objects.update_or_create(
-                market=first.get('market'),
-                chart_type=first.get('chart_type'),
-                app_name=first.get('app_name'),
-                icon_url=first.get('icon_url'),
-                deal_type='market_rank',
-                market_appid=market_appid,
-                app=App.objects.get(market_appid=market_appid),
-                following=following,
-                date=date_today,
-            )[0]
-            new_app.rank = first.get('highest_rank')
-            new_app.save()
-
-
 def get_google_apps_data_from_soup(google_url: str):
     headers["accept-language"] = "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
     req = requests.get(google_url, headers=headers)
