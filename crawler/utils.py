@@ -42,7 +42,7 @@ def post_to_slack(text=None, URL=""):
 def get_date(date_string=None) -> int:
     if not date_string:
         date_string = datetime.now().astimezone(tz=KST).strftime("%Y%m%d%H%M")
-    url = "http://13.125.164.253/cron/new/date"
+    url = "http://apprank.i-screen.kr/cron/new/date"
     res = requests.post(url, data={"date": date_string})
     return res.json()["id"]
 
@@ -107,7 +107,7 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
     response = requests.post(url, data=data, headers=headers).json()
     if response["status"]:
         for app_data in response["data"]:
-            url = f"http://13.125.164.253/cron/new/ranking/ap?market={market}&game={game_or_app}&term={term}p"
+            url = f"http://apprank.i-screen.kr/cron/new/ranking/app?market={market}&game={game_or_app}&term={term}p"
             requests.post(url, data=app_data)
 
 
