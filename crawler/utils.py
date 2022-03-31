@@ -107,8 +107,7 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
     response = requests.post(url, data=data, headers=headers).json()
     if response["status"]:
         for app_data in response["data"]:
-            url = "http://13.125.164.253/cron/new/ranking/app"
-            url = f"http://127.0.0.1:8000/cron/new/ranking/app?market={market}&game={game_or_app}&term={term}"
+            url = f"http://13.125.164.253/cron/new/ranking/ap?market={market}&game={game_or_app}&term={term}p"
             requests.post(url, data=app_data)
 
 
