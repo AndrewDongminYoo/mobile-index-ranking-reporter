@@ -32,7 +32,24 @@ ONE_PREFIX = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId="
 
 
 def get_following() -> list:
-    return list(Following.objects.filter(created_at__lt=today))
+    API_KEY = 'wkoo4ko0g808s0kkossoo4o8ow0kwwg88gw004sg'
+    url = f'http://dev.i-screen.kr/channel/rank_ads_list?apikey={API_KEY}'
+    req = requests.get(url)
+    if req.status_code == 200:
+        result = []
+        response = req.json()
+        for adv_info in response["list"]:
+            app = dict(
+                market_appid=adv_info.get("ads_package"),
+                address=adv_info.get("ads_join_url"),
+                appname=adv_info.get("ads_name"),
+                os_type=adv_info.get("ads_os_type"),
+            )
+            url = "http://13.125.164.253/cron/new/following"
+            res = requests.post(url, data=app)
+            if res.status_code == 200:
+                result.append(adv_info.get("ads_package"))
+        return result
 
 
 def post_to_slack(text=None, URL=""):

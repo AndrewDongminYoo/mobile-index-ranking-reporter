@@ -2,21 +2,7 @@ import requests
 
 
 def ive_korea_internal_api():
-    API_KEY = 'wkoo4ko0g808s0kkossoo4o8ow0kwwg88gw004sg'
-    url = f'http://dev.i-screen.kr/channel/rank_ads_list?apikey={API_KEY}'
-    req = requests.get(url)
-    url = "http://13.125.164.253/cron/new/following"
-
-    if req.status_code == 200:
-        response = req.json()
-        for adv_info in response["list"]:
-            app = dict(
-                market_appid=adv_info.get("ads_package"),
-                address=adv_info.get("ads_join_url"),
-                appname=adv_info.get("ads_name"),
-                os_type=adv_info.get("ads_os_type"),
-            )
-            res = requests.post(url, data=app)
+    get_following()
 
 
 def following_one_crawl():

@@ -10,7 +10,7 @@ from ninja.orm import create_schema
 from pytz import timezone
 from crawler.rank.api2 import EmptySchema
 from crawler.models import Following, App, TimeIndex, OneStoreDL, Ranked, TrackingApps
-from crawler.utils import get_data_from_soup, crawl_app_store_rank
+from crawler.utils import get_data_from_soup, crawl_app_store_rank, get_following
 from crawler.utils import post_to_slack, get_date, create_app
 
 KST = timezone('Asia/Seoul')
@@ -118,9 +118,10 @@ def ranking_crawl(request: WSGIRequest):
 
 @api.post("/new/ranking/app", response=RankedSchema)
 def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
+    market_app_list = get_following()
     app_data = request.POST
     date_id = get_date()
-    following = [f.market_appid for f in Following.objects.filter(expire_date__gte=today)]
+    following_app_list = [f.market_appid for f in Following.objects.filter(expire_date__gte=today)]
     app = create_app(app_data)
     market_name = app_data["market_name"]
     if not (market == "one" and market_name in ["apple", "google"]):
@@ -137,7 +138,7 @@ def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
             deal_type=term.replace("_v2", "").replace("global", "market"),  # "realtime_rank", "market_rank"
         )
         item.save()
-        if item.market_appid in following:
+        if item.market_appid in following_app_list:
             last = TrackingApps.objects.filter(
                 market_appid=item.market_appid,
                 market=item.market,
@@ -160,10 +161,11 @@ def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
             tracking.save()
             rank_diff = int(tracking.rank) - int(last.rank) if last else 0
             market_str = item.get_market_display()
+            LIVE = "LIVE" if item.market_appid in market_app_list else ""
             if rank_diff <= -1:
-                post_to_slack(f" 순위 상승🚀: {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
+                post_to_slack(f" 순위 상승 **{LIVE}**🚀 {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
             if rank_diff >= 1:
-                post_to_slack(f" 순위 하락🛬: {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
+                post_to_slack(f" 순위 하락 **{LIVE}**🛬 {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
         return item
 
 
