@@ -25,7 +25,7 @@ RankedSchema = create_schema(Ranked)
 @api.post("/new/following", response=FollowingSchema)
 def internal_cron(request: WSGIRequest):
     post_data = request.POST
-    for app in Following.objects.filter(is_following=True, expire_date__lt=today):
+    for app in Following.objects.filter(expire_date__lt=today):
         app.is_following = False
         app.save()
     market_appid = post_data.get("market_appid")
