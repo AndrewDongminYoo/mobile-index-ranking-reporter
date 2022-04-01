@@ -19,6 +19,7 @@ ApplicationSchema = create_schema(App)
 FollowingSchema = create_schema(Following)
 TimeIndexSchema = create_schema(TimeIndex)
 OneStoreDLSchema = create_schema(OneStoreDL)
+TrackingAppsSchema = create_schema(TrackingApps)
 
 
 @api.post("/new/following", response=FollowingSchema)
@@ -54,7 +55,7 @@ def internal_cron(request: WSGIRequest):
     following = Following.objects.filter(market=market, market_appid=market_appid).first()
     if following:
         following.is_active = True
-        following.expire_date = today + timedelta(days=7)
+        following.expire_date = today + timedelta(days=3)
         following.save()
     elif appname and market and market_appid:
         following = Following(
@@ -62,7 +63,7 @@ def internal_cron(request: WSGIRequest):
             market_appid=market_appid,
             market=market,
             is_active=True,
-            expire_date=today + timedelta(days=6)
+            expire_date=today + timedelta(days=3)
         )
         following.save()
         print(following)
@@ -115,7 +116,7 @@ def ranking_crawl(request: WSGIRequest):
         crawl_app_store_rank("realtime_rank_v2", "all", "app")
 
 
-@api.post("/new/ranking/app")
+@api.post("/new/ranking/app", response=TrackingAppsSchema)
 def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
     app_data = request.POST
     date_id = get_date()
@@ -162,6 +163,7 @@ def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
                 post_to_slack(f" 순위 상승🚀: {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
             if rank_diff >= 1:
                 post_to_slack(f" 순위 하락🛬: {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
+            return tracking
 
 
 @api.post("/new/ranking/high")
