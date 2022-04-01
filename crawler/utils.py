@@ -31,6 +31,10 @@ APPLE_PREFIX = "https://apps.apple.com/kr/app/id"
 ONE_PREFIX = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId="
 
 
+def get_following() -> list:
+    return list(Following.objects.filter(created_at__lt=today))
+
+
 def post_to_slack(text=None, URL=""):
     if not URL:
         URL = SLACK_WEBHOOK_URL

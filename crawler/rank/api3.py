@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-import json
 import re
+from datetime import datetime
+from datetime import timedelta
+
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Min
 from ninja import NinjaAPI
 from ninja.orm import create_schema
-from datetime import timedelta
 from pytz import timezone
-from datetime import datetime
+
 from crawler.models import Following, App, TimeIndex, OneStoreDL, Ranked, TrackingApps
-from crawler.utils import post_to_slack, get_date, create_app
 from crawler.utils import get_data_from_soup, crawl_app_store_rank
+from crawler.utils import post_to_slack, get_date, create_app
 
 KST = timezone('Asia/Seoul')
 today = datetime.now().astimezone(tz=KST)
@@ -22,53 +23,51 @@ OneStoreDLSchema = create_schema(OneStoreDL)
 RankedSchema = create_schema(Ranked)
 
 
-@api.post("/new/following", response=FollowingSchema)
+@api.post("/new/following", response={200: FollowingSchema, 204: "No Content"})
 def internal_cron(request: WSGIRequest):
     post_data = request.POST
-    for app in Following.objects.filter(expire_date__lt=today):
-        app.is_following = False
-        app.save()
-    market_appid = post_data.get("market_appid")
+    mkt_app = post_data.get("market_appid")
     address = post_data.get("address")
     appname = post_data.get("appname")
     os_type = post_data.get("os_type")
-    google = re.compile(r'^\w+(\.\w+)+$')
-    apple = re.compile(r'^\d{9,11}$')
-    one = re.compile(r'^0000\d{5,6}$')
+    GOOGLE = re.compile(r'^\w+(\.\w+)+$')
+    APPLES = re.compile(r'^\d{9,11}$')
+    ONESTO = re.compile(r'^0000\d{5,6}$')
     market = ""
-    if google.fullmatch(market_appid) and os_type == "2":
+    if GOOGLE.fullmatch(mkt_app) and os_type == "2":
         market = "google"
-    elif one.fullmatch(market_appid) and os_type == "3":
+    elif ONESTO.fullmatch(mkt_app) and os_type == "3":
         market = "one"
-    elif apple.fullmatch(market_appid) and os_type == "1":
+    elif APPLES.fullmatch(mkt_app) and os_type == "1":
         market = "apple"
     else:
-        market_appID = re.findall(r'\d{9,11}$', address)
-        if market_appID:
-            market_appid = market_appID[0]
-            market = "one" if market_appid.startswith("0000") else "apple"
-            print(market_appid)
+        extract_appid = re.findall(r'\d{9,11}$', address)
+        if extract_appid:
+            mkt_app = extract_appid[0]
+            market = "one" if mkt_app.startswith("0000") else "apple"
+            print(mkt_app)
         elif re.search(r'[a-z]+(\.\w+)+$', address):
-            market_appid = re.compile(r'[a-z]+(\.\w+)+$').search(address)[0]
+            mkt_app = re.compile(r'[a-z]+(\.\w+)+$').search(address)[0]
             market = "google"
-            print(market_appid)
-    following = Following.objects.filter(market=market, market_appid=market_appid).first()
+            print(mkt_app)
+    following = Following.objects.filter(market=market, market_appid=mkt_app).first()
     expire_date = today + timedelta(days=3)
     if following:
-        following.is_following = True
         following.expire_date = expire_date
         following.save()
-    elif appname and market and market_appid:
+    elif appname and market and mkt_app:
         following = Following(
-            app_name=appname,
-            market_appid=market_appid,
             market=market,
-            is_following=True,
+            app_name=appname,
+            market_appid=mkt_app,
             expire_date=expire_date
         )
         following.save()
         print(following)
-    return following if following else None
+    if following:
+        return 200, following
+    else:
+        return 204, None
 
 
 @api.post("/new/date", response=TimeIndexSchema)
@@ -89,13 +88,13 @@ def get_one_store_information(market_appid) -> OneStoreDL:
     ones_app = OneStoreDL(
         market_appid=market_appid,
         app=app,
-        date_id=date_id,
         genre=genre,
         volume=volume,
-        downloads=download,
-        released=released,
+        date_id=date_id,
         icon_url=icon_url,
+        released=released,
         app_name=app_name,
+        downloads=download,
     )
     ones_app.save()
     rank_diff = ones_app.downloads - last_one.downloads if last_one else 0
@@ -121,7 +120,7 @@ def ranking_crawl(request: WSGIRequest):
 def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
     app_data = request.POST
     date_id = get_date()
-    following = [f.market_appid for f in Following.objects.filter(is_following=True)]
+    following = [f.market_appid for f in Following.objects.filter(expire_date__gte=today)]
     app = create_app(app_data)
     market_name = app_data["market_name"]
     if not (market == "one" and market_name in ["apple", "google"]):
@@ -145,8 +144,9 @@ def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
                 chart_type=item.chart_type,
                 app_name=item.app_name,
             ).last()
+            following_app = Following.objects.get(market_appid=item.market_appid)
             tracking = TrackingApps(
-                following=Following.objects.get(market_appid=item.market_appid),
+                following=following_app,
                 app_id=app.id,
                 date_id=date_id,
                 deal_type=item.deal_type,
@@ -175,7 +175,7 @@ def get_highest_rank_of_realtime_ranks_today(request) -> None:
                 created_at__lte=today,
                 market__in=["apple", "google"],
                 deal_type="realtime_rank")
-    for following in Following.objects.filter(is_following=True, market__in=["apple", "google"]).all():
+    for following in Following.objects.filter(expire_date__gte=today, market__in=["apple", "google"]).all():
         market_appid = following.market_appid
         query = rank_set.filter(market_appid=market_appid) \
             .values('market_appid', 'app_name', 'market', 'app_type', 'chart_type', 'icon_url') \

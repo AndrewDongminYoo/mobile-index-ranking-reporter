@@ -16,7 +16,7 @@ def ive_korea_internal_api():
                 appname=adv_info.get("ads_name"),
                 os_type=adv_info.get("ads_os_type"),
             )
-            requests.post(url, data=app)
+            res = requests.post(url, data=app)
 
 
 def following_one_crawl():
