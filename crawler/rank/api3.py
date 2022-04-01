@@ -19,7 +19,7 @@ ApplicationSchema = create_schema(App)
 FollowingSchema = create_schema(Following)
 TimeIndexSchema = create_schema(TimeIndex)
 OneStoreDLSchema = create_schema(OneStoreDL)
-TrackingAppsSchema = create_schema(TrackingApps)
+RankedSchema = create_schema(Ranked)
 
 
 @api.post("/new/following", response=FollowingSchema)
@@ -53,9 +53,10 @@ def internal_cron(request: WSGIRequest):
             market = "google"
             print(market_appid)
     following = Following.objects.filter(market=market, market_appid=market_appid).first()
+    expire_date = today + timedelta(days=3)
     if following:
         following.is_active = True
-        following.expire_date = today + timedelta(days=3)
+        following.expire_date = expire_date
         following.save()
     elif appname and market and market_appid:
         following = Following(
@@ -63,7 +64,7 @@ def internal_cron(request: WSGIRequest):
             market_appid=market_appid,
             market=market,
             is_active=True,
-            expire_date=today + timedelta(days=3)
+            expire_date=expire_date
         )
         following.save()
         print(following)
@@ -116,7 +117,7 @@ def ranking_crawl(request: WSGIRequest):
         crawl_app_store_rank("realtime_rank_v2", "all", "app")
 
 
-@api.post("/new/ranking/app", response=TrackingAppsSchema)
+@api.post("/new/ranking/app", response=RankedSchema)
 def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
     app_data = request.POST
     date_id = get_date()
@@ -163,12 +164,12 @@ def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
                 post_to_slack(f" 순위 상승🚀: {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
             if rank_diff >= 1:
                 post_to_slack(f" 순위 하락🛬: {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
-            return tracking
+        return item
 
 
 @api.post("/new/ranking/high")
 def get_highest_rank_of_realtime_ranks_today(request) -> None:
-    date_today = get_date(datetime.now().astimezone(tz=KST).strftime("%Y%m%d") + "2300")
+    date_today = get_date(today.strftime("%Y%m%d") + "2300")
     rank_set = Ranked.objects \
         .filter(created_at__gte=today - timedelta(days=1),
                 created_at__lte=today,
