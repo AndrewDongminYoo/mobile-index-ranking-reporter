@@ -48,7 +48,8 @@ def get_following() -> list:
             url = "http://13.125.164.253/cron/new/following"
             res = requests.post(url, data=app)
             if res.status_code == 200:
-                result.append(res.json()["market_appid"])
+                for data in res.json():
+                    result.append(data["market_appid"])
         return result
 
 
