@@ -5,7 +5,7 @@ from datetime import timedelta
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Min
-from ninja import NinjaAPI, Schema
+from ninja import NinjaAPI
 from ninja.orm import create_schema
 from pytz import timezone
 
@@ -21,15 +21,9 @@ FollowingSchema = create_schema(Following)
 TimeIndexSchema = create_schema(TimeIndex)
 OneStoreDLSchema = create_schema(OneStoreDL)
 RankedSchema = create_schema(Ranked)
-market_app_list = get_following()
-following_app_list = [f.market_appid for f in Following.objects.filter(expire_date__gte=today)]
 
 
-class EmptySchema(Schema):
-    pass
-
-
-@api.post("/new/following", response={200: FollowingSchema, 204: EmptySchema})
+@api.post("/new/following")
 def internal_cron(request: WSGIRequest):
     post_data = request.POST
     mkt_app = post_data.get("market_appid")
@@ -61,7 +55,6 @@ def internal_cron(request: WSGIRequest):
     if following:
         following.expire_date = expire_date
         following.save()
-        return 200, following
     elif appname and market and mkt_app:
         following = Following(
             market=market,
@@ -71,9 +64,6 @@ def internal_cron(request: WSGIRequest):
         )
         following.save()
         print(following)
-        return 200, following
-    else:
-        return 204, ""
 
 
 @api.post("/new/date", response=TimeIndexSchema)
@@ -124,6 +114,8 @@ def ranking_crawl(request: WSGIRequest):
 
 @api.post("/new/ranking/app", response=RankedSchema)
 def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
+    market_app_list = get_following()
+    following_app_list = [f.market_appid for f in Following.objects.filter(expire_date__gte=today)]
     app_data = request.POST
     date_id = get_date()
     app = create_app(app_data)
