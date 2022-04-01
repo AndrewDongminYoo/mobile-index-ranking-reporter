@@ -21,6 +21,8 @@ FollowingSchema = create_schema(Following)
 TimeIndexSchema = create_schema(TimeIndex)
 OneStoreDLSchema = create_schema(OneStoreDL)
 RankedSchema = create_schema(Ranked)
+market_app_list = get_following()
+following_app_list = [f.market_appid for f in Following.objects.filter(expire_date__gte=today)]
 
 
 @api.post("/new/following", response={200: FollowingSchema, 204: EmptySchema})
@@ -118,10 +120,8 @@ def ranking_crawl(request: WSGIRequest):
 
 @api.post("/new/ranking/app", response=RankedSchema)
 def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
-    market_app_list = get_following()
     app_data = request.POST
     date_id = get_date()
-    following_app_list = [f.market_appid for f in Following.objects.filter(expire_date__gte=today)]
     app = create_app(app_data)
     market_name = app_data["market_name"]
     if not (market == "one" and market_name in ["apple", "google"]):
