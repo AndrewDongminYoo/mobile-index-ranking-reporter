@@ -61,6 +61,7 @@ def internal_cron(request: WSGIRequest):
     if following:
         following.expire_date = expire_date
         following.save()
+        return 200, following
     elif appname and market and mkt_app:
         following = Following(
             market=market,
@@ -70,7 +71,6 @@ def internal_cron(request: WSGIRequest):
         )
         following.save()
         print(following)
-    if following:
         return 200, following
     else:
         return 204, ""
