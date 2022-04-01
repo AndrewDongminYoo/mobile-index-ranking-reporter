@@ -1,5 +1,8 @@
+from datetime import timedelta
+
 from django.contrib import admin
 from django.db.models import QuerySet
+from django.utils import timezone
 from import_export.admin import ImportExportMixin
 
 from crawler.models import App
@@ -19,7 +22,7 @@ def follow_application(self, request, queryset: QuerySet):
                 app_name=obj.app_name,
                 package_name=obj.package_name,
                 market_appid=obj.market_appid,
-                is_following=True,
+                expire_date=timezone.now() + timedelta(days=3)
             )
             follow.save()
         elif type(obj) is OneStoreDL:
@@ -27,13 +30,10 @@ def follow_application(self, request, queryset: QuerySet):
             following = Following(
                 app_name=app.app_name,
                 market_appid=app.market_appid,
-                is_following=True,
                 market="one",
+                expire_date=timezone.now() + timedelta(days=3)
             )
             following.save()
-        elif type(obj) is Following:
-            obj.is_following = True
-            obj.save()
 
 
 def email_callable(app):
@@ -75,7 +75,7 @@ class RankedAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class FollowingAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ['id', 'app_name', 'market_appid', 'market', 'is_following']
+    list_display = ['id', 'app_name', 'market_appid', 'market', 'expire_date']
     search_fields = ["app_name", "market_appid"]
     actions = [follow_application]
 
