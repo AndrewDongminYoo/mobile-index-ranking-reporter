@@ -5,7 +5,7 @@ from datetime import timedelta
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Min
-from ninja import NinjaAPI
+from ninja import NinjaAPI, Schema
 from ninja.orm import create_schema
 from pytz import timezone
 
@@ -23,7 +23,11 @@ OneStoreDLSchema = create_schema(OneStoreDL)
 RankedSchema = create_schema(Ranked)
 
 
-@api.post("/new/following")
+class EmptySchema(Schema):
+    pass
+
+
+@api.post("/new/following", response={200: FollowingSchema, 204: EmptySchema})
 def internal_cron(request: WSGIRequest):
     post_data = request.POST
     mkt_app = post_data.get("market_appid")
@@ -55,6 +59,7 @@ def internal_cron(request: WSGIRequest):
     if following:
         following.expire_date = expire_date
         following.save()
+        return 200, following
     elif appname and market and mkt_app:
         following = Following(
             market=market,
@@ -64,6 +69,9 @@ def internal_cron(request: WSGIRequest):
         )
         following.save()
         print(following)
+        return 200, following
+    else:
+        return 204, ""
 
 
 @api.post("/new/date", response=TimeIndexSchema)

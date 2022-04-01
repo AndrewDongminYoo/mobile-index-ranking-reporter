@@ -48,8 +48,10 @@ def get_following() -> list:
             url = "http://13.125.164.253/cron/new/following"
             res = requests.post(url, data=app)
             if res.status_code == 200:
+                print(res.json())
                 for data in res.json():
                     result.append(data["market_appid"])
+                    print(data["market_appid"])
     Following.objects.all().update(is_following=False)
     for market_appid in result:
         Following.objects.filter(market_appid=market_appid).update(is_following=True)
@@ -321,4 +323,4 @@ def get_information_of_following_apps():
 
 
 if __name__ == '__main__':
-    get_information_of_following_apps()
+    get_following()
