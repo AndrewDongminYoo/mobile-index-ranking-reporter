@@ -21,9 +21,10 @@ FollowingSchema = create_schema(Following)
 TimeIndexSchema = create_schema(TimeIndex)
 OneStoreDLSchema = create_schema(OneStoreDL)
 RankedSchema = create_schema(Ranked)
+EmptySchema = create_schema(None)
 
 
-@api.post("/new/following", response={200: FollowingSchema, 204: "No Content"})
+@api.post("/new/following", response={200: FollowingSchema, 204: EmptySchema})
 def internal_cron(request: WSGIRequest):
     post_data = request.POST
     mkt_app = post_data.get("market_appid")
