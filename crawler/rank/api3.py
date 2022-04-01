@@ -5,10 +5,10 @@ from datetime import timedelta
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Min
-from ninja import NinjaAPI
+from ninja import NinjaAPI, Schema
 from ninja.orm import create_schema
 from pytz import timezone
-from crawler.rank.api2 import EmptySchema
+
 from crawler.models import Following, App, TimeIndex, OneStoreDL, Ranked, TrackingApps
 from crawler.utils import get_data_from_soup, crawl_app_store_rank, get_following
 from crawler.utils import post_to_slack, get_date, create_app
@@ -23,6 +23,10 @@ OneStoreDLSchema = create_schema(OneStoreDL)
 RankedSchema = create_schema(Ranked)
 market_app_list = get_following()
 following_app_list = [f.market_appid for f in Following.objects.filter(expire_date__gte=today)]
+
+
+class EmptySchema(Schema):
+    pass
 
 
 @api.post("/new/following", response={200: FollowingSchema, 204: EmptySchema})

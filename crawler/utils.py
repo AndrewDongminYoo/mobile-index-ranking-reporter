@@ -10,14 +10,14 @@ import django
 
 django.setup()
 from datetime import datetime, timedelta, date
-from django.db.models import Min, Q
+from django.db.models import Q
 from bs4 import BeautifulSoup
 from pytz import timezone
 from typing import Tuple
 import requests
 import re
-from crawler.models import Ranked, Following, App
-from crawler.models import TrackingApps, AppInformation
+from crawler.models import Following, App
+from crawler.models import AppInformation
 from ranker.settings import SLACK_WEBHOOK_URL
 
 KST = timezone('Asia/Seoul')
