@@ -25,8 +25,8 @@ RankedSchema = create_schema(Ranked)
 @api.post("/new/following", response=FollowingSchema)
 def internal_cron(request: WSGIRequest):
     post_data = request.POST
-    for app in Following.objects.filter(is_active=True, expire_date__lt=today):
-        app.is_active = False
+    for app in Following.objects.filter(is_following=True, expire_date__lt=today):
+        app.is_following = False
         app.save()
     market_appid = post_data.get("market_appid")
     address = post_data.get("address")
@@ -55,7 +55,7 @@ def internal_cron(request: WSGIRequest):
     following = Following.objects.filter(market=market, market_appid=market_appid).first()
     expire_date = today + timedelta(days=3)
     if following:
-        following.is_active = True
+        following.is_following = True
         following.expire_date = expire_date
         following.save()
     elif appname and market and market_appid:
@@ -63,7 +63,7 @@ def internal_cron(request: WSGIRequest):
             app_name=appname,
             market_appid=market_appid,
             market=market,
-            is_active=True,
+            is_following=True,
             expire_date=expire_date
         )
         following.save()
@@ -121,7 +121,7 @@ def ranking_crawl(request: WSGIRequest):
 def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
     app_data = request.POST
     date_id = get_date()
-    following = [f.market_appid for f in Following.objects.filter(is_active=True)]
+    following = [f.market_appid for f in Following.objects.filter(is_following=True)]
     app = create_app(app_data)
     market_name = app_data["market_name"]
     if not (market == "one" and market_name in ["apple", "google"]):
@@ -175,7 +175,7 @@ def get_highest_rank_of_realtime_ranks_today(request) -> None:
                 created_at__lte=today,
                 market__in=["apple", "google"],
                 deal_type="realtime_rank")
-    for following in Following.objects.filter(is_active=True, market__in=["apple", "google"]).all():
+    for following in Following.objects.filter(is_following=True, market__in=["apple", "google"]).all():
         market_appid = following.market_appid
         query = rank_set.filter(market_appid=market_appid) \
             .values('market_appid', 'app_name', 'market', 'app_type', 'chart_type', 'icon_url') \

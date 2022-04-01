@@ -19,7 +19,7 @@ def follow_application(self, request, queryset: QuerySet):
                 app_name=obj.app_name,
                 package_name=obj.package_name,
                 market_appid=obj.market_appid,
-                is_active=True,
+                is_following=True,
             )
             follow.save()
         elif type(obj) is OneStoreDL:
@@ -27,12 +27,12 @@ def follow_application(self, request, queryset: QuerySet):
             following = Following(
                 app_name=app.app_name,
                 market_appid=app.market_appid,
-                is_active=True,
+                is_following=True,
                 market="one",
             )
             following.save()
         elif type(obj) is Following:
-            obj.is_active = True
+            obj.is_following = True
             obj.save()
 
 
@@ -75,7 +75,7 @@ class RankedAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class FollowingAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ['id', 'app_name', 'market_appid', 'market', 'is_active']
+    list_display = ['id', 'app_name', 'market_appid', 'market', 'is_following']
     search_fields = ["app_name", "market_appid"]
     actions = [follow_application]
 
