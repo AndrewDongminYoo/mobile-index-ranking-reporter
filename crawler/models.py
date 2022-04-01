@@ -95,7 +95,6 @@ class Following(Timestamped):
 
     app_name = models.CharField(max_length=80, verbose_name="앱 이름")
     market_appid = models.CharField(max_length=80, null=True, verbose_name="패키지명")
-    is_pushing = models.BooleanField(default=True, verbose_name="광고 중 여부")
     market = models.CharField(max_length=16, choices=Ranked.MARKET, verbose_name="마켓명")
     expire_date = models.DateTimeField(null=True, verbose_name="만료일")
 
