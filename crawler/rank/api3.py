@@ -67,7 +67,7 @@ def internal_cron(request: WSGIRequest):
     if following:
         return 200, following
     else:
-        return 204, None
+        return 204, ""
 
 
 @api.post("/new/date", response=TimeIndexSchema)
