@@ -49,9 +49,7 @@ def get_following() -> list:
             res = requests.post(url, data=app)
             if res.status_code == 200:
                 print(res.json())
-                for data in res.json():
-                    result.append(data["market_appid"])
-                    print(data["market_appid"])
+                result.append(res.json()["market_appid"])
     Following.objects.all().update(is_following=False)
     for market_appid in result:
         Following.objects.filter(market_appid=market_appid).update(is_following=True)
