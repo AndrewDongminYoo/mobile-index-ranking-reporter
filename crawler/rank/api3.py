@@ -114,7 +114,7 @@ def ranking_crawl(request: WSGIRequest):
 
 @api.post("/new/ranking/app", response=RankedSchema)
 def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
-    market_app_list = get_following()
+    market_app_list = [f.market_appid for f in Following.objects.filter(is_following=True)]
     following_app_list = [f.market_appid for f in Following.objects.filter(expire_date__gte=today)]
     app_data = request.POST
     date_id = get_date()
@@ -193,3 +193,9 @@ def get_highest_rank_of_realtime_ranks_today(request) -> None:
             )[0]
             new_app.rank = first.get('highest_rank')
             new_app.save()
+
+
+@api.post("update/following")
+def update_all_items(request):
+    print(request.POST)
+    get_following()

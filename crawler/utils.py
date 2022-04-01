@@ -35,8 +35,8 @@ def get_following() -> list:
     API_KEY = 'wkoo4ko0g808s0kkossoo4o8ow0kwwg88gw004sg'
     url = f'http://dev.i-screen.kr/channel/rank_ads_list?apikey={API_KEY}'
     req = requests.get(url)
+    result = []
     if req.status_code == 200:
-        result = []
         response = req.json()
         for adv_info in response["list"]:
             app = dict(
@@ -50,7 +50,10 @@ def get_following() -> list:
             if res.status_code == 200:
                 for data in res.json():
                     result.append(data["market_appid"])
-        return result
+    Following.objects.all().update(is_following=False)
+    for market_appid in result:
+        Following.objects.filter(market_appid=market_appid).update(is_following=True)
+    return result
 
 
 def post_to_slack(text=None, URL=""):
