@@ -167,9 +167,9 @@ def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
             market_str = item.get_market_display()
             LIVE = "LIVE" if item.market_appid in market_app_list else ""
             if rank_diff <= -1:
-                post_to_slack(f" 순위 상승 **{LIVE}**🚀 {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
+                post_to_slack(f" 순위 상승 *{LIVE}*🚀 {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
             if rank_diff >= 1:
-                post_to_slack(f" 순위 하락 **{LIVE}**🛬 {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
+                post_to_slack(f" 순위 하락 *{LIVE}*🛬 {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
         return item
 
 
