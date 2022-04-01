@@ -8,7 +8,7 @@ from django.db.models import Min
 from ninja import NinjaAPI
 from ninja.orm import create_schema
 from pytz import timezone
-
+from api2 import EmptySchema
 from crawler.models import Following, App, TimeIndex, OneStoreDL, Ranked, TrackingApps
 from crawler.utils import get_data_from_soup, crawl_app_store_rank
 from crawler.utils import post_to_slack, get_date, create_app
@@ -21,7 +21,6 @@ FollowingSchema = create_schema(Following)
 TimeIndexSchema = create_schema(TimeIndex)
 OneStoreDLSchema = create_schema(OneStoreDL)
 RankedSchema = create_schema(Ranked)
-EmptySchema = create_schema(None)
 
 
 @api.post("/new/following", response={200: FollowingSchema, 204: EmptySchema})
