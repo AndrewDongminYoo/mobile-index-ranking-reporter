@@ -56,7 +56,6 @@ def internal_cron(request: WSGIRequest):
     expire_date = today + timedelta(days=3)
     if following:
         following.is_following = True
-        following.is_reporting = True
         following.expire_date = expire_date
         following.save()
     elif appname and market and market_appid:
@@ -65,7 +64,6 @@ def internal_cron(request: WSGIRequest):
             market_appid=market_appid,
             market=market,
             is_following=True,
-            is_reporting=True,
             expire_date=expire_date
         )
         following.save()
