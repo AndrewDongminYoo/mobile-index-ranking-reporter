@@ -107,10 +107,11 @@ def create_app(app_data: dict) -> App:
 def get_data_from_soup(market_appid: str) -> Tuple[str, str, str, str, date, int]:
     soup1 = get_soup(market_appid, True)
     soup2 = get_soup(market_appid, False)
-    d_counts = soup1.select_one("li:-soup-contains('다운로드수') > span").text
-    d_string = soup1.select_one("li:-soup-contains('출시일') > span").text
-    genre = soup1.select_one("li:-soup-contains('장르') > span").text
-    volume = soup1.select_one("li:-soup-contains('용량') > span").text
+    selector = "#container > div.detaildescription-wrap.ty1 > div.detaildescription-list > ul"
+    d_counts = soup1.select_one(selector + " > li:nth-child(3) > span").text
+    d_string = soup1.select_one(selector + " > li:nth-child(4) > span").text
+    genre = soup1.select_one(selector + " > li:nth-child(1) > span").text
+    volume = soup1.select_one(selector + " > li:nth-child(2) > span").text
     style = soup1.select_one("#header > div > div > div.header-co-right > span").get('style')
     icon_url = style.replace("background-image:url(", "").replace(")", "")
     app_name = soup2.title.get_text().replace(" - 원스토어", "")

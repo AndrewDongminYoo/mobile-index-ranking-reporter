@@ -82,7 +82,8 @@ def what_date(request: WSGIRequest):
 
 
 @api.post("/new/downloads", response=OneStoreDLSchema)
-def get_one_store_information(request: WSGIRequest, market_appid) -> OneStoreDL:
+def get_one_store_information(request: WSGIRequest) -> OneStoreDL:
+    market_appid = request.POST["market_appid"]
     date_id = get_date()
     app = App.objects.get(market_appid=market_appid)
     genre, volume, icon_url, app_name, released, download = get_data_from_soup(market_appid)

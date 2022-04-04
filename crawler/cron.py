@@ -8,11 +8,16 @@ def ive_korea_internal_api():
 
 def following_one_crawl():
     url = "http://13.125.164.253/v2/follow/list"
+    url = "http://127.0.0.1:8000/v2/follow/list"
     res = requests.get(url).json()["items"]
     url = "http://13.125.164.253/cron/new/downloads"
+    url = "http://127.0.0.1:8000/cron/new/downloads"
     for obj in res:
         market_appid = obj["market_appid"]
-        requests.post(url, data={"market_appid": market_appid})
+        market = obj["market"]
+        if market == "one":
+            print(market_appid)
+            requests.post(url, data={"market_appid": market_appid})
 
 
 def crawl_app_store_hourly():
@@ -28,4 +33,4 @@ def crawl_app_store_daily():
 
 
 if __name__ == '__main__':
-    ive_korea_internal_api()
+    following_one_crawl()
