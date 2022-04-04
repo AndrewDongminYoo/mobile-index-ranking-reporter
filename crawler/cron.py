@@ -8,11 +8,9 @@ def ive_korea_internal_api():
 
 def following_one_crawl():
     url = "http://13.125.164.253/v2/follow/list"
-    url = "http://127.0.0.1:8000/v2/follow/list"
-    res = requests.get(url).json()["items"]
+    res = requests.get(url).json()
     url = "http://13.125.164.253/cron/new/downloads"
-    url = "http://127.0.0.1:8000/cron/new/downloads"
-    for obj in res:
+    for obj in res["items"]:
         market_appid = obj["market_appid"]
         market = obj["market"]
         if market == "one":
