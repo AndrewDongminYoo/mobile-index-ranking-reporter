@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crawler.apps.CrawlerConfig',
-    'django_celery_beat',
     'import_export',
 ]
 
