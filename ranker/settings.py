@@ -99,6 +99,9 @@ DATABASES = {
         'PASSWORD': env('DJANGO_DATABASE_PASSWORD', default=''),
         'HOST': env('DJANGO_DATABASE_HOST', default=''),
         'PORT': env('DJANGO_DATABASE_PORT', default=''),
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
     }
 }
 
