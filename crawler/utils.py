@@ -16,10 +16,12 @@ from pytz import timezone
 from typing import Tuple
 import requests
 import re
+from logging import getLogger
 from crawler.models import Following, App
 from crawler.models import AppInformation
 from ranker.settings import SLACK_WEBHOOK_URL
 
+logger = getLogger(__name__)
 KST = timezone('Asia/Seoul')
 today = datetime.now().astimezone(tz=KST)
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
