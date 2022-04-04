@@ -28,4 +28,4 @@ def crawl_app_store_daily():
 
 
 if __name__ == '__main__':
-    crawl_app_store_hourly()
+    ive_korea_internal_api()

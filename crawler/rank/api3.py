@@ -5,6 +5,7 @@ from datetime import timedelta
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Min
+from django.http import QueryDict
 from ninja import NinjaAPI, Schema
 from ninja.orm import create_schema
 from pytz import timezone
@@ -81,7 +82,7 @@ def what_date(request: WSGIRequest):
 
 
 @api.post("/new/downloads", response=OneStoreDLSchema)
-def get_one_store_information(market_appid) -> OneStoreDL:
+def get_one_store_information(request: WSGIRequest, market_appid) -> OneStoreDL:
     date_id = get_date()
     app = App.objects.get(market_appid=market_appid)
     genre, volume, icon_url, app_name, released, download = get_data_from_soup(market_appid)
@@ -124,9 +125,9 @@ def ranking_crawl(request: WSGIRequest):
 def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
     market_app_list = [f.market_appid for f in Following.objects.filter(is_following=True)]
     following_app_list = [f.market_appid for f in Following.objects.filter(expire_date__gte=today)]
-    app_data = request.POST
-    date_id = get_date()
-    app = create_app(app_data)
+    app_data: QueryDict = request.POST
+    date_id: int = get_date()
+    app: App = create_app(app_data)
     market_name = app_data["market_name"]
     if not (market == "one" and market_name in ["apple", "google"]):
         item = Ranked(
@@ -188,6 +189,7 @@ def get_highest_rank_of_realtime_ranks_today(request) -> None:
             .annotate(highest_rank=Min('rank'))
         if query:
             first = query[0]
+            app = App.objects.get(market_appid=market_appid)
             new_app = TrackingApps.objects.update_or_create(
                 market=first.get('market'),
                 chart_type=first.get('chart_type'),
@@ -195,7 +197,7 @@ def get_highest_rank_of_realtime_ranks_today(request) -> None:
                 icon_url=first.get('icon_url'),
                 deal_type='market_rank',
                 market_appid=market_appid,
-                app=App.objects.get(market_appid=market_appid),
+                app=app,
                 following=following,
                 date=date_today,
             )[0]
