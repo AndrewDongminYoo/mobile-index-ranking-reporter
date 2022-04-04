@@ -55,6 +55,7 @@ def get_following() -> list:
     Following.objects.all().update(is_following=False)
     for market_appid in result:
         Following.objects.filter(market_appid=market_appid).update(is_following=True)
+    logger.info(result)
     return result
 
 
@@ -120,6 +121,7 @@ def get_data_from_soup(market_appid: str) -> Tuple[str, str, str, str, date, int
     array = [i for i in map(int, d_string.split("."))]
     released = date(year=array[0], month=array[1], day=array[2])
     download = int(d_counts.replace(",", ""))
+    logger.info(f"{market_appid} : {app_name}, {genre}, {volume}, {released}, {download}")
     return genre, volume, icon_url, app_name, released, download
 
 
@@ -136,6 +138,7 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
     if response["status"]:
         for app_data in response["data"]:
             url = f"http://13.125.164.253/cron/new/ranking/app?market={market}&game={game_or_app}&term={term}"
+            logger.info(f"/app?market={market}&game={game_or_app}&term={term}")
             requests.post(url, data=app_data)
 
 
@@ -210,6 +213,7 @@ def read_information_of_apple_store_app():
         app.app_name = title
         print(app.app_name, publisher_name, genre_name)
         info = AppInformation.objects.get_or_create(apple_url=APPLE_PREFIX + app.market_appid)[0]
+        logger.info(info.apple_url)
         info.publisher_name = publisher_name
         info.category_main = genre_name
         info.apple_url = app.app_url
@@ -232,6 +236,7 @@ def read_information_of_one_store_app():
             app.app_name = title
             print(title, publisher_name)
             info = AppInformation.objects.get_or_create(one_url=ONE_PREFIX + app.market_appid)[0]
+            logger.info(info.one_url)
             info.publisher_name = publisher_name
             info.one_url = app.app_url
             info.save()
@@ -317,6 +322,7 @@ def get_information_of_following_apps():
             app_info.publisher_name = app_data["publisher_name"]
             app.icon_url = app_data["icon_url"]
             app.app_name = app_data["app_name"]
+            logger.info(f"{app.app_name}, {app.market_appid}, {app.icon_url}")
             app_info.save()
             print(app_info)
             app.app_info = app_info
