@@ -12,8 +12,7 @@ def following_one_crawl():
     url = "http://13.125.164.253/cron/new/downloads"
     for obj in res["items"]:
         market_appid = obj["market_appid"]
-        market = obj["market"]
-        if market == "one":
+        if obj["market"] == "one":
             print(market_appid)
             requests.post(url, data={"market_appid": market_appid})
 
