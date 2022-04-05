@@ -213,7 +213,7 @@ CELERY_ENABLE_UTC = True
 from celery.schedules import crontab
 from datetime import timedelta
 
-CELERYBEAT_SCHEDULE = {
+CELERY_BEAT_SCHEDULE = {
     'update-rank': {
         'task': 'ranker.tasks.crawl_app_store_hourly',
         'schedule': crontab(minute=0),
