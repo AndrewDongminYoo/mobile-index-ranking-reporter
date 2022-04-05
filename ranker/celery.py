@@ -1,3 +1,4 @@
+from __future__ import absolute_import, unicode_literals
 import os
 import requests
 from celery import Celery
@@ -5,7 +6,7 @@ from celery.schedules import crontab
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ranker.settings')
 app = Celery('ranker', broker="redis://localhost:6379/0")
-app.config_from_object('django.conf:ranker.settings', namespace='CELERY')
+app.config_from_object('ranker.settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 
