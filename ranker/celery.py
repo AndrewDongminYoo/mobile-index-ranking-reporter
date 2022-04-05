@@ -2,7 +2,6 @@ import os
 import requests
 from celery import Celery
 from celery.schedules import crontab
-from django_celery_beat.models import PeriodicTask
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ranker.settings')
 app = Celery('ranker', broker="redis://localhost:6379/0")
