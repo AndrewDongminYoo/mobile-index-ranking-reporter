@@ -72,26 +72,26 @@ def crawl_app_store_daily():
 
 app.conf.beat_schedule = {
     "crawl app store hourly": {
+        "task": "tasks.crawl_app_store_hourly",
         "schedule": crontab(minute=0),
-        "task": "crawl_app_store_hourly",
         "args": (),
     },
 
     "crawl app store daily": {
+        "task": "tasks.crawl_app_store_daily",
         "schedule": crontab(minute=10, hour=0),
-        "task": "crawl_app_store_daily",
         "args": (),
     },
 
     "ive korea internal api": {
+        "task": "tasks.ive_korea_internal_api",
         "schedule": crontab(minute="*/15"),
-        "task": "ive_korea_internal_api",
         "args": (),
     },
 
     "following one crawl": {
+        "task": "tasks.following_one_crawl",
         "schedule": crontab(minute=10, hour=12),
-        "task": "following_one_crawl",
         "args": (),
     }
 }
