@@ -10,6 +10,12 @@ app.autodiscover_tasks()
 
 
 @app.task
+def add(x, y):
+    print(f"{x} + {y} = {x + y}")
+    return x + y
+
+
+@app.task
 def ive_korea_internal_api():
     url = "http://13.125.164.253/cron/update/following"
     requests.post(url)
