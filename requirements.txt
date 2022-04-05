@@ -19,7 +19,7 @@ django-ratelimit==3.0.1
 et-xmlfile==1.1.0
 gunicorn==20.1.0
 idna==3.3
-import-export
+import-export==0.2.67.dev6
 MarkupPy==1.14
 mysqlclient==2.1.0
 numpy==1.22.3
