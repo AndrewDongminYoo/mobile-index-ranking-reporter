@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crawler.apps.CrawlerConfig',
     'django_celery_beat',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +53,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CRONTAB_DJANGO_SETTINGS_MODULE = 'ranker.settings'
+
+CRONJOBS = [
+    ('*/15 0-15 * * *', 'crawler.utils.get_following', ">> /home/ubuntu/ive.log"),
+    ('0 * * * *', 'crawler.cron.crawl_app_store_hourly', ">> /home/ubuntu/0000.log"),
+    ('10 15 * * *', 'crawler.cron.following_one_crawl', '>> /home/ubuntu/0010.log'),
+    ('10 3 * * *', 'crawler.cron.crawl_app_store_daily', '>> /home/ubuntu/1210.log'),
 ]
 
 ROOT_URLCONF = 'ranker.urls'
