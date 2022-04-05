@@ -50,21 +50,31 @@ def crawl_app_store_daily():
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
+        crontab(),
+        add.s(1, 2),
+        name="add every minute"
+    )
+
+    sender.add_periodic_task(
         crontab(minute=0, tz='Asia/Seoul'),
-        crawl_app_store_hourly(),
+        crawl_app_store_hourly.s(),
+        name="crawl_app_store_hourly"
     )
 
     sender.add_periodic_task(
         crontab(minute=10, hour=0, tz='Asia/Seoul'),
-        crawl_app_store_daily(),
+        crawl_app_store_daily.s(),
+        name="crawl_app_store_daily"
     )
 
     sender.add_periodic_task(
-        1200.0,
-        ive_korea_internal_api(),
+        crontab(minute="*/15", tz="Asia/Seoul"),
+        ive_korea_internal_api.s(),
+        name="ive_korea_internal_api"
     )
 
     sender.add_periodic_task(
         crontab(minute=10, hour=12, tz='Asia/Seoul'),
-        following_one_crawl(),
+        following_one_crawl.s(),
+        name="following_one_crawl"
     )
