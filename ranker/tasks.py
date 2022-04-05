@@ -84,7 +84,7 @@ app.conf.beat_schedule = {
     },
 
     "ive korea internal api": {
-        "schedule": crontab(),
+        "schedule": crontab(minute="*/15"),
         "task": "ive_korea_internal_api",
         "args": (),
     },
