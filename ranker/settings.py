@@ -218,3 +218,14 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Seoul'
 CELERY_ENABLE_UTC = True
+
+from celery.schedules import crontab
+from datetime import timedelta
+
+CELERYBEAT_SCHEDULE = {
+    'update-rank': {
+        'task': 'ranker.tasks.add',
+        'schedule': timedelta(seconds=10),
+        'args': (1, 2),
+    },
+}
