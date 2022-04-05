@@ -9,6 +9,34 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 
+@app.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task(
+        crontab(minute=0, tz='Asia/Seoul'),
+        crawl_app_store_hourly.s(),
+        name="crawl app store hourly"
+    )
+
+    sender.add_periodic_task(
+        crontab(minute=10, hour=0, tz='Asia/Seoul'),
+        crawl_app_store_daily.s(),
+        name="crawl app store daily"
+    )
+
+    sender.add_periodic_task(
+        # crontab(minute="*/15", tz="Asia/Seoul"),
+        crontab(),
+        ive_korea_internal_api.s(),
+        name="ive korea internal api"
+    )
+
+    sender.add_periodic_task(
+        crontab(minute=10, hour=12, tz='Asia/Seoul'),
+        following_one_crawl.s(),
+        name="following one crawl"
+    )
+
+
 @app.task
 def ive_korea_internal_api():
     url = "http://13.125.164.253/cron/update/following"
@@ -39,32 +67,3 @@ def crawl_app_store_hourly():
 def crawl_app_store_daily():
     url = "http://13.125.164.253/cron/new/ranking"
     requests.post(url, data={"market": "one"})
-
-
-@app.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwargs):
-
-    sender.add_periodic_task(
-        crontab(minute=0, tz='Asia/Seoul'),
-        crawl_app_store_hourly.s(),
-        name="crawl app store hourly"
-    )
-
-    sender.add_periodic_task(
-        crontab(minute=10, hour=0, tz='Asia/Seoul'),
-        crawl_app_store_daily.s(),
-        name="crawl app store daily"
-    )
-
-    sender.add_periodic_task(
-        # crontab(minute="*/15", tz="Asia/Seoul"),
-        crontab(),
-        ive_korea_internal_api.s(),
-        name="ive korea internal api"
-    )
-
-    sender.add_periodic_task(
-        crontab(minute=10, hour=12, tz='Asia/Seoul'),
-        following_one_crawl.s(),
-        name="following one crawl"
-    )
