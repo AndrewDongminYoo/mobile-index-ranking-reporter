@@ -57,7 +57,8 @@ def setup_periodic_tasks(sender, **kwargs):
     )
 
     sender.add_periodic_task(
-        crontab(minute="*/15", tz="Asia/Seoul"),
+        # crontab(minute="*/15", tz="Asia/Seoul"),
+        crontab(),
         ive_korea_internal_api.s(),
         name="ive korea internal api"
     )

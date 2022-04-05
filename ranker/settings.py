@@ -209,32 +209,3 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Seoul'
 CELERY_ENABLE_UTC = True
-
-from celery.schedules import crontab
-from datetime import timedelta
-
-CELERY_BEAT_SCHEDULE = {
-    'update-rank': {
-        'task': 'ranker.tasks.crawl_app_store_hourly',
-        'schedule': crontab(minute=0),
-        'args': (),
-    },
-
-    'update_rank_daily': {
-        'task': 'ranker.tasks.crawl_app_store_daily',
-        'schedule': crontab(minute=10, hour=0),
-        'args': (),
-    },
-
-    'update_one_store_rank': {
-        'task': 'ranker.tasks.following_one_crawl',
-        'schedule': crontab(minute=10, hour=12),
-        'args': (),
-    },
-
-    'ive-korea-connect': {
-        'task': 'ranker.tasks.ive_korea_connect',
-        'schedule': crontab(minute="*/15"),
-        'args': (),
-    }
-}
