@@ -11,6 +11,7 @@ app.autodiscover_tasks()
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
+
     sender.add_periodic_task(
         crontab(minute=0, tz='Asia/Seoul'),
         crawl_app_store_hourly.s(),
@@ -67,3 +68,30 @@ def crawl_app_store_hourly():
 def crawl_app_store_daily():
     url = "http://13.125.164.253/cron/new/ranking"
     requests.post(url, data={"market": "one"})
+
+
+app.conf.beat_schedule = {
+    "crawl app store hourly": {
+        "schedule": crontab(minute=0, tz='Asia/Seoul'),
+        "task": crawl_app_store_hourly.s(),
+        "args": (),
+    },
+
+    "crawl app store daily": {
+        "schedule": crontab(minute=10, hour=0, tz='Asia/Seoul'),
+        "task": crawl_app_store_daily.s(),
+        "args": (),
+    },
+
+    "ive korea internal api": {
+        "schedule": crontab(),
+        "task": ive_korea_internal_api.s(),
+        "args": (),
+    },
+
+    "following one crawl": {
+        "schedule": crontab(minute=10, hour=12, tz='Asia/Seoul'),
+        "task": following_one_crawl.s(),
+        "args": (),
+    }
+}
