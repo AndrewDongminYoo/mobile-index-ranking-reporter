@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crawler.apps.CrawlerConfig',
     'django_celery_beat',
+    'django_crontab',
     'import_export',
 ]
 
