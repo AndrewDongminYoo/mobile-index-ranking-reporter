@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crawler.apps.CrawlerConfig',
-    'django_crontab',
+    # 'django_crontab',
     'import_export',
 ]
 
@@ -53,15 +53,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-
-CRONTAB_DJANGO_SETTINGS_MODULE = 'ranker.settings'
-
-CRONJOBS = [
-    ('*/15 0-15 * * *', 'crawler.cron.ive_korea_internal_api', ">> /home/ubuntu/ive.log"),
-    ('0 * * * *', 'crawler.cron.crawl_app_store_hourly', ">> /home/ubuntu/0000.log"),
-    ('10 15 * * *', 'crawler.cron.following_one_crawl', '>> /home/ubuntu/0010.log'),
-    ('10 3 * * *', 'crawler.cron.crawl_app_store_daily', '>> /home/ubuntu/1210.log'),
 ]
 
 ROOT_URLCONF = 'ranker.urls'
@@ -224,8 +215,26 @@ from datetime import timedelta
 
 CELERYBEAT_SCHEDULE = {
     'update-rank': {
-        'task': 'ranker.tasks.add',
-        'schedule': timedelta(seconds=10),
-        'args': (1, 2),
+        'task': 'ranker.tasks.crawl_app_store_hourly',
+        'schedule': crontab(minute=0),
+        'args': (),
     },
+
+    'update_rank_daily': {
+        'task': 'ranker.tasks.crawl_app_store_daily',
+        'schedule': crontab(minute=10, hour=0),
+        'args': (),
+    },
+
+    'update_one_store_rank': {
+        'task': 'ranker.tasks.following_one_crawl',
+        'schedule': crontab(minute=10, hour=12),
+        'args': (),
+    },
+
+    'ive-korea-connect': {
+        'task': 'ranker.tasks.ive_korea_connect',
+        'schedule': crontab(minute="*/15"),
+        'args': (),
+    }
 }
