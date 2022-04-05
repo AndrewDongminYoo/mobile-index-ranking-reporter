@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crawler.apps.CrawlerConfig',
     'django_celery_beat',
-    'import_export',
+    'django_import_export-2.8.0.dist-info',
 ]
 
 MIDDLEWARE = [
