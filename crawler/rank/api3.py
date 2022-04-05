@@ -206,7 +206,7 @@ def get_highest_rank_of_realtime_ranks_today(request) -> None:
             new_app.save()
 
 
-@api.post("update/following")
+@api.post("/update/following")
 def update_all_items(request):
     print(request.POST)
     get_following()

@@ -13,26 +13,25 @@ app.autodiscover_tasks()
 def setup_periodic_tasks(sender, **kwargs):
 
     sender.add_periodic_task(
-        crontab(minute=0, tz='Asia/Seoul'),
+        crontab(minute=0),
         crawl_app_store_hourly.s(),
         name="crawl app store hourly"
     )
 
     sender.add_periodic_task(
-        crontab(minute=10, hour=0, tz='Asia/Seoul'),
+        crontab(minute=10, hour=0),
         crawl_app_store_daily.s(),
         name="crawl app store daily"
     )
 
     sender.add_periodic_task(
-        # crontab(minute="*/15", tz="Asia/Seoul"),
-        crontab(),
+        crontab(minute="*/15"),
         ive_korea_internal_api.s(),
         name="ive korea internal api"
     )
 
     sender.add_periodic_task(
-        crontab(minute=10, hour=12, tz='Asia/Seoul'),
+        crontab(minute=10, hour=12),
         following_one_crawl.s(),
         name="following one crawl"
     )
