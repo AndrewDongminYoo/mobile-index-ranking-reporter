@@ -69,29 +69,3 @@ def crawl_app_store_daily():
     url = "http://13.125.164.253/cron/new/ranking"
     requests.post(url, data={"market": "one"})
 
-
-app.conf.beat_schedule = {
-    "crawl app store hourly": {
-        "task": "tasks.crawl_app_store_hourly",
-        "schedule": crontab(minute=0),
-        "args": (),
-    },
-
-    "crawl app store daily": {
-        "task": "tasks.crawl_app_store_daily",
-        "schedule": crontab(minute=10, hour=0),
-        "args": (),
-    },
-
-    "ive korea internal api": {
-        "task": "tasks.ive_korea_internal_api",
-        "schedule": crontab(minute="*/15"),
-        "args": (),
-    },
-
-    "following one crawl": {
-        "task": "tasks.following_one_crawl",
-        "schedule": crontab(minute=10, hour=12),
-        "args": (),
-    }
-}
