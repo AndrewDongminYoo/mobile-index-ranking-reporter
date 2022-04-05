@@ -72,13 +72,13 @@ def crawl_app_store_daily():
 
 app.conf.beat_schedule = {
     "crawl app store hourly": {
-        "schedule": crontab(minute=0, tz='Asia/Seoul'),
+        "schedule": crontab(minute=0),
         "task": crawl_app_store_hourly.s(),
         "args": (),
     },
 
     "crawl app store daily": {
-        "schedule": crontab(minute=10, hour=0, tz='Asia/Seoul'),
+        "schedule": crontab(minute=10, hour=0),
         "task": crawl_app_store_daily.s(),
         "args": (),
     },
@@ -90,7 +90,7 @@ app.conf.beat_schedule = {
     },
 
     "following one crawl": {
-        "schedule": crontab(minute=10, hour=12, tz='Asia/Seoul'),
+        "schedule": crontab(minute=10, hour=12),
         "task": following_one_crawl.s(),
         "args": (),
     }
