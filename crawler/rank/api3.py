@@ -11,8 +11,8 @@ from ninja.orm import create_schema
 from pytz import timezone
 
 from crawler.models import Following, App, TimeIndex, OneStoreDL, Ranked, TrackingApps
-from crawler.utils import get_data_from_soup, crawl_app_store_rank, get_following
-from crawler.utils import post_to_slack, get_date, create_app
+from crawler.utils import get_data_from_soup, create_app
+from crawler.utils import post_to_slack, get_date
 
 KST = timezone('Asia/Seoul')
 today = datetime.now().astimezone(tz=KST)
@@ -111,17 +111,6 @@ def get_one_store_information(request: WSGIRequest) -> OneStoreDL:
     return ones_app
 
 
-@api.post("/new/ranking")
-def ranking_crawl(request: WSGIRequest):
-    post_data = request.POST
-    if post_data["market"] == "one":
-        crawl_app_store_rank("global_rank_v2", "one", "game")
-        crawl_app_store_rank("global_rank_v2", "one", "app")
-    else:
-        crawl_app_store_rank("realtime_rank_v2", "all", "game")
-        crawl_app_store_rank("realtime_rank_v2", "all", "app")
-
-
 @api.post("/new/ranking/app", response=RankedSchema)
 def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
     market_app_list = [f.market_appid for f in Following.objects.filter(is_following=True)]
@@ -204,9 +193,3 @@ def get_highest_rank_of_realtime_ranks_today(request) -> None:
             )[0]
             new_app.rank = first.get('highest_rank')
             new_app.save()
-
-
-@api.post("/update/following")
-def update_all_items(request):
-    print(request.POST)
-    get_following()
