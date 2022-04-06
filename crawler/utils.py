@@ -10,14 +10,14 @@ import django
 
 django.setup()
 from datetime import datetime, timedelta, date
-from django.db.models import Q
+from django.db.models import Q, Min
 from bs4 import BeautifulSoup
 from pytz import timezone
 from typing import Tuple
 import requests
 import re
 from logging import getLogger
-from crawler.models import Following, App
+from crawler.models import Following, App, TrackingApps, Ranked
 from crawler.models import AppInformation
 from ranker.settings import SLACK_WEBHOOK_URL
 
@@ -327,6 +327,36 @@ def get_information_of_following_apps():
             print(app_info)
             app.app_info = app_info
             app.save()
+
+
+def get_highest_rank_of_realtime_ranks_today() -> None:
+    date_today = get_date(today.strftime("%Y%m%d") + "2300")
+    rank_set = Ranked.objects \
+        .filter(created_at__gte=today - timedelta(days=1),
+                created_at__lte=today,
+                market__in=["apple", "google"],
+                deal_type="realtime_rank")
+    for following in Following.objects.filter(expire_date__gte=today, market__in=["apple", "google"]).all():
+        market_appid = following.market_appid
+        query = rank_set.filter(market_appid=market_appid) \
+            .values('market_appid', 'app_name', 'market', 'app_type', 'chart_type', 'icon_url') \
+            .annotate(highest_rank=Min('rank'))
+        if query:
+            first = query[0]
+            app = App.objects.get(market_appid=market_appid)
+            new_app = TrackingApps.objects.update_or_create(
+                market=first.get('market'),
+                chart_type=first.get('chart_type'),
+                app_name=first.get('app_name'),
+                icon_url=first.get('icon_url'),
+                deal_type='market_rank',
+                market_appid=market_appid,
+                app=app,
+                following=following,
+                date=date_today,
+            )[0]
+            new_app.rank = first.get('highest_rank')
+            new_app.save()
 
 
 if __name__ == '__main__':

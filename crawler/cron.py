@@ -1,6 +1,6 @@
 import requests
 
-from crawler.rank.api3 import get_highest_rank_of_realtime_ranks_today
+from crawler.utils import get_highest_rank_of_realtime_ranks_today
 from crawler.utils import crawl_app_store_rank
 
 
