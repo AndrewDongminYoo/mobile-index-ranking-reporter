@@ -2,13 +2,11 @@ asgiref==3.5.0
 backports.zoneinfo==0.2.1
 beautifulsoup4==4.10.0
 bs4==0.0.1
-celery
-celery[redis]
 certifi==2021.10.8
 charset-normalizer==2.0.12
 defusedxml==0.7.1
 diff-match-patch==20200713
-Django
+Django==4.0.3
 django-celery-beat==2.2.1
 django-crontab==0.7.1
 django-environ==0.8.1
@@ -31,7 +29,6 @@ PyMySQL==1.0.2
 python-dateutil==2.8.2
 pytz==2022.1
 PyYAML==6.0
-redis
 requests==2.27.1
 six==1.16.0
 soupsieve==2.3.1
