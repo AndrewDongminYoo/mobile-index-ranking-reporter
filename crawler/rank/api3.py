@@ -4,15 +4,14 @@ from datetime import datetime
 from datetime import timedelta
 
 from django.core.handlers.wsgi import WSGIRequest
-from django.db.models import Min
 from django.http import QueryDict
 from ninja import NinjaAPI, Schema
 from ninja.orm import create_schema
 from pytz import timezone
 
 from crawler.models import Following, App, TimeIndex, OneStoreDL, Ranked, TrackingApps
-from crawler.utils import get_data_from_soup, crawl_app_store_rank, get_following
-from crawler.utils import post_to_slack, get_date, create_app
+from crawler.utils import get_data_from_soup, create_app
+from crawler.utils import post_to_slack, get_date
 
 KST = timezone('Asia/Seoul')
 today = datetime.now().astimezone(tz=KST)
@@ -111,17 +110,6 @@ def get_one_store_information(request: WSGIRequest) -> OneStoreDL:
     return ones_app
 
 
-@api.post("/new/ranking")
-def ranking_crawl(request: WSGIRequest):
-    post_data = request.POST
-    if post_data["market"] == "one":
-        crawl_app_store_rank("global_rank_v2", "one", "game")
-        crawl_app_store_rank("global_rank_v2", "one", "app")
-    else:
-        crawl_app_store_rank("realtime_rank_v2", "all", "game")
-        crawl_app_store_rank("realtime_rank_v2", "all", "app")
-
-
 @api.post("/new/ranking/app", response=RankedSchema)
 def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
     market_app_list = [f.market_appid for f in Following.objects.filter(is_following=True)]
@@ -173,40 +161,3 @@ def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
             if rank_diff >= 1:
                 post_to_slack(f" 순위 하락 {LIVE}🛬 {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
         return item
-
-
-@api.post("/new/ranking/high")
-def get_highest_rank_of_realtime_ranks_today(request) -> None:
-    date_today = get_date(today.strftime("%Y%m%d") + "2300")
-    rank_set = Ranked.objects \
-        .filter(created_at__gte=today - timedelta(days=1),
-                created_at__lte=today,
-                market__in=["apple", "google"],
-                deal_type="realtime_rank")
-    for following in Following.objects.filter(expire_date__gte=today, market__in=["apple", "google"]).all():
-        market_appid = following.market_appid
-        query = rank_set.filter(market_appid=market_appid) \
-            .values('market_appid', 'app_name', 'market', 'app_type', 'chart_type', 'icon_url') \
-            .annotate(highest_rank=Min('rank'))
-        if query:
-            first = query[0]
-            app = App.objects.get(market_appid=market_appid)
-            new_app = TrackingApps.objects.update_or_create(
-                market=first.get('market'),
-                chart_type=first.get('chart_type'),
-                app_name=first.get('app_name'),
-                icon_url=first.get('icon_url'),
-                deal_type='market_rank',
-                market_appid=market_appid,
-                app=app,
-                following=following,
-                date=date_today,
-            )[0]
-            new_app.rank = first.get('highest_rank')
-            new_app.save()
-
-
-@api.post("/update/following")
-def update_all_items(request):
-    print(request.POST)
-    get_following()
