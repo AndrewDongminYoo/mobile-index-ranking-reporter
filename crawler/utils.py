@@ -353,7 +353,7 @@ def get_highest_rank_of_realtime_ranks_today() -> None:
                 market_appid=market_appid,
                 app=app,
                 following=following,
-                date=date_today,
+                date_id=date_today,
             )[0]
             new_app.rank = first.get('highest_rank')
             new_app.save()
