@@ -148,20 +148,21 @@ def get_google_apps_data_from_soup(google_url: str):
     req = requests.get(google_url, headers=headers)
     _soup = BeautifulSoup(req.text, 'html.parser')
     _title = _soup.find("title").text.replace(" - Google Play 앱", "").replace(" - Apps on Google Play", "")
-    assert _title != "찾을 수 없음", "잘못된 앱입니다."
+    if _title != "찾을 수 없음":
+        return (None,) * 3
     publisher = _soup.select_one("a[href*='/store/apps/dev']")
     _publisher_name = publisher.text if publisher else None
     first = _soup.select_one("a[href*='store/apps/category']")
     _category = first.get("href")[21:] if first else None
-    _mailto = _soup.select_one("a[href*='mailto:']")
-    _email = _soup.select_one("a[href*='mailto:']").text.replace("email이메일", "") if _mailto else None
-    return _title, _publisher_name, _category, _email
+    mailto = _soup.select_one("a[href*='mailto:']")
+    _email = mailto.text.replace("email이메일", "") if mailto else None
+    return _publisher_name, _category, _email
 
 
 def get_information_of_app(data: dict):
     market_appid = data["market_appid"]
     app_url = GOOGLE_PREFIX + market_appid
-    title, publisher_name, category, email = get_google_apps_data_from_soup(app_url)
+    publisher_name, category, email = get_google_apps_data_from_soup(app_url)
     app_info = AppInformation.objects.update_or_create(
         google_url=app_url,
     )[0]
@@ -178,9 +179,10 @@ def get_information_of_app(data: dict):
     req = requests.post(mobile_index, headers=headers, data={"packageName": market_appid})
     response = req.json()
     res_data = response.get("data")
-    app_data = res_data.get("market_info")
-    app_info.apple_url = app_data.get("apple_url")
-    app_info.one_url = app_data.get("one_url")
+    print(res_data)
+    app_data = res_data.get("market_info") if res_data and res_data != "The data does not exist." else None
+    app_info.apple_url = app_data.get("apple_url") if app_data else None
+    app_info.one_url = app_data.get("one_url", ) if app_data else None
     app_info.save()
     print(app_info)
     app.app_info = app_info
@@ -361,6 +363,4 @@ def get_highest_rank_of_realtime_ranks_today() -> None:
 
 
 if __name__ == '__main__':
-    crawl_app_store_rank("realtime_rank_v2", "all", "game")
-    crawl_app_store_rank("realtime_rank_v2", "all", "app")
-    get_highest_rank_of_realtime_ranks_today()
+    upto_400th_google_play_apps_contact()
