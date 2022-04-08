@@ -139,7 +139,8 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
         for app_data in response["data"]:
             url = f"http://13.125.164.253/cron/new/ranking/app?market={market}&game={game_or_app}&term={term}"
             logger.info(f"/app?market={market}&game={game_or_app}&term={term}")
-            requests.post(url, data=app_data)
+            req = requests.post(url, data=app_data)
+            print(req.json())
 
 
 def get_google_apps_data_from_soup(google_url: str):
@@ -330,7 +331,7 @@ def get_information_of_following_apps():
 
 
 def get_highest_rank_of_realtime_ranks_today() -> None:
-    date_today = get_date(today.strftime("%Y%m%d") + "2300")
+    date_today: int = get_date(today.strftime("%Y%m%d") + "2300")
     rank_set = Ranked.objects \
         .filter(created_at__gte=today - timedelta(days=1),
                 created_at__lte=today,
@@ -343,7 +344,7 @@ def get_highest_rank_of_realtime_ranks_today() -> None:
             .annotate(highest_rank=Min('rank'))
         if query:
             first = query[0]
-            app = App.objects.get(market_appid=market_appid)
+            app: App = App.objects.get(market_appid=market_appid)
             new_app = TrackingApps.objects.update_or_create(
                 market=first.get('market'),
                 chart_type=first.get('chart_type'),
@@ -360,4 +361,6 @@ def get_highest_rank_of_realtime_ranks_today() -> None:
 
 
 if __name__ == '__main__':
-    get_following()
+    crawl_app_store_rank("realtime_rank_v2", "all", "game")
+    crawl_app_store_rank("realtime_rank_v2", "all", "app")
+    get_highest_rank_of_realtime_ranks_today()
