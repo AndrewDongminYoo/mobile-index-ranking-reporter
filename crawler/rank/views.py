@@ -12,7 +12,7 @@ def index(request: WSGIRequest):
 def rank(request: WSGIRequest, following_id: int):
     following = Following.objects.get(id=following_id)
     package_name = following.market_appid
-    tracked = TrackingApps.objects.order_by("-created_at").filter(following=following)
+    tracked = TrackingApps.objects.filter(following=following)
     if request.user.is_superuser and tracked.exists():
         app = tracked.select_related("app__app_info").last().app
     else:
