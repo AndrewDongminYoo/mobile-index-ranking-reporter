@@ -18,7 +18,6 @@ def following_one_crawl():
 def crawl_app_store_hourly():
     crawl_app_store_rank("realtime_rank_v2", "all", "game")
     crawl_app_store_rank("realtime_rank_v2", "all", "app")
-
     get_highest_rank_of_realtime_ranks_today()
 
 

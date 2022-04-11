@@ -1,8 +1,8 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
+from pytz import timezone
 from typing import List
 
-from django.db.models import Q, Min
-from django.utils import timezone
+from django.db.models import Q
 from ninja import NinjaAPI, Schema
 from ninja.orm import create_schema
 from ninja.pagination import LimitOffsetPagination, paginate
@@ -10,6 +10,9 @@ from ninja.pagination import LimitOffsetPagination, paginate
 from crawler.models import Ranked, Following, TrackingApps, OneStoreDL, App
 
 api = NinjaAPI(title="Application", urls_namespace="v2")
+
+KST = timezone('Asia/Seoul')
+today = datetime.now().astimezone(tz=KST)
 
 RankedSchema = create_schema(Ranked)
 ApplicationSchema = create_schema(App)
@@ -36,7 +39,7 @@ def show_last_tracking_app(request):
     following = request.GET.get("app")
     tracking = TrackingApps.objects.filter(
         following_id=following,
-        chart_type="free").order_by("-created_at")
+        chart_type="free").order_by("-date")
     if tracking.exists():
         return 200, tracking.first()
     else:
@@ -48,7 +51,7 @@ def show_last_tracking_app(request):
 def show_all_tracking_apps_with_following(request):
     """팔로잉 아이디로 추적 결과 리스트"""
     following = request.GET.get("following")
-    return TrackingApps.objects.filter(following_id=following).order_by("-created_at")
+    return TrackingApps.objects.filter(following_id=following).order_by("-date")
 
 
 @api.get("/tracking/statistics", response=List[TrackingSchema], tags=["index"])
@@ -56,7 +59,7 @@ def show_all_tracking_apps_with_following(request):
 def show_details_of_hourly_ranks(request):
     app_id = request.GET.get("app")
     deal_type = request.GET.get("deal_type") or "realtime_rank"
-    d_day = timezone.now() - timedelta(days=3)
+    d_day = today - timedelta(days=3)
     return TrackingApps.objects \
         .filter(following_id=app_id,
                 deal_type=deal_type,
@@ -69,7 +72,7 @@ def show_details_of_hourly_ranks(request):
 @paginate(LimitOffsetPagination)
 def show_details_of_daily_ranks(request):
     app_id = request.GET.get("app")
-    w_day = timezone.now() - timedelta(days=14)
+    w_day = today - timedelta(days=14)
     return TrackingApps.objects \
         .filter(following_id=app_id,
                 deal_type="market_rank",
@@ -89,7 +92,7 @@ def find_app_with_query(request, query):
 @paginate(LimitOffsetPagination)
 def load_all_following(request):
     """팔로우 중인 앱 리스트"""
-    return Following.objects.all().filter(expire_date__gt=timezone.now())
+    return Following.objects.all().filter(expire_date__gt=today)
 
 
 @api.get("/downloads", response=List[OneStoreSchema], tags=["index"])
@@ -97,17 +100,17 @@ def load_all_following(request):
 def show_details_of_downloads(request):
     """앱 기준으로 원스토어 다운로드수 리스트"""
     appid = request.GET.get("app")
-    time3 = timezone.now() - timedelta(days=3)
+    time3 = today - timedelta(days=3)
     return OneStoreDL.objects \
         .filter(market_appid=appid,
-                created_at__gte=time3).order_by("created_at")
+                created_at__gte=time3).order_by("date")
 
 
 @api.get("/down/last", response={200: OneStoreSchema, 204: EmptySchema}, tags=["index"])
 def show_details_of_downloads_last(request):
     """앱 기준으로 원스토어 다운로드 수 리스트"""
     market_appid = request.GET.get("app")
-    app = OneStoreDL.objects.filter(market_appid=market_appid).order_by("-created_at")
+    app = OneStoreDL.objects.filter(market_appid=market_appid).order_by("-date")
     if app.exists():
         return 200, app.first()
     else:
