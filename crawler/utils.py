@@ -140,7 +140,6 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
             url = f"http://13.125.164.253/cron/new/ranking/app?market={market}&game={game_or_app}&term={term}"
             logger.info(f"/app?market={market}&game={game_or_app}&term={term}")
             req = requests.post(url, data=app_data)
-            print(req.json())
 
 
 def get_google_apps_data_from_soup(google_url: str):

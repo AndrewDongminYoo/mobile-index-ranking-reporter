@@ -27,4 +27,4 @@ def crawl_app_store_daily():
 
 
 if __name__ == '__main__':
-    crawl_app_store_hourly()
+    crawl_app_store_daily()
