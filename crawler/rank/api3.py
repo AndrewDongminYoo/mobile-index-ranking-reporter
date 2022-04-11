@@ -55,7 +55,7 @@ def internal_cron(request: WSGIRequest):
             market = "google"
             print(mkt_app)
     following = Following.objects.filter(market=market, market_appid=mkt_app).first()
-    expire_date = today + timedelta(days=3)
+    expire_date = today + timedelta(days=5)
     if following:
         following.expire_date = expire_date
         following.save()

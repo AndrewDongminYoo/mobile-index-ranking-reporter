@@ -92,7 +92,7 @@ def find_app_with_query(request, query):
 @paginate(LimitOffsetPagination)
 def load_all_following(request):
     """팔로우 중인 앱 리스트"""
-    return Following.objects.all().filter(expire_date__gt=today)
+    return Following.objects.filter(expire_date__gt=today)
 
 
 @api.get("/downloads", response=List[OneStoreSchema], tags=["index"])
