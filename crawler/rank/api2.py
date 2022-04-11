@@ -84,6 +84,7 @@ def show_details_of_daily_ranks(request):
 @api.post("/ranking", response=List[ApplicationSchema], tags=["ranking"])
 @paginate(LimitOffsetPagination)
 def find_app_with_query(request, query):
+    print(request)
     query_set = App.objects.filter(Q(app_name__icontains=query) | Q(market_appid__icontains=query))
     return query_set.order_by("app_name").all()
 
@@ -92,6 +93,7 @@ def find_app_with_query(request, query):
 @paginate(LimitOffsetPagination)
 def load_all_following(request):
     """팔로우 중인 앱 리스트"""
+    print(request)
     return Following.objects.filter(expire_date__gt=today)
 
 

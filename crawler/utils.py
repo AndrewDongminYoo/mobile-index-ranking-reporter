@@ -59,10 +59,22 @@ def get_following() -> list:
     return result
 
 
-def post_to_slack(text="", icon="", app_name=""):
+def post_to_slack(text=None, following=None):
     headers["Content-Type"] = "application/json"
-    data = {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": text},
-                        "accessory": {"type": "image", "image_url": icon, "alt_text": app_name}}]}
+    data = {
+        "blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": text},
+                    "accessory": {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "자세히보기",
+                            "emoji": True
+                        },
+                        "value": "click_btn",
+                        "url": f"http://apprank.i-screen.kr/statistic/{following}",
+                        "action_id": "button-action"
+                    }}]
+    }
     requests.post(SLACK_WEBHOOK_URL, headers=headers, data=json.dumps(data))
 
 
@@ -138,7 +150,7 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
         for app_data in response["data"]:
             url = f"http://13.125.164.253/cron/new/ranking/app?market={market}&game={game_or_app}&term={term}"
             logger.info(f"/app?market={market}&game={game_or_app}&term={term}")
-            req = requests.post(url, data=app_data)
+            requests.post(url, data=app_data)
 
 
 def get_google_apps_data_from_soup(google_url: str):
