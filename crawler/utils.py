@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import json
 import os
 import sys
-import json
 
 sys.path.append('/home/ubuntu/app-rank')
 os.environ.setdefault("PYTHON" + "UNBUFFERED", "1")
@@ -59,12 +59,11 @@ def get_following() -> list:
     return result
 
 
-def post_to_slack(text=None, URL=""):
-    if not URL:
-        URL = SLACK_WEBHOOK_URL
+def post_to_slack(text="", icon="", app_name=""):
     headers["Content-Type"] = "application/json"
-    data = json.dumps({"text": text})
-    requests.post(URL, headers=headers, data=data)
+    data = {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": text},
+                        "accessory": {"type": "image", "image_url": icon, "alt_text": app_name}}]}
+    requests.post(SLACK_WEBHOOK_URL, headers=headers, data=json.dumps(data))
 
 
 def get_date(date_string=None) -> int:

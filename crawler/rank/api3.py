@@ -106,7 +106,7 @@ def get_one_store_information(request: WSGIRequest) -> OneStoreDL:
     if rank_diff > 2000:
         msg = f"{app_name} 앱 다운로드가 전일 대비 {format(rank_diff, ',')}건 증가했습니다.✈ " \
               + f"`{format(last_one.downloads, ',')}건` -> `{format(ones_app.downloads, ',')}건`"
-        post_to_slack(msg)
+        post_to_slack(text=msg, icon=icon_url, app_name=app_name)
     return ones_app
 
 
@@ -156,8 +156,11 @@ def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
             rank_diff = int(tracking.rank) - int(last.rank) if last else 0
             market_str = item.get_market_display()
             LIVE = "*LIVE*" if item.market_appid in market_app_list else ""
+            href = f"<http://apprank.i-screen.kr/statistic/{following_app.id}|상세 보기>"
             if rank_diff <= -1:
-                post_to_slack(f" 순위 상승 {LIVE}🚀 {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
+                text = f" 순위 상승 {LIVE}🚀 {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위` {href}"
+                post_to_slack(text=text, icon=item.icon_url, app_name=item.app_name)
             if rank_diff >= 1:
-                post_to_slack(f" 순위 하락 {LIVE}🛬 {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위`")
+                text = f" 순위 하락 {LIVE}🛬 {item.app_name} {market_str} `{last.rank}위` → `{item.rank}위` {href}"
+                post_to_slack(text=text, icon=item.icon_url, app_name=item.app_name)
         return item
