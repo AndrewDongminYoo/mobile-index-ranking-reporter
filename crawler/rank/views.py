@@ -26,3 +26,7 @@ def redirect_to_rank(request: WSGIRequest):
     if package_name and market_name:
         following = Following.objects.filter(market_appid=package_name, market=market_name).first()
         return redirect("/statistic/{}".format(following.id))
+
+
+def privacy(request: WSGIRequest):
+    return render(request, "privacy.html")

@@ -61,20 +61,11 @@ def get_following() -> list:
 
 def post_to_slack(text=None, following=None):
     headers["Content-Type"] = "application/json"
-    data = {
-        "blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": text},
-                    "accessory": {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "자세히보기",
-                            "emoji": True
-                        },
-                        "value": "click_btn",
-                        "url": f"http://apprank.i-screen.kr/statistic/{following}",
-                        "action_id": "button-action"
-                    }}]
-    }
+    data = {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": text},
+                        "accessory": {"type": "button", "text": {"type": "plain_text", "text": "자세히보기", "emoji": True},
+                                      "value": "click_btn", "url": f"http://apprank.i-screen.kr/statistic/{following}",
+                                      "action_id": "button-action"}}]
+            }
     requests.post(SLACK_WEBHOOK_URL, headers=headers, data=json.dumps(data))
 
 

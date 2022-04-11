@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from crawler.rank.api2 import api as api_version_2
 from crawler.rank.api3 import api as cron_api
-from crawler.rank.views import index, rank, redirect_to_rank
+from crawler.rank.views import index, rank, redirect_to_rank, privacy
 from ranker.settings import STATIC_URL, STATIC_ROOT
 
 urlpatterns = [
@@ -28,4 +28,5 @@ urlpatterns = [
                   path('admin/', admin.site.urls),
                   path("v2/", api_version_2.urls),
                   path("cron/", cron_api.urls),
+                  path("privacy", privacy),
               ] + static(STATIC_URL, document_root=STATIC_ROOT)
