@@ -41,14 +41,44 @@ def get_following() -> list:
     if req.status_code == 200:
         response = req.json()
         for adv_info in response["list"]:
-            app = dict(
+            google_app = dict(
                 market_appid=adv_info.get("ads_package"),
                 address=adv_info.get("ads_join_url"),
                 appname=adv_info.get("ads_name"),
                 os_type=adv_info.get("ads_os_type"),
             )
+            mobile_index = MOBILE_INDEX + "/app/market_info"
+            req = requests.post(mobile_index, headers=headers, data={"packageName": adv_info.get("ads_package")})
+            if req.status_code == 200:
+                res = req.json()
+                if res.get("data"):
+                    data = res["data"]
+                    if type(data) is dict and data.get("apple_url"):
+                        apple_app = dict(
+                            market_appid=res.get("apple_id"),
+                            address=data.get("apple_url"),
+                            appname=adv_info.get("ads_name"),
+                            os_type="apple",
+                        )
+                        url = "http://13.125.164.253/cron/new/following"
+                        res = requests.post(url, data=apple_app)
+                        if res.status_code == 200:
+                            print(res.json())
+                            result.append(res.json()["market_appid"])
+                    if type(data) is dict and data.get("one_url"):
+                        one_app = dict(
+                            market_appid=res.get("one_id"),
+                            address=data.get("one_url"),
+                            appname=adv_info.get("ads_name"),
+                            os_type="one",
+                        )
+                        url = "http://13.125.164.253/cron/new/following"
+                        res = requests.post(url, data=one_app)
+                        if res.status_code == 200:
+                            print(res.json())
+                            result.append(res.json()["market_appid"])
             url = "http://13.125.164.253/cron/new/following"
-            res = requests.post(url, data=app)
+            res = requests.post(url, data=google_app)
             if res.status_code == 200:
                 print(res.json())
                 result.append(res.json()["market_appid"])
@@ -364,4 +394,4 @@ def get_highest_rank_of_realtime_ranks_today() -> None:
 
 
 if __name__ == '__main__':
-    upto_400th_google_play_apps_contact()
+    get_following()
