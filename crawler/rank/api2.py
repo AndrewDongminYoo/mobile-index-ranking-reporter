@@ -12,7 +12,6 @@ from crawler.models import Ranked, Following, TrackingApps, OneStoreDL, App
 api = NinjaAPI(title="Application", urls_namespace="v2")
 
 KST = timezone('Asia/Seoul')
-today = datetime.now().astimezone(tz=KST)
 
 RankedSchema = create_schema(Ranked)
 ApplicationSchema = create_schema(App)
@@ -59,12 +58,11 @@ def show_all_tracking_apps_with_following(request):
 def show_details_of_hourly_ranks(request):
     app_id = request.GET.get("app")
     deal_type = request.GET.get("deal_type") or "realtime_rank"
-    d_day = today - timedelta(days=3)
+    d_day = datetime.now().astimezone(tz=KST) - timedelta(days=4)
     return TrackingApps.objects \
         .filter(following_id=app_id,
                 deal_type=deal_type,
                 created_at__gte=d_day,
-                created_at__minute=0,
                 chart_type="free")
 
 
@@ -72,7 +70,7 @@ def show_details_of_hourly_ranks(request):
 @paginate(LimitOffsetPagination)
 def show_details_of_daily_ranks(request):
     app_id = request.GET.get("app")
-    w_day = today - timedelta(days=14)
+    w_day = datetime.now().astimezone(tz=KST) - timedelta(days=14)
     return TrackingApps.objects \
         .filter(following_id=app_id,
                 deal_type="market_rank",
@@ -94,7 +92,7 @@ def find_app_with_query(request, query):
 def load_all_following(request):
     """팔로우 중인 앱 리스트"""
     print(request)
-    return Following.objects.filter(expire_date__gt=today)
+    return Following.objects.filter(expire_date__gt=datetime.now().astimezone(tz=KST))
 
 
 @api.get("/downloads", response=List[OneStoreSchema], tags=["index"])
@@ -102,7 +100,7 @@ def load_all_following(request):
 def show_details_of_downloads(request):
     """앱 기준으로 원스토어 다운로드수 리스트"""
     appid = request.GET.get("app")
-    time3 = today - timedelta(days=3)
+    time3 = datetime.now().astimezone(tz=KST) - timedelta(days=3)
     return OneStoreDL.objects \
         .filter(market_appid=appid,
                 created_at__gte=time3).order_by("date")

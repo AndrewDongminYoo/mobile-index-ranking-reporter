@@ -17,13 +17,12 @@ from typing import Tuple
 import requests
 import re
 from logging import getLogger
-from crawler.models import Following, App, TrackingApps, Ranked
+from crawler.models import Following, App, TrackingApps, Ranked, TimeIndex
 from crawler.models import AppInformation
 from ranker.settings import SLACK_WEBHOOK_URL
 
 logger = getLogger(__name__)
 KST = timezone('Asia/Seoul')
-today = datetime.now().astimezone(tz=KST)
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
              "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36 "
 headers = {'origin': 'https://www.mobileindex.com', 'user-agent': user_agent}
@@ -101,10 +100,9 @@ def post_to_slack(text=None, following=None):
 
 def get_date(date_string=None) -> int:
     if not date_string:
-        date_string = today.strftime("%Y%m%d%H%M")
-    url = "http://13.125.164.253/cron/new/date"
-    res = requests.post(url, data={"date": date_string})
-    return res.json()["id"]
+        date_string = datetime.now().astimezone(tz=KST).strftime("%Y%m%d%H%M")
+    time_index = TimeIndex.objects.get_or_create(date=date_string)[0]
+    return time_index.id
 
 
 def get_soup(market_id, back=True) -> BeautifulSoup:
@@ -165,7 +163,7 @@ def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
         "date": "", "startRank": 0, "endRank": 100
     }
     if market == "one":
-        data["date"] = today.strftime("%Y%m%d")
+        data["date"] = datetime.now().astimezone(tz=KST).strftime("%Y%m%d")
     response = requests.post(url, data=data, headers=headers).json()
     if response["status"]:
         for app_data in response["data"]:
@@ -227,7 +225,7 @@ def upto_400th_google_play_apps_contact():
         "country": "kr",
         "rankType": "gross",
         "appType": "game",
-        "date": (today - timedelta(days=1)).strftime("%Y%m%d"),
+        "date": (datetime.now().astimezone(tz=KST) - timedelta(days=1)).strftime("%Y%m%d"),
         "startRank": 101,
         "endRank": 400,
     }
@@ -364,6 +362,7 @@ def get_information_of_following_apps():
 
 
 def get_highest_rank_of_realtime_ranks_today() -> None:
+    today = datetime.now().astimezone(tz=KST)
     date_today: int = get_date(today.strftime("%Y%m%d") + "2300")
     rank_set = Ranked.objects \
         .filter(created_at__gte=today - timedelta(days=1),

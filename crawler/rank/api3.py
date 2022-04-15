@@ -14,7 +14,6 @@ from crawler.utils import get_data_from_soup, create_app
 from crawler.utils import post_to_slack, get_date
 
 KST = timezone('Asia/Seoul')
-today = datetime.now().astimezone(tz=KST)
 api = NinjaAPI(title="Application", urls_namespace="cron")
 ApplicationSchema = create_schema(App)
 FollowingSchema = create_schema(Following)
@@ -55,7 +54,7 @@ def internal_cron(request: WSGIRequest):
             market = "google"
             print(mkt_app)
     following = Following.objects.filter(market=market, market_appid=mkt_app).first()
-    expire_date = today + timedelta(days=5)
+    expire_date = datetime.now().astimezone(tz=KST) + timedelta(days=5)
     if following:
         following.expire_date = expire_date
         following.save()
@@ -114,7 +113,8 @@ def get_one_store_information(request: WSGIRequest) -> OneStoreDL:
 @api.post("/new/ranking/app", response=RankedSchema)
 def new_ranking_app_from_data(request: WSGIRequest, market, game, term):
     market_app_list = [f.market_appid for f in Following.objects.filter(is_following=True)]
-    following_app_list = [f.market_appid for f in Following.objects.filter(expire_date__gte=today)]
+    following_app_list = [f.market_appid for f in
+                          Following.objects.filter(expire_date__gte=datetime.now().astimezone(tz=KST))]
     app_data: QueryDict = request.POST
     date_id: int = get_date()
     app: App = create_app(app_data)
