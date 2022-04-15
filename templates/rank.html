@@ -68,6 +68,8 @@
 {% endblock %}
 {% block script %}
     <script>
+        moment.locale('ko');
+
         const getParams = (name) => {
             const params = window.location.search.substring(1).split("&")
             console.log(params)

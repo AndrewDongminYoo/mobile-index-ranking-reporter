@@ -362,14 +362,16 @@ def get_information_of_following_apps():
 
 
 def get_highest_rank_of_realtime_ranks_today() -> None:
-    today = datetime.now().astimezone(tz=KST)
-    date_today: int = get_date(today.strftime("%Y%m%d") + "2300")
+    today = datetime.today().date()
+    today_now = datetime.now().astimezone(tz=KST)
+    date_today: int = get_date(today_now.strftime("%Y%m%d") + "2300")
     rank_set = Ranked.objects \
-        .filter(created_at__gte=today - timedelta(days=1),
-                created_at__lte=today,
+        .filter(created_at__year=today.year,
+                created_at__month=today.month,
+                created_at__day=today.day,
                 market__in=["apple", "google"],
                 deal_type="realtime_rank")
-    for following in Following.objects.filter(expire_date__gte=today, market__in=["apple", "google"]).all():
+    for following in Following.objects.filter(expire_date__gte=today_now, market__in=["apple", "google"]).all():
         market_appid = following.market_appid
         query = rank_set.filter(market_appid=market_appid) \
             .values('market_appid', 'app_name', 'market', 'app_type', 'chart_type', 'icon_url') \
