@@ -63,7 +63,7 @@ def show_details_of_hourly_ranks(request):
         .filter(following_id=app_id,
                 deal_type=deal_type,
                 created_at__gte=d_day,
-                chart_type="free")
+                chart_type="free").order_by("date")
 
 
 @api.get("/tracking/daily", response=List[TrackingSchema], tags=["index"])
@@ -75,7 +75,7 @@ def show_details_of_daily_ranks(request):
         .filter(following_id=app_id,
                 deal_type="market_rank",
                 created_at__gte=w_day,
-                chart_type="free")
+                chart_type="free").order_by("date")
 
 
 # one "POST"

@@ -394,5 +394,41 @@ def get_highest_rank_of_realtime_ranks_today() -> None:
             new_app.save()
 
 
+def get_apps_history_from_mobile_index(app_name):
+    app = Ranked.objects.filter(app_name=app_name).last()
+    url = MOBILE_INDEX + "/chart/market_rank_history"
+    body = {
+        "appId": app.market_appid,
+        "market": app.market,
+        "appType": app.app_type,
+        "startDate": (datetime.now().astimezone(tz=KST) - timedelta(weeks=3)).strftime("%Y%m%d"),
+        "endDate": datetime.now().astimezone(tz=KST).strftime("%Y%m%d"),
+    }
+    req = requests.post(url, headers=headers, data=body)
+    res = req.json()
+    if res["status"]:
+        app_name = res["app_name"]
+        publisher_name = res["publisher_name"]
+        icon_url = res["icon_url"]
+        market = res["market_name"].lower()
+        for app_data in res["data"]:
+            _date = app_data["rank_date"].replace("-", "") + "1210"
+            free_rank = app_data["rank_free"]
+            TrackingApps.objects.get_or_create(
+                app=App.objects.get(market_appid=app.market_appid),
+                following=Following.objects.get(market_appid=app.market_appid),
+                app_name=app_name,
+                icon_url=icon_url,
+                market=market.replace("store", ""),
+                deal_type="market_rank",
+                chart_type="free",
+                market_appid=app.market_appid,
+                date_id=get_date(_date),
+                rank=free_rank,
+                created_at=datetime.strptime(app_data["rank_date"], "%Y-%m-%d").astimezone(tz=KST),
+                updated_at=datetime.strptime(app_data["rank_date"], "%Y-%m-%d").astimezone(tz=KST),
+            )
+
+
 if __name__ == '__main__':
-    get_following()
+    get_apps_history_from_mobile_index("우리의 제국")
