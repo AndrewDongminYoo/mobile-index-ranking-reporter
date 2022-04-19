@@ -425,8 +425,6 @@ def get_apps_history_from_mobile_index(app_name):
                 market_appid=app.market_appid,
                 date_id=get_date(_date),
                 rank=free_rank,
-                created_at=datetime.strptime(app_data["rank_date"], "%Y-%m-%d").astimezone(tz=KST),
-                updated_at=datetime.strptime(app_data["rank_date"], "%Y-%m-%d").astimezone(tz=KST),
             )
 
 

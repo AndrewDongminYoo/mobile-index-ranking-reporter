@@ -2,7 +2,77 @@
 {% load static %}
 {% block title %}{{ following.app_name }} | {{ following.market_appid }}{% endblock %}
 {% block content %}
-    {% include 'includes/navstabs.html' %}
+    <style>
+        .flake-ui.tabs.small.horizontal > .header {
+            height: 2.875rem;
+            line-height: 2.875rem;
+        }
+
+        .flake-ui.tabs.horizontal > .header {
+            display: flex;
+            padding-left: 1.5rem;
+        }
+
+        .flake-ui.tabs > .header {
+            position: relative;
+            border-color: inherit;
+        }
+
+        .flake-ui.tabs.primary.shape-highlight > .header > .active {
+            color: #f5f7fa;
+            background-color: #9b66f2;
+        }
+
+        .flake-ui.tabs.horizontal.shape-highlight > .header > .active {
+            border-width: 0;
+        }
+
+        .flake-ui.tabs > .header > .active {
+            pointer-events: none;
+            border-color: inherit;
+            border-style: solid;
+        }
+
+        .flake-ui.tabs.small.horizontal > .header > button {
+            padding: 0 1.5rem;
+        }
+
+        .flake-ui.tabs.horizontal > .header > button {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .flake-ui.tabs > .header > button {
+            position: relative;
+            font-size: inherit;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            color: #aaa;
+            height: inherit;
+            font-weight: 400;
+        }
+    </style>
+    <div class="flake-ui tabs primary small horizontal rect shape-highlight lazy-animation   ">
+        <div class="header">
+            {% if following.market == 'one' %}
+                <button class="btn-1"
+                        onclick="$(`.btn-1`).addClass('active').siblings().removeClass('active');$('#accordion-1').show().siblings().hide();">
+                    다운로드 랭크
+                </button>
+            {% else %}
+                <button class="btn-2 active"
+                        onclick="$(`.btn-2`).addClass('active').siblings().removeClass('active');$('#accordion-2').show().siblings().hide();">
+                    실시간순위 추이
+                </button>
+            {% endif %}
+            <button class="btn-3"
+                    onclick="$(`.btn-3`).addClass('active').siblings().removeClass('active');$('#accordion-3').show().siblings().hide();">
+                일간순위 추이
+            </button>
+        </div>
+    </div>
     <div id="myLarge">
         <div class="dialog container-lg">
             <div class="content">
@@ -17,34 +87,39 @@
                             {{ app.app_info.phone }}</a>
                     </div>
                     <div class="body">
-                        <article class="accordion" id="accordion-1">
-                            <div id="canvas1"></div>
-                            <table class="flake-ui table second small rect use-selection bordered" id="downloadTable">
-                                <thead>
-                                <tr>
-                                    <th scope="col" style="width: 15%" class="center">아이콘</th>
-                                    <th scope="col" style="width: 35%" class="center">앱이름</th>
-                                    <th scope="col" style="width: 35%" class="center">측정일</th>
-                                    <th scope="col" style="width: 15%" class="center">다운로드</th>
-                                </thead>
-                                <tbody id="downloadTableBody"></tbody>
-                            </table>
-                        </article>
-                        <article class="accordion" id="accordion-2">
-                            <div id="canvas2"></div>
-                            <table class="flake-ui table second small rect use-selection bordered" id="trackingTable">
-                                <thead>
-                                <tr>
-                                    <th scope="col" style="width: 12%" class="center">아이콘</th>
-                                    <th scope="col" style="width: 40%" class="center">앱이름</th>
-                                    <th scope="col" style="width: 12%" class="center">마켓</th>
-                                    <th scope="col" style="width: 12%" class="center">분야</th>
-                                    <th scope="col" style="width: 12%" class="center">일자</th>
-                                    <th scope="col" style="width: 12%" class="center">실시간 순위</th>
-                                </thead>
-                                <tbody id="trackingTableBody"></tbody>
-                            </table>
-                        </article>
+                        {% if following.market == 'one' %}
+                            <article class="accordion" id="accordion-1">
+                                <div id="canvas1"></div>
+                                <table class="flake-ui table second small rect use-selection bordered"
+                                       id="downloadTable">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 15%" class="center">아이콘</th>
+                                        <th scope="col" style="width: 35%" class="center">앱이름</th>
+                                        <th scope="col" style="width: 35%" class="center">측정일</th>
+                                        <th scope="col" style="width: 15%" class="center">다운로드</th>
+                                    </thead>
+                                    <tbody id="downloadTableBody"></tbody>
+                                </table>
+                            </article>
+                        {% else %}
+                            <article class="accordion" id="accordion-2">
+                                <div id="canvas2"></div>
+                                <table class="flake-ui table second small rect use-selection bordered"
+                                       id="trackingTable">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 12%" class="center">아이콘</th>
+                                        <th scope="col" style="width: 40%" class="center">앱이름</th>
+                                        <th scope="col" style="width: 12%" class="center">마켓</th>
+                                        <th scope="col" style="width: 12%" class="center">분야</th>
+                                        <th scope="col" style="width: 12%" class="center">일자</th>
+                                        <th scope="col" style="width: 12%" class="center">실시간 순위</th>
+                                    </thead>
+                                    <tbody id="trackingTableBody"></tbody>
+                                </table>
+                            </article>
+                        {% endif %}
                         <article class="accordion" id="accordion-3">
                             <div id="canvas3"></div>
                             <table class="flake-ui table second small rect use-selection bordered" id="dailyRankTable">
