@@ -426,7 +426,6 @@ def get_apps_history_from_mobile_index(app_name):
     res = req.json()
     if res["status"]:
         app_name = res["app_name"]
-        publisher_name = res["publisher_name"]
         icon_url = res["icon_url"]
         market = res["market_name"].lower()
         for app_data in res["data"]:
