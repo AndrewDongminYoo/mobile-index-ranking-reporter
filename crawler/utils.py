@@ -17,7 +17,7 @@ from typing import Tuple
 import requests
 import re
 from logging import getLogger
-from crawler.models import Following, App, TrackingApps, Ranked, TimeIndex
+from crawler.models import Following, App, TrackingApps, Ranked, TimeIndex, StatusCheck
 from crawler.models import AppInformation
 from ranker.settings import SLACK_WEBHOOK_URL
 
@@ -30,6 +30,25 @@ MOBILE_INDEX = "https://proxy-insight.mobileindex.com"
 GOOGLE_PREFIX = "https://play.google.com/store/apps/details?id="
 APPLE_PREFIX = "https://apps.apple.com/kr/app/id"
 ONE_PREFIX = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId="
+
+
+def status_check(market="google", app_type="game"):
+    deal_type = "realtime_rank"
+    ranks = [x for x in range(1, 46)]
+    last = [Ranked.objects.filter(market=market, rank=r, app_type=app_type, deal_type=deal_type).last() for r in ranks]
+    app_list = [[app.rank, app.market_appid] for app in last]
+    app_exists = StatusCheck.objects.filter(ranks=app_list, market=market)
+    if not app_exists:
+        if StatusCheck.objects.filter(market=market, warns__gt=5).exists():
+            StatusCheck.objects.filter(market=market, warns__gt=5).update(warns=0)
+            post_to_slack(f"{app_type}s in {market} store are changed.\n")
+        app_exists = StatusCheck.objects.create(ranks=app_list, market=market, warns=0)
+    else:
+        app_exists = app_exists.last()
+        app_exists.warns += 1
+        app_exists.save()
+    if app_exists.warns > 5:
+        post_to_slack(f"{market} store might not working... ")
 
 
 def get_following() -> list:
@@ -155,7 +174,7 @@ def get_data_from_soup(market_appid: str) -> Tuple[str, str, str, str, date, int
     return genre, volume, icon_url, app_name, released, download
 
 
-def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
+def crawl_app_store_rank(term="realtime_rank_v2", market="all", game_or_app="game") -> None:
     url = MOBILE_INDEX + '/chart/' + term  # "realtime_rank_v2", "global_rank_v2"
     data = {
         "market": "all", "country": "kr",
@@ -211,7 +230,7 @@ def get_information_of_app(data: dict):
     print(res_data)
     app_data = res_data.get("market_info") if res_data and res_data != "The data does not exist." else None
     app_info.apple_url = app_data.get("apple_url") if app_data else None
-    app_info.one_url = app_data.get("one_url", ) if app_data else None
+    app_info.one_url = app_data.get("one_url") if app_data else None
     app_info.save()
     print(app_info)
     app.app_info = app_info
