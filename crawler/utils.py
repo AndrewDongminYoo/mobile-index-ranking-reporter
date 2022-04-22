@@ -37,18 +37,16 @@ def status_check(market="google", app_type="game"):
     ranks = [x for x in range(1, 46)]
     last = [Ranked.objects.filter(market=market, rank=r, app_type=app_type, deal_type=deal_type).last() for r in ranks]
     app_list = [[app.rank, app.market_appid] for app in last]
-    app_exists = StatusCheck.objects.filter(ranks=app_list, market=market)
+    app_exists = StatusCheck.objects.filter(ranks=app_list, market=market).last()
     if not app_exists:
-        if StatusCheck.objects.filter(market=market, warns__gt=5).exists():
-            StatusCheck.objects.filter(market=market, warns__gt=5).update(warns=0)
+        if StatusCheck.objects.filter(market=market, warns__gt=0).exists():
             post_to_slack(f"{app_type}s in {market} store are changed.\n")
         app_exists = StatusCheck.objects.create(ranks=app_list, market=market, warns=0)
     else:
-        app_exists = app_exists.last()
         app_exists.warns += 1
         app_exists.save()
     if app_exists.warns > 5:
-        post_to_slack(f"{market} store might not working... ")
+        post_to_slack(f"{market} store might be not working... ")
 
 
 def get_following() -> list:
