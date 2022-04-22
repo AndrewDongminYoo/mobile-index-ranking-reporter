@@ -139,3 +139,9 @@ class OneStoreDL(Timestamped):
     volume = models.CharField(max_length=128, verbose_name="용량")
     date = models.ForeignKey(TimeIndex, on_delete=models.DO_NOTHING)
     released = models.DateField(verbose_name="출시일", null=True)
+
+
+class StatusCheck(models.Model):
+    market = models.CharField(verbose_name="마켓타입", max_length=128)
+    ranks = models.JSONField(verbose_name="지난 랭킹")
+    warns = models.IntegerField(verbose_name="위험도")

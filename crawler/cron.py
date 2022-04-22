@@ -1,6 +1,6 @@
 import requests
 
-from crawler.utils import get_highest_rank_of_realtime_ranks_today
+from crawler.utils import get_highest_rank_of_realtime_ranks_today, status_check
 from crawler.utils import crawl_app_store_rank
 
 
@@ -16,14 +16,13 @@ def following_one_crawl():
 
 
 def crawl_app_store_hourly():
-    crawl_app_store_rank("realtime_rank_v2", "all", "game")
-    crawl_app_store_rank("realtime_rank_v2", "all", "app")
+    [crawl_app_store_rank("realtime_rank_v2", "all", app) for app in ["app", "game"]]
+    [status_check(market=a, app_type=b) for a in ["google", "apple"] for b in ["game", "app"]]
     get_highest_rank_of_realtime_ranks_today()
 
 
 def crawl_app_store_daily():
-    crawl_app_store_rank("global_rank_v2", "one", "game")
-    crawl_app_store_rank("global_rank_v2", "one", "app")
+    [crawl_app_store_rank("realtime_rank_v2", "one", app) for app in ["app", "game"]]
 
 
 if __name__ == '__main__':
