@@ -37,16 +37,16 @@ def status_check(market="google", app_type="game"):
     ranks = [x for x in range(1, 46)]
     last = [Ranked.objects.filter(market=market, rank=r, app_type=app_type, deal_type=deal_type).last() for r in ranks]
     app_list = [[app.rank, app.market_appid] for app in last]
-    app_exists = StatusCheck.objects.filter(ranks=app_list, market=market).last()
+    app_exists = StatusCheck.objects.filter(ranks=app_list, app_type=app_type, market=market).last()
     if not app_exists:
-        if StatusCheck.objects.filter(market=market, warns__gt=0).exists():
+        if StatusCheck.objects.filter(market=market, app_type=app_type, warns__gt=0).exists():
             post_to_slack(f"{app_type}s in {market} store are changed.\n")
-        app_exists = StatusCheck.objects.create(ranks=app_list, market=market, warns=0)
+        app_exists = StatusCheck.objects.create(ranks=app_list, app_type=app_type, market=market, warns=0)
     else:
         app_exists.warns += 1
         app_exists.save()
-    if app_exists.warns > 5:
-        post_to_slack(f"{market} store might be not working... ")
+    if app_exists.warns > 4:
+        post_to_slack(f"{market} store ({app_type}) might be not working... ")
 
 
 def get_following() -> list:
@@ -107,9 +107,10 @@ def get_following() -> list:
 
 def post_to_slack(text=None, following=None):
     headers["Content-Type"] = "application/json"
+    url = f"http://apprank.i-screen.kr/statistic/{following}" if following else "http://apprank.i-screen.kr"
     data = {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": text},
                         "accessory": {"type": "button", "text": {"type": "plain_text", "text": "자세히보기", "emoji": True},
-                                      "value": "click_btn", "url": f"http://apprank.i-screen.kr/statistic/{following}",
+                                      "value": "click_btn", "url": url,
                                       "action_id": "button-action"}}]
             }
     requests.post(SLACK_WEBHOOK_URL, headers=headers, data=json.dumps(data))
