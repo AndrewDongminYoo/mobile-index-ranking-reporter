@@ -172,7 +172,7 @@ def get_data_from_soup(market_appid: str) -> Tuple[str, str, str, str, date, int
     return genre, volume, icon_url, app_name, released, download
 
 
-def crawl_app_store_rank(term="realtime_rank_v2", market="all", game_or_app="game") -> None:
+def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
     url = MOBILE_INDEX + '/chart/' + term  # "realtime_rank_v2", "global_rank_v2"
     data = {
         "market": "all", "country": "kr",
@@ -228,7 +228,7 @@ def get_information_of_app(data: dict):
     print(res_data)
     app_data = res_data.get("market_info") if res_data and res_data != "The data does not exist." else None
     app_info.apple_url = app_data.get("apple_url") if app_data else None
-    app_info.one_url = app_data.get("one_url") if app_data else None
+    app_info.one_url = app_data.get("one_url", ) if app_data else None
     app_info.save()
     print(app_info)
     app.app_info = app_info
