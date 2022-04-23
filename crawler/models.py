@@ -141,7 +141,7 @@ class OneStoreDL(Timestamped):
     released = models.DateField(verbose_name="출시일", null=True)
 
 
-class StatusCheck(models.Model):
+class StatusCheck(Timestamped):
     market = models.CharField(verbose_name="마켓 타입", choices=Ranked.MARKET, max_length=128)
     ranks = models.JSONField(verbose_name="지난 랭킹")
     warns = models.IntegerField(verbose_name="위험도")
