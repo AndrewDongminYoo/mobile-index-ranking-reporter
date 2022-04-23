@@ -33,6 +33,8 @@ ONE_PREFIX = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId="
 
 
 def status_check(market="google", app_type="game"):
+    MARKET_TYPE = {"google": "플레이스토어", "apple": "앱스토어"}
+    APP_TYPE = {"game": "게임", "app": "앱"}
     deal_type = "realtime_rank"
     ranks = [x for x in range(1, 46)]
     last = [Ranked.objects.filter(market=market, rank=r, app_type=app_type, deal_type=deal_type).last() for r in ranks]
@@ -41,13 +43,13 @@ def status_check(market="google", app_type="game"):
     if not app_exists:
         last_rank = StatusCheck.objects.filter(app_type=app_type, market=market).last()
         if last_rank and last_rank.warns > 4:
-            post_to_slack(f"{app_type}s in {market} store are changed.\n")
+            post_to_slack(f"{MARKET_TYPE[market]}의 {APP_TYPE[app_type]} 랭킹이 변했습니다.")
         app_exists = StatusCheck.objects.create(ranks=app_list, app_type=app_type, market=market, warns=0)
     else:
         app_exists.warns += 1
         app_exists.save()
     if app_exists.warns > 4:
-        post_to_slack(f"{market} store ({app_type}) might be not working... ")
+        post_to_slack(f"{MARKET_TYPE[market]}의 {APP_TYPE[app_type]} 랭킹이 멈춘 것 같습니다.")
 
 
 def get_following() -> list:
