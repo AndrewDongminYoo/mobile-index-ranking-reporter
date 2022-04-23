@@ -39,7 +39,8 @@ def status_check(market="google", app_type="game"):
     app_list = [[app.rank, app.market_appid] for app in last]
     app_exists = StatusCheck.objects.filter(ranks=app_list, app_type=app_type, market=market).last()
     if not app_exists:
-        if StatusCheck.objects.filter(market=market, app_type=app_type, warns__gt=4).exists():
+        last_rank = StatusCheck.objects.filter(app_type=app_type, market=market).last()
+        if last_rank and last_rank.warns > 4:
             post_to_slack(f"{app_type}s in {market} store are changed.\n")
         app_exists = StatusCheck.objects.create(ranks=app_list, app_type=app_type, market=market, warns=0)
     else:
