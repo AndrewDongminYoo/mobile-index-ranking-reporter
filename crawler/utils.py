@@ -33,8 +33,8 @@ ONE_PREFIX = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId="
 
 
 def status_check(market="google", app_type="game"):
-    MARKET_TYPE = {"google": "플레이스토어", "apple": "앱스토어"}
-    APP_TYPE = {"game": "게임", "app": "앱"}
+    MARKET_TYPE = dict(google="플레이스토어", apple="앱스토어")
+    APP_TYPE = dict(game="게임", app="앱")
     deal_type = "realtime_rank"
     last = [Ranked.objects.filter(market=market, rank=r, app_type=app_type, deal_type=deal_type).last() for r in
             range(1, 46)]
@@ -49,7 +49,7 @@ def status_check(market="google", app_type="game"):
         app_exists.warns += 1
         app_exists.save()
     if app_exists.warns > 4:
-        post_to_slack(f"{MARKET_TYPE[market]}의 {APP_TYPE[app_type]} 랭킹이 멈춘 것 같습니다. (⏰ {app_exists.warns}시간)")
+        post_to_slack(f"{MARKET_TYPE[market]}의 {APP_TYPE[app_type]} 랭킹이 멈춘 것 같습니다. (⏱ {app_exists.warns}시간)")
 
 
 def get_following() -> list:
@@ -111,11 +111,9 @@ def get_following() -> list:
 def post_to_slack(text=None, following=None):
     headers["Content-Type"] = "application/json"
     url = f"http://apprank.i-screen.kr/statistic/{following}" if following else "http://apprank.i-screen.kr"
-    data = {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": text},
-                        "accessory": {"type": "button", "text": {"type": "plain_text", "text": "자세히보기", "emoji": True},
-                                      "value": "click_btn", "url": url,
-                                      "action_id": "button-action"}}]
-            }
+    data = dict(blocks=[dict(type="section", text=dict(type="mrkdwn", text=text),
+                             accessory=dict(type="button", text=dict(type="plain_text", text="자세히보기", emoji=True),
+                                            value="click_btn", url=url, action_id="button-action"))])
     requests.post(SLACK_WEBHOOK_URL, headers=headers, data=json.dumps(data))
 
 
@@ -178,11 +176,7 @@ def get_data_from_soup(market_appid: str) -> Tuple[str, str, str, str, date, int
 
 def crawl_app_store_rank(term: str, market: str, game_or_app: str) -> None:
     url = MOBILE_INDEX + '/chart/' + term  # "realtime_rank_v2", "global_rank_v2"
-    data = {
-        "market": "all", "country": "kr",
-        "rankType": "free", "appType": game_or_app,
-        "date": "", "startRank": 0, "endRank": 100
-    }
+    data = dict(market="all", country="kr", rankType="free", appType=game_or_app, date="", startRank=0, endRank=100)
     if market == "one":
         data["date"] = datetime.now().astimezone(tz=KST).strftime("%Y%m%d")
     response = requests.post(url, data=data, headers=headers).json()
@@ -241,15 +235,9 @@ def get_information_of_app(data: dict):
 
 def upto_400th_google_play_apps_contact():
     url = MOBILE_INDEX + "/chart/global_rank_v2"
-    body = {
-        "market": "all",
-        "country": "kr",
-        "rankType": "gross",
-        "appType": "game",
-        "date": (datetime.now().astimezone(tz=KST) - timedelta(days=1)).strftime("%Y%m%d"),
-        "startRank": 101,
-        "endRank": 400,
-    }
+    body = dict(market="all", country="kr", rankType="gross", appType="game",
+                date=(datetime.now().astimezone(tz=KST) - timedelta(days=1)).strftime("%Y%m%d"), startRank=101,
+                endRank=400)
     req = requests.post(url, headers=headers, data=body)
     res = req.json()
     for app_data in res["data"]:
@@ -418,13 +406,9 @@ def get_highest_rank_of_realtime_ranks_today() -> None:
 def get_apps_history_from_mobile_index(app_name):
     app = Ranked.objects.filter(app_name=app_name).last()
     url = MOBILE_INDEX + "/chart/market_rank_history"
-    body = {
-        "appId": app.market_appid,
-        "market": app.market,
-        "appType": app.app_type,
-        "startDate": (datetime.now().astimezone(tz=KST) - timedelta(weeks=3)).strftime("%Y%m%d"),
-        "endDate": datetime.now().astimezone(tz=KST).strftime("%Y%m%d"),
-    }
+    body = dict(appId=app.market_appid, market=app.market, appType=app.app_type,
+                startDate=(datetime.now().astimezone(tz=KST) - timedelta(weeks=3)).strftime("%Y%m%d"),
+                endDate=datetime.now().astimezone(tz=KST).strftime("%Y%m%d"))
     req = requests.post(url, headers=headers, data=body)
     res = req.json()
     if res["status"]:
