@@ -49,7 +49,7 @@ def status_check(market="google", app_type="game"):
         app_exists.warns += 1
         app_exists.save()
     if app_exists.warns > 4:
-        post_to_slack(f"{MARKET_TYPE[market]}의 {APP_TYPE[app_type]} 랭킹이 멈춘 것 같습니다.")
+        post_to_slack(f"{MARKET_TYPE[market]}의 {APP_TYPE[app_type]} 랭킹이 멈춘 것 같습니다. (⏰ {app_exists.warns}시간)")
 
 
 def get_following() -> list:
