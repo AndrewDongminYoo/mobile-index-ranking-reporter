@@ -36,8 +36,8 @@ def status_check(market="google", app_type="game"):
     MARKET_TYPE = {"google": "플레이스토어", "apple": "앱스토어"}
     APP_TYPE = {"game": "게임", "app": "앱"}
     deal_type = "realtime_rank"
-    ranks = [x for x in range(1, 46)]
-    last = [Ranked.objects.filter(market=market, rank=r, app_type=app_type, deal_type=deal_type).last() for r in ranks]
+    last = [Ranked.objects.filter(market=market, rank=r, app_type=app_type, deal_type=deal_type).last() for r in
+            range(1, 46)]
     app_list = [[app.rank, app.market_appid] for app in last]
     app_exists = StatusCheck.objects.filter(ranks=app_list, app_type=app_type, market=market).last()
     if not app_exists:

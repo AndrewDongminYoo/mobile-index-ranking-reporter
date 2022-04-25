@@ -104,7 +104,7 @@ def get_one_store_information(request: WSGIRequest) -> OneStoreDL:
     following = Following.objects.get(market_appid=market_appid)
     rank_diff = ones_app.downloads - last_one.downloads if last_one else 0
     if rank_diff > 2000:
-        msg = f"{app_name} 앱 다운로드가 전일 대비 {format(rank_diff, ',')}건 증가했습니다.✈ " \
+        msg = f"원스토어 {app_name} 앱 다운로드가 전일 대비 {format(rank_diff, ',')}건 증가했습니다.✈ " \
               + f"`{format(last_one.downloads, ',')}건` -> `{format(ones_app.downloads, ',')}건`"
         post_to_slack(text=msg, following=following.id)
     return ones_app
