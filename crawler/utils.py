@@ -43,7 +43,7 @@ def status_check(market="google", app_type="game"):
     if not app_exists:
         last_rank = StatusCheck.objects.filter(app_type=app_type, market=market).last()
         if last_rank and last_rank.warns > 4:
-            post_to_slack(f"{MARKET_TYPE[market]}의 {APP_TYPE[app_type]} 랭킹이 변했습니다.")
+            post_to_slack(f"@here {MARKET_TYPE[market]}의 {APP_TYPE[app_type]} 랭킹이 변했습니다. 👏👏👏")
         app_exists = StatusCheck.objects.create(ranks=app_list, app_type=app_type, market=market, warns=0)
     else:
         app_exists.warns += 1
