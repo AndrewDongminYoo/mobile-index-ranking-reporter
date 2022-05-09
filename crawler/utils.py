@@ -41,13 +41,13 @@ def status_check(market="google", app_type="game"):
     app_exists = StatusCheck.objects.filter(ranks=app_list, app_type=app_type, market=market).last()
     if not app_exists:
         last_status = StatusCheck.objects.filter(app_type=app_type, market=market).last()
-        if last_status and last_status.warns > 7:
+        if last_status and last_status.warns > 10:
             post_to_slack(f"@here {MARKET_TYPE[market]}의 {APP_TYPE[app_type]} 랭킹이 변했습니다. 👏👏👏")
         app_exists = StatusCheck.objects.create(ranks=app_list, app_type=app_type, market=market, warns=0)
     else:
         app_exists.warns += 1
         app_exists.save()
-    if app_exists.warns > 7:
+    if app_exists.warns > 10:
         post_to_slack(f"{MARKET_TYPE[market]}의 {APP_TYPE[app_type]} 랭킹이 멈춘 것 같습니다. (⏱ {app_exists.warns}시간)")
 
 
@@ -290,17 +290,20 @@ def get_developers_contact_number():
     for app in App.objects.filter(app_info=None, market="google").all():
         url = MOBILE_INDEX + '/app/market_info'
         response = requests.post(url, headers=headers, data={"packageName": app.market_appid}).json()
-        data = response["data"].get("market_info")
-        app_info = AppInformation.objects.update_or_create(google_url=data.get("google_url"))[0]
-        description = data.get("description")
-        phone = re.findall(r"([0-1][0-9]*[\- ]*[0-9]{3,4}[\- ][0-9]{4,}|\+82[0-9\-]+)", description)
-        email = re.findall(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)", description)
-        app_info.phone = ", ".join(set(phone))
-        app_info.email = ", ".join(set(email))
-        print(app_info.phone, app_info.email)
-        app_info.save()
-        app.app_info = app_info
-        app.save()
+
+        data = response.get('data')
+        if data != "The data does not exist.":
+            market_info = data.get("market_info")
+            app_info = AppInformation.objects.update_or_create(google_url=market_info.get("google_url"))[0]
+            description = market_info.get("description")
+            phone = re.findall(r"([0-1][0-9]*[\- ]*[0-9]{3,4}[\- ][0-9]{4,}|\+82[0-9\-]+)", description)
+            email = re.findall(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)", description)
+            app_info.phone = ", ".join(set(phone))
+            app_info.email = ", ".join(set(email))
+            print(app_info.phone, app_info.email)
+            app_info.save()
+            app.app_info = app_info
+            app.save()
 
 
 def get_app_category():
@@ -309,20 +312,21 @@ def get_app_category():
         market_id = app.market_appid
         req = requests.post(url, headers=headers, data={'packageName': market_id})
         app_data = req.json()["data"]
-        app.app_name = app_data['app_name']
-        app.icon_url = app_data['icon_url']
-        app_info = AppInformation.objects.get_or_create(google_url=GOOGLE_PREFIX + market_id)[0]
-        app_info.apple_url = APPLE_PREFIX + app_data['apple_id']
-        app_info.publisher_name = app_data['publisher_name']
-        app_info.one_url = ONE_PREFIX + app_data['one_id']
-        _main = app_data['biz_category_main']
-        _subs = app_data['biz_category_sub']
-        if (_main and _subs) and (_main != "null" and _subs != "null"):
-            app_info.category_main = _main
-            app_info.category_sub = _subs
-        app.app_info = app_info
-        app_info.save()
-        app.save()
+        if app_data != "The data does not exist.":
+            app.app_name = app_data['app_name']
+            app.icon_url = app_data['icon_url']
+            app_info = AppInformation.objects.get_or_create(google_url=GOOGLE_PREFIX + market_id)[0]
+            app_info.apple_url = APPLE_PREFIX + str(app_data['apple_id']) if app_data['apple_id'] else None
+            app_info.publisher_name = app_data['publisher_name']
+            app_info.one_url = ONE_PREFIX + str(app_data['one_id']) if app_data['one_id'] else None
+            _main = app_data['biz_category_main']
+            _subs = app_data['biz_category_sub']
+            if (_main and _subs) and (_main != "null" and _subs != "null"):
+                app_info.category_main = _main
+                app_info.category_sub = _subs
+            app.app_info = app_info
+            app_info.save()
+            app.save()
 
 
 def get_app_publisher_name():
@@ -330,16 +334,17 @@ def get_app_publisher_name():
     for app in App.objects.all().filter(app_info=None):
         response = requests.post(url, data={'packageName': app.market_appid}, headers=headers).json()
         data = response["data"]
-        publisher_name = data.get('publisher_name')
-        app_info = AppInformation.objects.filter(
-            Q(google_url=GOOGLE_PREFIX + data.get("package_name")) |
-            Q(one_url=ONE_PREFIX + data.get("one_id")) |
-            Q(apple_url=APPLE_PREFIX + data.get("apple_id"))
-        ).first()
-        app_info.publisher_name = publisher_name
-        app_info.save()
-        app.app_info = app_info
-        app.save()
+        if data != "The data does not exist.":
+            print(data)
+            app_info = AppInformation.objects.filter(
+                Q(google_url=GOOGLE_PREFIX + str(data.get("package_name"))) |
+                Q(one_url=ONE_PREFIX + str(data.get("one_id"))) |
+                Q(apple_url=APPLE_PREFIX + str(data.get("apple_id")))
+            ).first()
+            app_info.publisher_name = data.get('publisher_name')
+            app_info.save()
+            app.app_info = app_info
+            app.save()
 
 
 def get_information_of_following_apps():
@@ -432,4 +437,4 @@ def get_apps_history_from_mobile_index(app_name):
 
 
 if __name__ == '__main__':
-    get_apps_history_from_mobile_index("우리의 제국")
+    get_developers_contact_number()
