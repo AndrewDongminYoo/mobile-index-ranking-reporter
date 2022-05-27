@@ -29,12 +29,15 @@ def redirect_to_rank(request: WSGIRequest):
     market_name: str = request.GET.get('mkt')
     icon_url: str = request.GET.get('ico')
     if package_name and market_name:
-        following = Following.objects.filter(market_appid=package_name).first()
+        following = Following.objects.filter(
+            market_appid=package_name,
+            market=market_name,
+        ).first()
         if following:
-            following.market = market_name
             following.icon_url = icon_url
             following.save()
             return redirect("/statistic/{}".format(following.id))
+    return render(request, "index.html")
 
 
 def privacy(request: WSGIRequest):
