@@ -20,6 +20,7 @@ from logging import getLogger
 from crawler.models import Following, App, TrackingApps, Ranked, TimeIndex, StatusCheck
 from crawler.models import AppInformation
 from ranker.settings import SLACK_WEBHOOK_URL
+from urllib.parse import unquote, parse_qsl, urlsplit
 
 logger = getLogger(__name__)
 KST = timezone('Asia/Seoul')
@@ -30,6 +31,22 @@ MOBILE_INDEX = "https://proxy-insight.mobileindex.com"
 GOOGLE_PREFIX = "https://play.google.com/store/apps/details?id="
 APPLE_PREFIX = "https://apps.apple.com/kr/app/id"
 ONE_PREFIX = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId="
+
+
+def unquote_url(url):
+    while True:
+        if url != unquote(url):
+            url = unquote(url)
+        else:
+            break
+    try:
+        query: str = urlsplit(url).query
+        query_dict = dict(parse_qsl(query))
+        if "src" in query_dict:
+            url = query_dict["src"]
+    except Exception as e:
+        logger.error(f"{e}")
+    return url
 
 
 def status_check(market="google", app_type="game"):

@@ -1,6 +1,8 @@
 from django.core.handlers.wsgi import WSGIRequest
+from django.db import DataError
 from django.shortcuts import render, redirect
 from crawler.models import TrackingApps, Following, App
+from crawler.utils import unquote_url
 
 
 def index(request: WSGIRequest):
@@ -27,15 +29,18 @@ def rank(request: WSGIRequest, following_id: int):
 def redirect_to_rank(request: WSGIRequest):
     package_name: str = request.GET.get('pkg')
     market_name: str = request.GET.get('mkt')
-    icon_url: str = request.GET.get('ico')
+    icon_url: str = unquote_url(request.GET.get('ico'))
     if package_name and market_name:
         following = Following.objects.filter(
             market_appid=package_name,
             market=market_name,
         ).first()
         if following:
-            following.icon_url = icon_url
-            following.save()
+            try:
+                following.icon_url = icon_url
+                following.save()
+            except DataError:
+                pass
             return redirect("/statistic/{}".format(following.id))
     return render(request, "index.html")
 
