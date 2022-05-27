@@ -16,7 +16,7 @@ def rank(request: WSGIRequest, following_id: int):
     if request.user.is_superuser and tracked.exists():
         app = tracked.select_related("app__app_info").last().app
     else:
-        app = App.objects.update_or_create(market_appid=following.market_appid)[0]
+        app = App.objects.get_or_create(market_appid=following.market_appid)[0]
         app.market = following.market
         app.app_name = following.app_name
         app.icon_url = following.icon_url
@@ -29,10 +29,12 @@ def redirect_to_rank(request: WSGIRequest):
     market_name: str = request.GET.get('mkt')
     icon_url: str = request.GET.get('ico')
     if package_name and market_name:
-        following = Following.objects.get_or_create(market_appid=package_name, market=market_name)[0]
-        following.icon_url = icon_url
-        following.save()
-        return redirect("/statistic/{}".format(following.id))
+        following = Following.objects.filter(market_appid=package_name).first()
+        if following:
+            following.market = market_name
+            following.icon_url = icon_url
+            following.save()
+            return redirect("/statistic/{}".format(following.id))
 
 
 def privacy(request: WSGIRequest):
