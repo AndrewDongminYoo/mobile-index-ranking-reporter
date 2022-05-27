@@ -59,12 +59,6 @@ def get_following() -> list:
     if req.status_code == 200:
         response = req.json()
         for adv_info in response["list"]:
-            google_app = dict(
-                market_appid=adv_info.get("ads_package"),
-                address=adv_info.get("ads_join_url"),
-                appname=adv_info.get("ads_name"),
-                os_type=adv_info.get("ads_os_type"),
-            )
             mobile_index = MOBILE_INDEX + "/app/market_info"
             req = requests.post(mobile_index, headers=headers, data={"packageName": adv_info.get("ads_package")})
             if req.status_code == 200:
@@ -77,6 +71,7 @@ def get_following() -> list:
                             address=data.get("apple_url"),
                             appname=adv_info.get("ads_name"),
                             os_type="apple",
+                            icon_url=adv_info.get("ads_icon_img"),
                         )
                         url = "http://13.125.164.253/cron/new/following"
                         res = requests.post(url, data=apple_app)
@@ -89,12 +84,20 @@ def get_following() -> list:
                             address=data.get("one_url"),
                             appname=adv_info.get("ads_name"),
                             os_type="one",
+                            icon_url=adv_info.get("ads_icon_img"),
                         )
                         url = "http://13.125.164.253/cron/new/following"
                         res = requests.post(url, data=one_app)
                         if res.status_code == 200:
                             print(res.json())
                             result.append(res.json()["market_appid"])
+            google_app = dict(
+                market_appid=adv_info.get("ads_package"),
+                address=adv_info.get("ads_join_url"),
+                appname=adv_info.get("ads_name"),
+                os_type=adv_info.get("ads_os_type"),
+                icon_url=adv_info.get("ads_icon_img"),
+            )
             url = "http://13.125.164.253/cron/new/following"
             res = requests.post(url, data=google_app)
             if res.status_code == 200:
@@ -206,12 +209,12 @@ def get_information_of_app(data: dict):
     market_appid = data["market_appid"]
     app_url = GOOGLE_PREFIX + market_appid
     publisher_name, category, email = get_google_apps_data_from_soup(app_url)
-    app_info = AppInformation.objects.update_or_create(
+    app_info = AppInformation.objects.get_or_create(
         google_url=app_url,
     )[0]
     app_info.publisher_name = publisher_name
     app_info.email = email
-    app = App.objects.update_or_create(
+    app = App.objects.get_or_create(
         market_appid=market_appid,
     )[0]
     app.app_name = data['app_name']
@@ -290,17 +293,17 @@ def get_developers_contact_number():
     for app in App.objects.filter(app_info=None, market="google").all():
         url = MOBILE_INDEX + '/app/market_info'
         response = requests.post(url, headers=headers, data={"packageName": app.market_appid}).json()
-
         data = response.get('data')
         if data != "The data does not exist.":
             market_info = data.get("market_info")
-            app_info = AppInformation.objects.update_or_create(google_url=market_info.get("google_url"))[0]
+            app_info = AppInformation.objects.get_or_create(google_url=market_info.get("google_url"))[0]
             description = market_info.get("description")
-            phone = re.findall(r"([0-1][0-9]*[\- ]*[0-9]{3,4}[\- ][0-9]{4,}|\+82[0-9\-]+)", description)
-            email = re.findall(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)", description)
-            app_info.phone = ", ".join(set(phone))
-            app_info.email = ", ".join(set(email))
-            print(app_info.phone, app_info.email)
+            if description:
+                phone = re.findall(r"([0-1]\d*[\- ]*\d{3,4}[\- ]\d{4,}|\+82[\d\-]+)", description)
+                email = re.findall(r"([a-zA-Z\d_.+-]+@[a-zA-Z\d-]+\.[a-zA-Z\d-.]+)", description)
+                app_info.phone = ", ".join(set(phone))
+                app_info.email = ", ".join(set(email))
+                print(app_info.phone, app_info.email)
             app_info.save()
             app.app_info = app_info
             app.save()
@@ -354,7 +357,7 @@ def get_information_of_following_apps():
         app_info = AppInformation.objects.get_or_create(
             google_url=google_url,
         )[0]
-        app = App.objects.update_or_create(
+        app = App.objects.get_or_create(
             market_appid=market_appid,
             market="google",
         )[0]
@@ -392,7 +395,7 @@ def get_highest_rank_of_realtime_ranks_today() -> None:
         if query:
             first = query[0]
             app: App = App.objects.get(market_appid=market_appid)
-            new_app = TrackingApps.objects.update_or_create(
+            new_app = TrackingApps.objects.get_or_create(
                 market=first.get('market'),
                 chart_type=first.get('chart_type'),
                 app_name=first.get('app_name'),

@@ -164,6 +164,7 @@
                     trackingTable.empty();
                     trackingTable.html('<h4 style="text-align:center;">앱의 실시간 순위 정보가 없습니다.<br/>100위 이상의 앱만 수집됩니다.</h4>');
                     console.warn("앱의 실시간 순위 정보가 없습니다.")
+                    window.alert("앱의 실시간 순위 정보가 없습니다.")
                     return
                 }
                 let temp_rank = 100
@@ -228,6 +229,7 @@
                 if (!res.data.items.length) {
                     $("#dailyRankTable").empty();
                     console.warn("앱의 일간 순위 정보가 없습니다.")
+                    window.alert("앱의 일간 순위 정보가 없습니다.")
                     return
                 }
                 let temp_rank = 100
@@ -291,6 +293,7 @@
                 if (!res.data.items.length) {
                     $("#downloadTable").empty();
                     console.warn("앱의 다운로드 정보가 없습니다.")
+                    window.alert("앱의 다운로드 정보가 없습니다.")
                     return
                 }
                 _.forEach(res.data.items, (item) => {

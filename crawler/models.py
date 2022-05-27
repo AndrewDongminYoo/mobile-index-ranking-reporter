@@ -98,6 +98,7 @@ class Following(Timestamped):
     market = models.CharField(max_length=16, choices=Ranked.MARKET, verbose_name="마켓명")
     expire_date = models.DateTimeField(null=True, verbose_name="만료일")
     is_following = models.BooleanField(default=False, verbose_name="슬랙 봇 대상")
+    icon_url = models.URLField(max_length=255, verbose_name="아이콘 이미지")
 
 
 class TrackingApps(Timestamped):

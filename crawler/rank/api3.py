@@ -33,6 +33,7 @@ def internal_cron(request: WSGIRequest):
     address = post_data.get("address")
     appname = post_data.get("appname")
     os_type = post_data.get("os_type")
+    icon_url = post_data.get("icon_url")
     GOOGLE = re.compile(r'^\w+(\.\w+)+$')
     APPLES = re.compile(r'^\d{9,11}$')
     ONESTO = re.compile(r'^0000\d{5,6}$')
@@ -64,7 +65,8 @@ def internal_cron(request: WSGIRequest):
             market=market,
             app_name=appname,
             market_appid=mkt_app,
-            expire_date=expire_date
+            expire_date=expire_date,
+            icon_url=icon_url,
         )
         following.save()
         print(following)
@@ -102,6 +104,9 @@ def get_one_store_information(request: WSGIRequest) -> OneStoreDL:
     )
     ones_app.save()
     following = Following.objects.get(market_appid=market_appid)
+    following.icon_url = icon_url
+    following.app_name = app_name
+    following.save()
     rank_diff = ones_app.downloads - last_one.downloads if last_one else 0
     if rank_diff > 2000:
         msg = f"원스토어 {app_name} 앱 다운로드가 전일 대비 {format(rank_diff, ',')}건 증가했습니다.✈ " \

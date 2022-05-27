@@ -22,7 +22,8 @@ def follow_application(self, request, queryset: QuerySet):
                 app_name=obj.app_name,
                 package_name=obj.package_name,
                 market_appid=obj.market_appid,
-                expire_date=timezone.now() + timedelta(days=3)
+                expire_date=timezone.now() + timedelta(days=3),
+                icon_url=obj.icon_url,
             )
             follow.save()
         elif type(obj) is OneStoreDL:
@@ -31,7 +32,8 @@ def follow_application(self, request, queryset: QuerySet):
                 app_name=app.app_name,
                 market_appid=app.market_appid,
                 market="one",
-                expire_date=timezone.now() + timedelta(days=3)
+                expire_date=timezone.now() + timedelta(days=3),
+                icon_url=app.icon_url,
             )
             following.save()
 
