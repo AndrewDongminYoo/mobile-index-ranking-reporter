@@ -1,8 +1,13 @@
+import re
+
+import requests
 from django.core.handlers.wsgi import WSGIRequest
 from django.db import DataError
 from django.shortcuts import render, redirect
 from crawler.models import TrackingApps, Following, App
 from crawler.utils import unquote_url
+
+app_pattern = r"([a-z]+\.[a-z]+\.[a-z]+|\d{10,11})"
 
 
 def index(request: WSGIRequest):
@@ -27,12 +32,21 @@ def rank(request: WSGIRequest, following_id: int):
 
 
 def redirect_to_rank(request: WSGIRequest):
-    package_name: str = request.GET.get('pkg')
     market_name: str = request.GET.get('mkt')
+    tracker_url: str = unquote_url(request.GET.get('pkg'))
     icon_url: str = unquote_url(request.GET.get('ico'))
-    if package_name and market_name:
+    if tracker_url and tracker_url.startswith("http"):
+        req = requests.get(
+            url=tracker_url,
+            headers=request.headers,
+            allow_redirects=True
+        )
+        tracker_url = req.url
+    market_appid = re.findall(app_pattern, tracker_url, re.I)
+    print(market_appid)
+    if market_name and market_appid:
         following = Following.objects.filter(
-            market_appid=package_name,
+            market_appid=market_appid.pop(),
             market=market_name,
         ).first()
         if following:
