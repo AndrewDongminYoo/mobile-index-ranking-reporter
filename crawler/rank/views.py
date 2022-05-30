@@ -6,8 +6,7 @@ from django.db import DataError
 from django.shortcuts import render, redirect
 from crawler.models import TrackingApps, Following, App
 from crawler.utils import unquote_url
-
-app_pattern = r"([a-z]+\.[a-z]+\.[a-z]+|\d{10,11})"
+app_pattern = r"([a-z]+\.[a-z]+\.[a-z]+\.?[a-z]*|\d{10,11})"
 
 
 def index(request: WSGIRequest):

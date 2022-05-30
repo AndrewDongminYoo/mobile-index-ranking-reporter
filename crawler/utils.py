@@ -39,13 +39,14 @@ def unquote_url(url):
             url = unquote(url)
         else:
             break
-    try:
-        query: str = urlsplit(url).query
-        query_dict = dict(parse_qsl(query))
-        if "src" in query_dict:
-            url = query_dict["src"]
-    except Exception as e:
-        logger.error(f"{e}")
+    if url.startswith("http"):
+        try:
+            query: str = urlsplit(url).query
+            query_dict = dict(parse_qsl(query))
+            if "src" in query_dict:
+                url = query_dict["src"]
+        except Exception as e:
+            logger.error(f"{e}")
     return url
 
 
