@@ -29,17 +29,21 @@ requests==2.27.1
 
 A step by step list of commands / guide that informs how to install an instance of this project.
 
-`git clone https://github.com/AndrewDongminYoo/mobile-market-ranker.git`
+```shell
+git clone https://github.com/AndrewDongminYoo/mobile-index-ranking-reporter.git
 
-`pip install -r requirements.txt`
+cd mobile-index-ranking-reporter/
 
-`python manage.py makemigrations`
+pip install -r requirements.txt
 
-`python manage.py migrate`
+python manage.py makemigrations
 
-`python manage.py collectstatic`
+python manage.py migrate
 
-`python manage.py runserver`
+python manage.py collectstatic
+
+python manage.py runserver
+```
 
 ## Screenshots
 
