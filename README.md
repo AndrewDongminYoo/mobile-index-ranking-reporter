@@ -34,6 +34,10 @@ git clone https://github.com/AndrewDongminYoo/mobile-index-ranking-reporter.git
 
 cd mobile-index-ranking-reporter/
 
+virtualenv venv
+
+source venv/bin/activate
+
 pip install -r requirements.txt
 
 python manage.py makemigrations
